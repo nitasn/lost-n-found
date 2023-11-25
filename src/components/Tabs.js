@@ -76,8 +76,7 @@ export default function Tabs() {
           component={ChatsStack}
           options={{
             title: "Chats",
-            // tabBarStyle: (routeName === "ConversationScreen") && { display: "none" },
-            // safeAreaInsets: { bottom: 0 },
+            headerTitleAlign: "center",
             tabBarIcon: ({ size, color, focused }) => (
               <Ionicons
                 size={size}
@@ -93,6 +92,7 @@ export default function Tabs() {
           component={SettingsStack}
           options={{
             title: "Settings",
+            headerTitleAlign: "center",
             tabBarIcon: ({ size, color, focused }) => (
               <Ionicons
                 size={size}

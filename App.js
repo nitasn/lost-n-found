@@ -14,23 +14,15 @@ import { linking } from "./src/js/linking";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNavigationContainerRef } from "@react-navigation/native";
 
-import { LogBox } from "react-native";
-
-// LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered']);
-
 const navRef = createNavigationContainerRef();
 
 export default function App() {
-  const [routeName, setRouteName] = React.useState();
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <NavigationContainer
         linking={linking}
         ref={navRef}
-        onReady={() => setRouteName(navRef.getCurrentRoute().name)}
-        onStateChange={() => setRouteName(navRef.getCurrentRoute().name)}
       >
         <Tabs />
       </NavigationContainer>

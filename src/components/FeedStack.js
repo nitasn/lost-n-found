@@ -8,19 +8,12 @@ import { TransitionPresets } from "@react-navigation/stack";
 import FilterPicker from "./FilterPicker";
 import PostPage from "./PostPage";
 
-const Stack = createStackNavigator();
-
-const fadeIn = ({ current }) => {
-  const opacity = current.progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-  return {
-    cardStyle: {
-      opacity,
-    },
-  };
+const headerTitle_Center_Capitalize = {
+  headerTitleAlign: "center",
+  headerTitleStyle: { textTransform: "capitalize" },
 };
+
+const Stack = createStackNavigator();
 
 /**
  * @param {{ type: 'lost' | 'found' }}
@@ -36,22 +29,27 @@ export default function FeedStack({ type }) {
         initialParams={{ type, posts }}
         options={{
           headerTitle: `${type} items`,
-          headerTitleStyle: { textTransform: "capitalize" },
+          ...headerTitle_Center_Capitalize,
         }}
       />
       <Stack.Screen
         name="FilterPicker"
         component={FilterPicker}
         initialParams={{ type }}
-        // options={{ cardStyleInterpolator: fadeIn }}
-        // options={{ ...TransitionPresets.ModalFadeTransition }}
-        options={{ ...TransitionPresets.FadeFromBottomAndroid }}
-        // options={{ ...TransitionPresets.RevealFromBottomAndroid }}
+        options={{
+          headerTitle: `search ${type} items`,
+          ...headerTitle_Center_Capitalize,
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+        }}
       />
       <Stack.Screen
         name="PostPage"
         component={PostPage}
         initialParams={{ type }}
+        options={{
+          headerTitle: `${type} item`,
+          ...headerTitle_Center_Capitalize,
+        }}
       />
     </Stack.Navigator>
   );
