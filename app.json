@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "lost-n-found",
-    "slug": "lost-n-found",
+    "name": "found-lost",
+    "slug": "found-lost",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

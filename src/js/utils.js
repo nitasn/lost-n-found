@@ -88,9 +88,11 @@ export const capitalize = (phrase) => {
   return phrase
     .toLowerCase()
     .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map(capitalizeWord)
     .join(' ');
 };
+
+export const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
 
 /**
  *

@@ -1,14 +1,15 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import globalStyles from "../js/globalStyles";
+import { useNavigation } from '@react-navigation/native';
 
 export default function SearchBar({ filterIsOn }) {
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
   return (
     <TouchableOpacity
       style={styles.searchBar}
-      onPress={() => navigation.navigate("FilterPicker")}
+      onPress={() => navigation.navigate('FilterPicker')}
     >
       <Text style={[styles.text, filterIsOn && styles.text_filterIsOn]}>
         {filterIsOn ? "Tap to View Filter" : "Search..."}

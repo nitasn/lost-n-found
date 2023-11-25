@@ -43,24 +43,21 @@ import { geoDistance, timeDeltaAsString } from "../js/utils";
 
 function HR() {
   return (
-    <View
-      style={{
-        height: 1,
-        marginHorizontal: 8,
-        backgroundColor: "#ccc",
-      }}
-    />
+    <View style={{ height: 1, marginHorizontal: 8, backgroundColor: "#ccc" }} />
   );
 }
 
 /**
  * @param {{postData: PostData}}
  */
-export default function Post({ postData }) {
+export default function FeedPost({ postData }) {
   const navigation = useNavigation();
   const placeName = postData.location.name?.trim();
   return (
-    <View style={styles.post}>
+    <Pressable
+      style={styles.post}
+      onPress={() => navigation.navigate("PostPage", { postData })}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>{postData.title}</Text>
         <Text style={styles.text}>{postData.text}</Text>
@@ -78,9 +75,7 @@ export default function Post({ postData }) {
                 index + 1 === postData.picsUrls.length &&
                   styles.imageWrapper_lastChild,
               ]}
-              onPress={() =>
-                navigation.navigate("ImagesModal", { postViewed: postData })
-              }
+              onPress={() => navigation.navigate("PostPage", { postData })}
             >
               <Image style={styles.image} source={{ uri: item }} />
             </Pressable>
@@ -96,7 +91,7 @@ export default function Post({ postData }) {
         </Text>
         <Text>{timeDeltaAsString(postData.date)}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -117,7 +112,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontSize: 30,
     textTransform: "capitalize",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     letterSpacing: 1.1,
   },
   text: {},
