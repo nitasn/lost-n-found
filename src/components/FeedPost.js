@@ -41,6 +41,7 @@ import { geoDistance, timeDeltaAsString } from "../js/utils";
  * @property {string} profilePicUrl
  */
 
+/** <hr /> */
 function HR() {
   return (
     <View style={{ height: 1, marginHorizontal: 8, backgroundColor: "#ccc" }} />
@@ -53,11 +54,9 @@ function HR() {
 export default function FeedPost({ postData }) {
   const navigation = useNavigation();
   const placeName = postData.location.name?.trim();
+  const viewPost = () => navigation.navigate("PostPage", { id: postData._id });
   return (
-    <Pressable
-      style={styles.post}
-      onPress={() => navigation.navigate("PostPage", { postData })}
-    >
+    <Pressable style={styles.post} onPress={viewPost}>
       <View style={styles.header}>
         <Text style={styles.title}>{postData.title}</Text>
         <Text style={styles.text}>{postData.text}</Text>
@@ -68,14 +67,14 @@ export default function FeedPost({ postData }) {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => {
+          const isLast = index + 1 === postData.picsUrls.length;
           return (
             <Pressable
               style={[
                 styles.imageWrapper,
-                index + 1 === postData.picsUrls.length &&
-                  styles.imageWrapper_lastChild,
+                isLast && styles.imageWrapper_lastChild,
               ]}
-              onPress={() => navigation.navigate("PostPage", { postData })}
+              onPress={viewPost}
             >
               <Image style={styles.image} source={{ uri: item }} />
             </Pressable>

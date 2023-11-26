@@ -4,18 +4,45 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import FeedPost from "./FeedPost";
 import SearchBar from "./SearchBar";
 
-function EmptyListMessage() {
-  return (
-    <View style={styles.emptyListMessage}>
-      <Text>Nothing's Here.</Text>
-    </View>
-  );
+import { useAllPosts } from "../js/useAllPosts";
+
+/**
+ * @typedef {Object} Filter
+ * @property {string} text
+ * @property {Object} dates
+ * @property {Date} dates.from
+ * @property {Date} dates.until
+ * @property {Object} location
+ * @property {[number, number]} location.latLong
+ * @property {number} location.radiusKm
+ */
+
+function MessageNoResults() {
+  return <Text>No results... 💔</Text>;
+}
+
+function MessageNoItems() {
+  return <Text>No Items... 💔</Text>;
 }
 
 export default function Feed({ route }) {
-  const { type, posts } = route.params;
+  const { type } = route.params;
+
+  const [allPosts] = useAllPosts();
+
+  const posts = React.useMemo(() => {
+    return allPosts.filter((obj) => obj.type === type);
+  }, [allPosts]);
+
+  const [filter, setFilter] = React.useState(null);
 
   const renderSearchBar = () => <SearchBar />;
+
+  const EmptyListMessage = () => (
+    <View style={styles.emptyListMessage}>
+      {filter ? <MessageNoResults /> : <MessageNoItems />}
+    </View>
+  );
 
   return (
     <FlatList

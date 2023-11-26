@@ -1,6 +1,6 @@
 import React from "react";
 
-export function createGlobalState({ initialValue } = {}) {
+export function createGlobalState(initialValue = null) {
   let value = initialValue;
   const subs = new Set();
 
