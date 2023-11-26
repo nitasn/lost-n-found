@@ -19,7 +19,7 @@ const navRef = createNavigationContainerRef();
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
+      <StatusBar style="auto" animated={true} />
       <NavigationContainer
         linking={linking}
         ref={navRef}

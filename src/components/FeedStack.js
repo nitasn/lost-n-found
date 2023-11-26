@@ -16,42 +16,36 @@ export function FoundStack() {
 export function LostStack() {
   return <TypeContext.Provider value="lost" children={<FeedStack />} />;
 }
-const headerTitle_Center_Capitalize = {
-  headerTitleAlign: "center",
-  headerTitleStyle: { textTransform: "capitalize" },
-};
 
 const Stack = createStackNavigator();
 
 export default function FeedStack() {
   const type = useContext(TypeContext);
-  
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerTitleStyle: { textTransform: "capitalize" },
+      }}
+    >
       <Stack.Screen
         name="Feed"
         component={Feed}
-        options={{
-          headerTitle: `${type} items`,
-          ...headerTitle_Center_Capitalize,
-        }}
+        options={{ headerTitle: `${type} items` }}
       />
       <Stack.Screen
         name="FilterPicker"
         component={FilterPicker}
         options={{
           headerTitle: `search ${type} items`,
-          ...headerTitle_Center_Capitalize,
-          ...TransitionPresets.ModalSlideFromBottomIOS,
+          ...TransitionPresets.ModalFadeTransition,
         }}
       />
       <Stack.Screen
         name="PostPage"
         component={PostPage}
-        options={{
-          headerTitle: `${type} item`,
-          ...headerTitle_Center_Capitalize,
-        }}
+        options={{ headerTitle: `${type} item` }}
       />
     </Stack.Navigator>
   );

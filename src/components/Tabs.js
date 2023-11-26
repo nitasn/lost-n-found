@@ -16,18 +16,19 @@ function NotFound() {
   return <View style={{ flex: 1 }} />;
 }
 
-const Nav = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function Tabs() {
   return (
-    <Nav.Navigator
+    <Tab.Navigator
       headerMode="screen"
       screenOptions={({ route }) => ({
         // don't show tab-bar icon for the not-found page
         tabBarButton: route.name === "NotFound" ? () => null : undefined,
+        tabBarActiveTintColor: '#9783d9',
       })}
     >
-      <Nav.Screen
+      <Tab.Screen
         name="FoundStack"
         component={FoundStack}
         options={{
@@ -43,7 +44,7 @@ export default function Tabs() {
         }}
       />
 
-      <Nav.Screen
+      <Tab.Screen
         name="LostStack"
         component={LostStack}
         options={{
@@ -59,7 +60,7 @@ export default function Tabs() {
         }}
       />
 
-      <Nav.Screen
+      <Tab.Screen
         name="ChatsStack"
         component={ChatsStack}
         options={{
@@ -75,7 +76,7 @@ export default function Tabs() {
         }}
       />
 
-      <Nav.Screen
+      <Tab.Screen
         name="SettingsStack"
         component={SettingsStack}
         options={{
@@ -91,7 +92,7 @@ export default function Tabs() {
         }}
       />
 
-      <Nav.Screen
+      <Tab.Screen
         name="NotFound"
         component={NotFound}
         options={{
@@ -99,6 +100,6 @@ export default function Tabs() {
           headerTitleAlign: "center",
         }}
       />
-    </Nav.Navigator>
+    </Tab.Navigator>
   );
 }
