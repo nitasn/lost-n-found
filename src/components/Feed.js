@@ -1,10 +1,11 @@
-import * as React from "react";
+import { useContext, useState, useMemo } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import FeedPost from "./FeedPost";
 import SearchBar from "./SearchBar";
 
 import { useAllPosts } from "../js/useAllPosts";
+import TypeContext from "../js/typeContext";
 
 /**
  * @typedef {Object} Filter
@@ -25,16 +26,15 @@ function MessageNoItems() {
   return <Text>No Items... 💔</Text>;
 }
 
-export default function Feed({ route }) {
-  const { type } = route.params;
-
+export default function Feed() {
+  const type = useContext(TypeContext);
   const [allPosts] = useAllPosts();
+  const posts = useMemo(
+    () => allPosts.filter((obj) => obj.type === type),
+    [allPosts]
+  );
 
-  const posts = React.useMemo(() => {
-    return allPosts.filter((obj) => obj.type === type);
-  }, [allPosts]);
-
-  const [filter, setFilter] = React.useState(null);
+  const [filter, setFilter] = useState(null);
 
   const renderSearchBar = () => <SearchBar />;
 

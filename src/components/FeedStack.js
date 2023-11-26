@@ -6,14 +6,16 @@ import { TransitionPresets } from "@react-navigation/stack";
 import FilterPicker from "./FilterPicker";
 import PostPage from "./PostPage";
 
+import TypeContext from "../js/typeContext";
+import { useContext } from "react";
+
 export function FoundStack() {
-  return <FeedStack type="found" />;
+  return <TypeContext.Provider value="found" children={<FeedStack />} />;
 }
 
 export function LostStack() {
-  return <FeedStack type="lost" />;
+  return <TypeContext.Provider value="lost" children={<FeedStack />} />;
 }
-
 const headerTitle_Center_Capitalize = {
   headerTitleAlign: "center",
   headerTitleStyle: { textTransform: "capitalize" },
@@ -21,16 +23,14 @@ const headerTitle_Center_Capitalize = {
 
 const Stack = createStackNavigator();
 
-/**
- * @param {{ type: 'lost' | 'found' }}
- */
-export default function FeedStack({ type }) {
+export default function FeedStack() {
+  const type = useContext(TypeContext);
+  
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Feed"
         component={Feed}
-        initialParams={{ type }}
         options={{
           headerTitle: `${type} items`,
           ...headerTitle_Center_Capitalize,
@@ -39,7 +39,6 @@ export default function FeedStack({ type }) {
       <Stack.Screen
         name="FilterPicker"
         component={FilterPicker}
-        initialParams={{ type }}
         options={{
           headerTitle: `search ${type} items`,
           ...headerTitle_Center_Capitalize,
@@ -49,7 +48,6 @@ export default function FeedStack({ type }) {
       <Stack.Screen
         name="PostPage"
         component={PostPage}
-        initialParams={{ type }}
         options={{
           headerTitle: `${type} item`,
           ...headerTitle_Center_Capitalize,
