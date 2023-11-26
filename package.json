@@ -5,9 +5,7 @@
   "scripts": {
     "postinstall": "npx patch-package",
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "build-web": "npx expo export:web && rm -rf server/build-static && mv web-build server/build-static"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
