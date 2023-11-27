@@ -112,7 +112,7 @@ export function sendPostReq(url, body, jwt = undefined) {
   });
 }
 
-export function extractFrom(obj, keys) {
+export function extractFields(obj, keys) {
   return keys.reduce((res, key) => {
     if (key in obj) res[key] = obj[key];
     return res;

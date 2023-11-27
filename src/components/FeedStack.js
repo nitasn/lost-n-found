@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Feed from "./Feed";
 
@@ -7,20 +6,50 @@ import FilterPicker from "./FilterPicker";
 import PostPage from "./PostPage";
 
 import TypeContext from "../js/typeContext";
-import { useContext } from "react";
+import { useContext, useState, useMemo, useCallback, useEffect } from "react";
 
 export function FoundStack() {
-  return <TypeContext.Provider value="found" children={<FeedStack />} />;
+  return (
+    <TypeContext.Provider value="found">
+      <FeedStack />
+    </TypeContext.Provider>
+  );
 }
 
 export function LostStack() {
-  return <TypeContext.Provider value="lost" children={<FeedStack />} />;
+  return (
+    <TypeContext.Provider value="lost">
+      <FeedStack />
+    </TypeContext.Provider>
+  );
 }
 
 const Stack = createStackNavigator();
 
+/**
+ * @typedef {Object} Filter
+ * @property {string} [query]
+ * @property {Date} [fromDate]
+ * @property {Date} [untilDate]
+ * @property {[number, number]} [aroundLatLong]
+ * @property {number} [radiusKm]
+ */
+
 export default function FeedStack() {
   const type = useContext(TypeContext);
+
+  /** @type {[Filter]} */
+  const [filter, setFilter] = useState({});
+
+  const _FilterPicker = useCallback(() => {
+    return <FilterPicker filter={filter} setFilter={setFilter} />;
+  }, [filter, setFilter]);
+
+  const _Feed = useCallback(() => {
+    return <Feed filter={filter} />;
+  }, [filter, setFilter]);
+
+  console.log("FeedStack rendered with filter:", filter);
 
   return (
     <Stack.Navigator
@@ -31,12 +60,12 @@ export default function FeedStack() {
     >
       <Stack.Screen
         name="Feed"
-        component={Feed}
+        component={_Feed}
         options={{ headerTitle: `${type} items` }}
       />
       <Stack.Screen
         name="FilterPicker"
-        component={FilterPicker}
+        component={_FilterPicker}
         options={{
           headerTitle: `search ${type} items`,
           ...TransitionPresets.ModalFadeTransition,

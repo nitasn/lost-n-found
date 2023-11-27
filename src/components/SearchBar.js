@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import globalStyles from "../js/globalStyles";
 import { useNavigation } from '@react-navigation/native';
 
-export default function SearchBar({ filterIsOn }) {
+export default function SearchBar({ filterOn }) {
   const navigation = useNavigation();
 
   return (
@@ -11,8 +11,8 @@ export default function SearchBar({ filterIsOn }) {
       style={styles.searchBar}
       onPress={() => navigation.navigate('FilterPicker')}
     >
-      <Text style={[styles.text, filterIsOn && styles.text_filterIsOn]}>
-        {filterIsOn ? "Tap to View Filter" : "Search..."}
+      <Text style={[styles.text, filterOn && styles.text_filterOn]}>
+        {filterOn ? "Tap to View Filter" : "Search..."}
       </Text>
       <Ionicons size={20} color="black" name="search" />
     </TouchableOpacity>
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     letterSpacing: 1.1,
   },
-  text_filterIsOn: {
+  text_filterOn: {
     fontWeight: "bold",
   },
 });
