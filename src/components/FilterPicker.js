@@ -1,9 +1,11 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { extractFields } from "../js/utils";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useContext } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { DatePickerModal } from "react-native-paper-dates";
 import { Button } from "react-native";
+import TypeContext from "../js/typeContext";
 
 const filterFields = [
   "query",
@@ -14,7 +16,7 @@ const filterFields = [
 ];
 
 export default function FilterPicker({ filter, setFilter }) {
-  //
+  const type = useContext(TypeContext);
 
   const [query, setQuery] = useState(filter.query || "");
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
@@ -30,8 +32,18 @@ export default function FilterPicker({ filter, setFilter }) {
     ...(radiusKm && { radiusKm }),
   });
 
+  const [fromDateOpen, setFromDateOpen] = useState(false);
+
+  const onDatePicked = (params) => {
+    setFromDateOpen(false);
+    setFromDate(params.date);
+  };
+
+  // onPress={() => setFilter(toFilterObject())}
+
   return (
     <View style={styles.filterPicker}>
+      <Text style={styles.label}>Search {type} items</Text>
       <TextInput
         style={styles.textInput}
         value={query}
@@ -39,21 +51,30 @@ export default function FilterPicker({ filter, setFilter }) {
         placeholder="Enter keywords..."
         placeholderTextColor="gray"
       />
-      <Button
-        title="Update Filter"
-        onPress={() => setFilter(toFilterObject())}
+      <Text style={styles.label}>From (any date)</Text>
+      <Text style={styles.label}>To (any date)</Text>
+      <Button title="Pick" onPress={() => setFromDateOpen(true)} />
+      <DatePickerModal
+        mode="single"
+        visible={fromDateOpen}
+        onDismiss={() => setFromDateOpen(false)}
+        date={fromDate}
+        onConfirm={onDatePicked}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  label: {
+    margin: 12,
+    fontWeight: "bold",
+  },
   filterPicker: {
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 12,
+    // padding: 12,
   },
   textInput: {
+    marginTop: 0,
     margin: 12,
     height: 40,
     borderWidth: 1,

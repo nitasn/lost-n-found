@@ -6,6 +6,9 @@ import "react-native-gesture-handler";
  * https://reactnavigation.org/docs/stack-navigator
  */
 
+import { en, registerTranslation } from "react-native-paper-dates";
+registerTranslation("en", en);
+
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
@@ -20,10 +23,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <NavigationContainer
-        linking={linking}
-        ref={navRef}
-      >
+      <NavigationContainer linking={linking} ref={navRef}>
         <Tabs />
       </NavigationContainer>
     </SafeAreaView>

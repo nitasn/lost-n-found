@@ -47,7 +47,7 @@ export default function FeedStack() {
 
   const _Feed = useCallback(() => {
     return <Feed filter={filter} />;
-  }, [filter, setFilter]);
+  }, [filter]);
 
   console.log("FeedStack rendered with filter:", filter);
 
