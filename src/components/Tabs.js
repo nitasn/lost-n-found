@@ -4,9 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FoundStack, LostStack } from "./FeedStack";
 
-function ChatsStack() {
-  return <View style={{ flex: 1 }} />;
-}
+import ChatsStack from "./ChatsStack";
 
 function SettingsStack() {
   return <View style={{ flex: 1 }} />;
