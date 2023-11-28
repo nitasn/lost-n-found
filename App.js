@@ -6,8 +6,8 @@ import "react-native-gesture-handler";
  * https://reactnavigation.org/docs/stack-navigator
  */
 
-import { en, registerTranslation } from "react-native-paper-dates";
-registerTranslation("en", en);
+import { enGB, registerTranslation } from "react-native-paper-dates";
+registerTranslation("en-GB", enGB);
 
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";

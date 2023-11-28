@@ -1,11 +1,20 @@
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { extractFields } from "../js/utils";
 import { useEffect, useState, useCallback, useContext } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { DatePickerModal } from "react-native-paper-dates";
-import { Button } from "react-native";
 import TypeContext from "../js/typeContext";
+import { Ionicons } from "@expo/vector-icons";
+
 
 const filterFields = [
   "query",
@@ -14,6 +23,54 @@ const filterFields = [
   "aroundLatLong",
   "radiusKm",
 ];
+
+function TextInputWithX({ text, setText }) {
+  return (
+    <View style={styles.inputWithX}>
+      <TextInput
+        style={styles.textInput}
+        value={text}
+        onChangeText={setText}
+        placeholder="Enter keywords..."
+        placeholderTextColor="gray"
+      />
+      <TouchableOpacity style={styles.clearInputX} onPress={() => setText("")}>
+        <Ionicons size={24} color="black" name="close-circle-outline" />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function DateInputWithX({ date, setDate }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.inputWithX}>
+      <TextInput
+        style={styles.textInput}
+        value={date ? formatDate(date) : ""}
+        placeholder="DD/MM/YYYY"
+        placeholderTextColor="gray"
+        editable={false}
+        onPressIn={() => setOpen(true)}
+      />
+      <TouchableOpacity style={styles.clearInputX} onPress={() => setDate("")}>
+        <Ionicons size={24} color="black" name="close-circle-outline" />
+      </TouchableOpacity>
+
+      <DatePickerModal
+        locale="en-GB"
+        mode="single"
+        visible={open}
+        onDismiss={() => setOpen(false)}
+        date={date}
+        onConfirm={({ date }) => {
+          setOpen(false);
+          setDate(date);
+        }}
+      />
+    </View>
+  );
+}
 
 export default function FilterPicker({ filter, setFilter }) {
   const type = useContext(TypeContext);
@@ -32,35 +89,18 @@ export default function FilterPicker({ filter, setFilter }) {
     ...(radiusKm && { radiusKm }),
   });
 
-  const [fromDateOpen, setFromDateOpen] = useState(false);
-
-  const onDatePicked = (params) => {
-    setFromDateOpen(false);
-    setFromDate(params.date);
-  };
-
-  // onPress={() => setFilter(toFilterObject())}
+  console.log(toFilterObject());
 
   return (
     <View style={styles.filterPicker}>
       <Text style={styles.label}>Search {type} items</Text>
-      <TextInput
-        style={styles.textInput}
-        value={query}
-        onChangeText={setQuery}
-        placeholder="Enter keywords..."
-        placeholderTextColor="gray"
-      />
-      <Text style={styles.label}>From (any date)</Text>
-      <Text style={styles.label}>To (any date)</Text>
-      <Button title="Pick" onPress={() => setFromDateOpen(true)} />
-      <DatePickerModal
-        mode="single"
-        visible={fromDateOpen}
-        onDismiss={() => setFromDateOpen(false)}
-        date={fromDate}
-        onConfirm={onDatePicked}
-      />
+      <TextInputWithX text={query} setText={setQuery} />
+
+      <Text style={styles.label}>From date</Text>
+      <DateInputWithX date={fromDate} setDate={setFromDate} />
+
+      <Text style={styles.label}>To date</Text>
+      <DateInputWithX date={untilDate} setDate={setUntilDate} />
     </View>
   );
 }
@@ -69,18 +109,35 @@ const styles = StyleSheet.create({
   label: {
     margin: 12,
     fontWeight: "bold",
+    marginBottom: 0,
+    textTransform: "capitalize",
   },
   filterPicker: {
-    // padding: 12,
+    padding: 10,
+  },
+  inputWithX: {
+    position: "relative",
+    justifyContent: "center",
   },
   textInput: {
-    marginTop: 0,
     margin: 12,
     height: 40,
     borderWidth: 1,
     padding: 10,
     paddingHorizontal: 12,
-    alignSelf: "stretch",
     borderRadius: 5,
   },
+  clearInputX: {
+    position: "absolute",
+    right: 20,
+  },
 });
+
+function formatDate(date) {
+  date = new Date(date);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0 :/
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
