@@ -15,7 +15,6 @@ import { DatePickerModal } from "react-native-paper-dates";
 import TypeContext from "../js/typeContext";
 import { Ionicons } from "@expo/vector-icons";
 
-
 const filterFields = [
   "query",
   "fromDate",
@@ -44,15 +43,17 @@ function TextInputWithX({ text, setText }) {
 function DateInputWithX({ date, setDate }) {
   const [open, setOpen] = useState(false);
   return (
-    <View style={styles.inputWithX}>
-      <TextInput
-        style={styles.textInput}
-        value={date ? formatDate(date) : ""}
-        placeholder="DD/MM/YYYY"
-        placeholderTextColor="gray"
-        editable={false}
-        onPressIn={() => setOpen(true)}
-      />
+    <View style={styles.inputWithX} >
+      <Pressable onPress={() => setOpen(true)}>
+        <TextInput
+          style={styles.textInput}
+          value={date ? formatDate(date) : ""}
+          placeholder="DD/MM/YYYY"
+          placeholderTextColor="gray"
+          editable={false}
+          pointerEvents="none"
+        />
+        </Pressable>
       <TouchableOpacity style={styles.clearInputX} onPress={() => setDate("")}>
         <Ionicons size={24} color="black" name="close-circle-outline" />
       </TouchableOpacity>
@@ -99,7 +100,7 @@ export default function FilterPicker({ filter, setFilter }) {
       <Text style={styles.label}>From date</Text>
       <DateInputWithX date={fromDate} setDate={setFromDate} />
 
-      <Text style={styles.label}>To date</Text>
+      <Text style={styles.label}>Until date</Text>
       <DateInputWithX date={untilDate} setDate={setUntilDate} />
     </View>
   );
