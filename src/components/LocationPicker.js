@@ -6,9 +6,10 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Animated,
+  Easing,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
-import mapPinUri from "../../assets/map-pin.png";
 import scopeCircle from "../../assets/scope-circle.png";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,9 +25,14 @@ function FloatingButton({ children, style, onPress }) {
   );
 }
 
-export default function LocationPicker({ open, setOpen, latLong, setLatLong }) {
-  const mapViewRef = useRef();
+const useGoogleMapsUnlessOnAppleDevice = Platform.OS !== "ios" && {
+  provider: "google",
+  googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+};
 
+export default function LocationPicker({ open, setOpen, latLong, setLatLong }) {
+  // used internally until the user hits "OK",
+  // then we set latLong to where the pin is.
   const [pinLatLong, setPinLatLong] = useState(
     latLong || {
       latitude: 32.086358,
@@ -34,16 +40,43 @@ export default function LocationPicker({ open, setOpen, latLong, setLatLong }) {
     }
   );
 
-  if (!open) return;
+  // this allows us to un-draw ourselves after the animation finishes
+  const [shouldStillRender, setShouldStillRender] = useState(open);
 
-  const useGoogleMapsUnlessOnAppleDevice = Platform.OS !== "ios" && {
-    provider: "google",
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+  const { current: animation } = useRef(new Animated.Value(0));
+
+  const onAnimationStartedOrFinished = ({ finished }) => {
+    if (finished) {
+      setShouldStillRender(open);
+    }
   };
 
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: open ? 1 : 0,
+      duration: 400,
+      easing: Easing.exp,
+      useNativeDriver: true,
+    }).start(onAnimationStartedOrFinished);
+  }, [open]);
+
+  if (!open && !shouldStillRender) return;
+
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
+  const scale = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.4, 1],
+  });
+
+  const transformScale = { transform: [{ scale }] };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.locationPicker}>
+    <Animated.View style={[styles.container, { opacity }]}>
+      <Animated.View style={[styles.locationPicker, transformScale]}>
         <MapView
           showsBuildings={false}
           showsIndoorLevelPicker={false}
@@ -56,7 +89,6 @@ export default function LocationPicker({ open, setOpen, latLong, setLatLong }) {
           options={{
             disableDefaultUI: true,
           }}
-          ref={mapViewRef}
           style={styles.mapView}
           {...useGoogleMapsUnlessOnAppleDevice}
           initialCamera={{
@@ -94,8 +126,8 @@ export default function LocationPicker({ open, setOpen, latLong, setLatLong }) {
           <Text>Discard</Text>
           <Ionicons size={22} color="red" name="close" />
         </FloatingButton>
-      </View>
-    </View>
+      </Animated.View>
+    </Animated.View>
   );
 }
 
