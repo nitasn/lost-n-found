@@ -14,6 +14,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { DatePickerModal } from "react-native-paper-dates";
 import TypeContext from "../js/typeContext";
 import { Ionicons } from "@expo/vector-icons";
+import LocationPicker from "./LocationPicker";
 
 const filterFields = [
   "query",
@@ -43,7 +44,7 @@ function TextInputWithX({ text, setText }) {
 function DateInputWithX({ date, setDate }) {
   const [open, setOpen] = useState(false);
   return (
-    <View style={styles.inputWithX} >
+    <View style={styles.inputWithX}>
       <Pressable onPress={() => setOpen(true)}>
         <TextInput
           style={styles.textInput}
@@ -53,7 +54,7 @@ function DateInputWithX({ date, setDate }) {
           editable={false}
           pointerEvents="none"
         />
-        </Pressable>
+      </Pressable>
       <TouchableOpacity style={styles.clearInputX} onPress={() => setDate("")}>
         <Ionicons size={24} color="black" name="close-circle-outline" />
       </TouchableOpacity>
@@ -73,8 +74,41 @@ function DateInputWithX({ date, setDate }) {
   );
 }
 
+function LocationInputWithX({ latLong, setLatLong }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <View style={styles.inputWithX}>
+        <Pressable onPress={() => setOpen(true)}>
+          <TextInput
+            style={styles.textInput}
+            value={latLong ? `${latLong.latitude}° ${latLong.longitude}°` : ""}
+            placeholder="Choose Location..."
+            placeholderTextColor="gray"
+            editable={false}
+            pointerEvents="none"
+          />
+        </Pressable>
+        <TouchableOpacity
+          style={styles.clearInputX}
+          onPress={() => setLatLong(null)}
+        >
+          <Ionicons size={24} color="black" name="close-circle-outline" />
+        </TouchableOpacity>
+      </View>
+      <LocationPicker
+        open={open}
+        setOpen={setOpen}
+        latLong={latLong}
+        setLatLong={setLatLong}
+      />
+    </>
+  );
+}
+
 export default function FilterPicker({ filter, setFilter }) {
   const type = useContext(TypeContext);
+  const navigation = useNavigation();
 
   const [query, setQuery] = useState(filter.query || "");
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
@@ -90,31 +124,33 @@ export default function FilterPicker({ filter, setFilter }) {
     ...(radiusKm && { radiusKm }),
   });
 
-  console.log(toFilterObject());
-
   return (
     <View style={styles.filterPicker}>
-      <Text style={styles.label}>Search {type} items</Text>
+      <Text style={styles.label}>search {type} items</Text>
       <TextInputWithX text={query} setText={setQuery} />
 
-      <Text style={styles.label}>From date</Text>
+      <Text style={styles.label}>from date</Text>
       <DateInputWithX date={fromDate} setDate={setFromDate} />
 
-      <Text style={styles.label}>Until date</Text>
+      <Text style={styles.label}>until date</Text>
       <DateInputWithX date={untilDate} setDate={setUntilDate} />
+
+      <Text style={styles.label}>{type} around</Text>
+      <LocationInputWithX latLong={aroundLatLong} setLatLong={setAroundWhere} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  filterPicker: {
+    padding: 10,
+    flex: 1,
+  },
   label: {
     margin: 12,
     fontWeight: "bold",
     marginBottom: 0,
     textTransform: "capitalize",
-  },
-  filterPicker: {
-    padding: 10,
   },
   inputWithX: {
     position: "relative",

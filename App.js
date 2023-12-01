@@ -1,14 +1,3 @@
-import "react-native-gesture-handler";
-/**
- * WARNING
- * If you are building for Android or iOS, do not skip this step,
- * or your app may crash in production even if it works fine in development.
- * https://reactnavigation.org/docs/stack-navigator
- */
-
-import { enGB, registerTranslation } from "react-native-paper-dates";
-registerTranslation("en-GB", enGB);
-
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";
 import React from "react";

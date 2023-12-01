@@ -7,6 +7,7 @@ import PostPage from "./PostPage";
 
 import TypeContext from "../js/typeContext";
 import { useContext, useState, useMemo, useCallback, useEffect } from "react";
+import LocationPicker from "./LocationPicker";
 
 export function FoundStack() {
   return (
@@ -48,8 +49,6 @@ export default function FeedStack() {
   const _Feed = useCallback(() => {
     return <Feed filter={filter} />;
   }, [filter]);
-
-  console.log("FeedStack rendered with filter:", filter);
 
   return (
     <Stack.Navigator
