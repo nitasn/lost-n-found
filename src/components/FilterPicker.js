@@ -37,7 +37,7 @@ function TextInputWithX({ text, setText }) {
         placeholderTextColor="gray"
       />
       <TouchableOpacity style={styles.clearInputX} onPress={() => setText("")}>
-        <Ionicons size={24} color="black" name="close-circle-outline" />
+        <Ionicons size={24} color="black" name="close-outline" />
       </TouchableOpacity>
     </View>
   );
@@ -58,7 +58,7 @@ function DateInputWithX({ date, setDate }) {
         />
       </Pressable>
       <TouchableOpacity style={styles.clearInputX} onPress={() => setDate("")}>
-        <Ionicons size={24} color="black" name="close-circle-outline" />
+        <Ionicons size={24} color="black" name="close-outline" />
       </TouchableOpacity>
 
       <DatePickerModal
@@ -95,7 +95,7 @@ function LocationInputWithX({ latLong, setLatLong }) {
           style={styles.clearInputX}
           onPress={() => setLatLong(null)}
         >
-          <Ionicons size={24} color="black" name="close-circle-outline" />
+          <Ionicons size={24} color="black" name="close-outline" />
         </TouchableOpacity>
       </View>
       <LocationPicker
@@ -125,14 +125,6 @@ function RadiusKmInput({ visible, radiusKm, setRadiusKm }) {
   );
 }
 
-function ActionButton({ style, children }) {
-  return (
-    <TouchableOpacity style={[styles.actionButton, style]}>
-      {children}
-    </TouchableOpacity>
-  );
-}
-
 export default function FilterPicker({ filter, setFilter }) {
   const type = useContext(TypeContext);
   const navigation = useNavigation();
@@ -143,64 +135,52 @@ export default function FilterPicker({ filter, setFilter }) {
   const [aroundLatLong, setAroundWhere] = useState(filter.aroundWhere || null);
   const [radiusKm, setRadiusKm] = useState(filter.radiusKm || 0);
 
-  const anyFilterPicked =
-    query || fromDate || untilDate || aroundLatLong || radiusKm;
+  const anyFilterPicked = Boolean(
+    query || fromDate || untilDate || aroundLatLong || radiusKm
+  );
 
-  const toFilterObject = () => ({
-    ...(query && { query }),
-    ...(fromDate && { fromDate }),
-    ...(untilDate && { untilDate }),
-    ...(aroundLatLong && { aroundLatLong }),
-    ...(radiusKm && { radiusKm }),
-  });
+  const onSubmit = () => {
+    setFilter({
+      ...(query && { query }),
+      ...(fromDate && { fromDate }),
+      ...(untilDate && { untilDate }),
+      ...(aroundLatLong && { aroundLatLong }),
+      ...(radiusKm && { radiusKm }),
+    });
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.filterPicker}>
-        {/*  */}
+      <View style={styles.form}>
+        <Text style={styles.label}>item description</Text>
+        <TextInputWithX text={query} setText={setQuery} />
 
-        {/* <View style={styles.actionButtons}>
-          <ActionButton>
-            <Ionicons size={18} color="gray" name="chevron-back" />
-            <Text>Dismiss</Text>
-          </ActionButton>
+        <Text style={styles.label}>from date</Text>
+        <DateInputWithX date={fromDate} setDate={setFromDate} />
 
-          <ActionButton>
-            <Ionicons size={18} color="gray" name="trash-bin" />
-            <Text>Clear All</Text>
-          </ActionButton>
-        </View> */}
+        <Text style={styles.label}>until date</Text>
+        <DateInputWithX date={untilDate} setDate={setUntilDate} />
 
-        <View /** Main Content */>
-          <Text style={styles.label}>item description</Text>
-          <TextInputWithX text={query} setText={setQuery} />
+        <Text style={styles.label}>{type} around</Text>
+        <LocationInputWithX
+          latLong={aroundLatLong}
+          setLatLong={setAroundWhere}
+        />
 
-          <Text style={styles.label}>from date</Text>
-          <DateInputWithX date={fromDate} setDate={setFromDate} />
-
-          <Text style={styles.label}>until date</Text>
-          <DateInputWithX date={untilDate} setDate={setUntilDate} />
-
-          <Text style={styles.label}>{type} around</Text>
-          <LocationInputWithX
-            latLong={aroundLatLong}
-            setLatLong={setAroundWhere}
-          />
-
-          <RadiusKmInput
-            visible={!!aroundLatLong}
-            radiusKm={radiusKm}
-            setRadiusKm={setRadiusKm}
-          />
-        </View>
-
-        {/* <View style={styles.actionButtons}>
-          <ActionButton>
-            <Ionicons size={18} color="gray" name="search" />
-            <Text>Search</Text>
-          </ActionButton>
-        </View> */}
+        <RadiusKmInput
+          visible={!!aroundLatLong}
+          radiusKm={radiusKm}
+          setRadiusKm={setRadiusKm}
+        />
       </View>
+
+      <TouchableOpacity style={styles.buttonGo} onPress={onSubmit}>
+        <Text style={styles.buttonGoText}>
+          {anyFilterPicked ? "Search" : "Don't Filter"}
+        </Text>
+        <Ionicons size={18} color="white" name="search" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -211,14 +191,15 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
   },
-  filterPicker: {
+  title: {
+    marginBottom: "auto",
+    fontSize: 18,
+  },
+  form: {
     padding: 10,
-    flex: 1,
     borderRadius: 5,
     ...globalStyles.shadow_2,
     backgroundColor: "white",
-    maxHeight: 600,
-    justifyContent: "space-between",
   },
   label: {
     margin: 12,
@@ -232,7 +213,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     margin: 12,
-    height: 40,
+    minHeight: 40,
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderWidth: 1,
@@ -242,20 +223,24 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
   },
-  actionButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  actionButton: {
-    margin: 12,
-    height: 40,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+  buttonGo: {
+    marginTop: 36,
+    minHeight: 40,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
     borderRadius: 5,
     ...globalStyles.shadow_2,
+    backgroundColor: "#333333a0",
+    gap: 8,
     flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
+    justifyContent: "center",
+    alignSelf: "center",
+  },
+  buttonGoText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    letterSpacing: 1.1,
+    color: "white",
   },
 });
 

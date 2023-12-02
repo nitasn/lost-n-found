@@ -66,9 +66,8 @@ export default function FeedStack() {
         component={FilterPicker_withProps}
         options={{
           headerTitle: `search ${type} items`,
-          ...TransitionPresets.ModalFadeTransition,
-          gestureEnabled: false,
-          headerLeft: null,
+          // ...TransitionPresets.ModalFadeTransition,
+          // gestureEnabled: false,
         }}
       />
       <Stack.Screen
