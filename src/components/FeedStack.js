@@ -42,11 +42,11 @@ export default function FeedStack() {
   /** @type {[Filter]} */
   const [filter, setFilter] = useState({});
 
-  const _FilterPicker = useCallback(() => {
+  const FilterPicker_withProps = useCallback(() => {
     return <FilterPicker filter={filter} setFilter={setFilter} />;
   }, [filter, setFilter]);
 
-  const _Feed = useCallback(() => {
+  const Feed_withProps = useCallback(() => {
     return <Feed filter={filter} />;
   }, [filter]);
 
@@ -59,15 +59,16 @@ export default function FeedStack() {
     >
       <Stack.Screen
         name="Feed"
-        component={_Feed}
+        component={Feed_withProps}
         options={{ headerTitle: `${type} items` }}
       />
       <Stack.Screen
         name="FilterPicker"
-        component={_FilterPicker}
+        component={FilterPicker_withProps}
         options={{
           headerTitle: `search ${type} items`,
           ...TransitionPresets.ModalFadeTransition,
+          gestureEnabled: false,
         }}
       />
       <Stack.Screen
