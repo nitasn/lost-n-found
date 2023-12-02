@@ -7,7 +7,6 @@ import PostPage from "./PostPage";
 
 import TypeContext from "../js/typeContext";
 import { useContext, useState, useMemo, useCallback, useEffect } from "react";
-import LocationPicker from "./LocationPicker";
 
 export function FoundStack() {
   return (
@@ -69,6 +68,7 @@ export default function FeedStack() {
           headerTitle: `search ${type} items`,
           ...TransitionPresets.ModalFadeTransition,
           gestureEnabled: false,
+          headerLeft: null,
         }}
       />
       <Stack.Screen
