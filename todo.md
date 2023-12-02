@@ -1,1 +1,1 @@
-1. make the "Within" always stay (just gray out if no location)
+1. radiusKm is not kept when "Don't Filter" -> "Search"

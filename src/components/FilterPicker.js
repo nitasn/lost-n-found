@@ -18,6 +18,8 @@ import { Ionicons } from "@expo/vector-icons";
 import LocationPicker from "./LocationPicker";
 import globalStyles from "../js/globalStyles";
 import EnumPicker from "./EnumPicker";
+import { StatusBar } from "expo-status-bar";
+import ModalWithShadow from "./ModalWithShadow";
 
 const filterFields = [
   "query",
@@ -78,56 +80,50 @@ function DateInputWithX({ date, setDate }) {
 }
 
 function LocationInputWithX({ latLong, setLatLong }) {
-  const [open, setOpen] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const closeModal = () => setModalVisible(false);
   return (
-    <>
-      <View style={styles.inputWithX}>
-        <Pressable onPress={() => setOpen(true)}>
-          <TextInput
-            style={styles.textInput}
-            value={latLong ? `${latLong.latitude}° ${latLong.longitude}°` : ""}
-            placeholder="Choose Location..."
-            placeholderTextColor="gray"
-            editable={false}
-            pointerEvents="none"
-          />
-        </Pressable>
-        <TouchableOpacity
-          style={styles.clearInputX}
-          onPress={() => setLatLong(null)}
-        >
-          <Ionicons size={24} color="black" name="close-outline" />
-        </TouchableOpacity>
-      </View>
-      {/* <Modal
-        animationType="fade"
-        transparent={false}
-        visible={open}
-        onRequestClose={() => setOpen(false)}
-      > */}
-      <LocationPicker
-        open={open}
-        setOpen={setOpen}
-        latLong={latLong}
-        setLatLong={setLatLong}
-      />
-      {/* </Modal> */}
-    </>
+    <View style={styles.inputWithX}>
+      <Pressable onPress={() => setModalVisible(true)}>
+        <TextInput
+          style={styles.textInput}
+          value={latLong ? `${latLong.latitude}° ${latLong.longitude}°` : ""}
+          placeholder="Choose Location..."
+          placeholderTextColor="gray"
+          editable={false}
+          pointerEvents="none"
+        />
+      </Pressable>
+      <TouchableOpacity
+        style={styles.clearInputX}
+        onPress={() => setLatLong(null)}
+      >
+        <Ionicons size={24} color="black" name="close-outline" />
+      </TouchableOpacity>
+      <ModalWithShadow visible={modalVisible} doClose={closeModal}>
+        <LocationPicker
+          doClose={closeModal}
+          latLong={latLong}
+          setLatLong={setLatLong}
+        />
+      </ModalWithShadow>
+    </View>
   );
 }
 
 function RadiusKmInput({ visible, radiusKm, setRadiusKm }) {
   const { current: options } = useRef(["5 Km", "15 Km", "50 Km"]);
 
-  const [option, setOption] = useState("15 Km");
-
-  if (!visible) return;
+  useEffect(() => {
+    setRadiusKm(visible && "15 Km");
+  }, [visible]);
 
   return (
     <EnumPicker
+      active={visible}
       options={options}
-      checkedOption={option}
-      setCheckedOption={setOption}
+      checkedOption={radiusKm}
+      setCheckedOption={setRadiusKm}
       title="within"
     />
   );
@@ -140,19 +136,21 @@ export default function FilterPicker({ filter, setFilter }) {
   const [query, setQuery] = useState(filter.query || "");
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
   const [untilDate, setUntilDate] = useState(filter.untilDate || null);
-  const [aroundLatLong, setAroundWhere] = useState(filter.aroundWhere || null);
+  const [latLong, setLatLong] = useState(filter.latLong || null);
   const [radiusKm, setRadiusKm] = useState(filter.radiusKm || 0);
 
   const anyFilterPicked = Boolean(
-    query || fromDate || untilDate || aroundLatLong || radiusKm
+    query || fromDate || untilDate || latLong || radiusKm
   );
 
   const onSubmit = () => {
+    console.log("submit", { radiusKm });
+
     setFilter({
       ...(query && { query }),
       ...(fromDate && { fromDate }),
       ...(untilDate && { untilDate }),
-      ...(aroundLatLong && { aroundWhere: aroundLatLong }),
+      ...(latLong && { latLong }),
       ...(radiusKm && { radiusKm }),
     });
     navigation.goBack();
@@ -160,28 +158,25 @@ export default function FilterPicker({ filter, setFilter }) {
 
   return (
     <View style={styles.container}>
-      {/* 
-        the .form is disabled because it breaks the locationPicker
-      */}
-      {/* <View style={styles.form}> */}
-      <Text style={styles.label}>item description</Text>
-      <TextInputWithX text={query} setText={setQuery} />
+      <View style={styles.form && null}>
+        <Text style={styles.label}>item description</Text>
+        <TextInputWithX text={query} setText={setQuery} />
 
-      <Text style={styles.label}>from date</Text>
-      <DateInputWithX date={fromDate} setDate={setFromDate} />
+        <Text style={styles.label}>from date</Text>
+        <DateInputWithX date={fromDate} setDate={setFromDate} />
 
-      <Text style={styles.label}>until date</Text>
-      <DateInputWithX date={untilDate} setDate={setUntilDate} />
+        <Text style={styles.label}>until date</Text>
+        <DateInputWithX date={untilDate} setDate={setUntilDate} />
 
-      <Text style={styles.label}>{type} around</Text>
-      <LocationInputWithX latLong={aroundLatLong} setLatLong={setAroundWhere} />
+        <Text style={styles.label}>{type} around</Text>
+        <LocationInputWithX latLong={latLong} setLatLong={setLatLong} />
 
-      <RadiusKmInput
-        visible={!!aroundLatLong}
-        radiusKm={radiusKm}
-        setRadiusKm={setRadiusKm}
-      />
-      {/* </View> */}
+        <RadiusKmInput
+          visible={!!latLong}
+          radiusKm={radiusKm}
+          setRadiusKm={setRadiusKm}
+        />
+      </View>
 
       <TouchableOpacity style={styles.buttonGo} onPress={onSubmit}>
         <Text style={styles.buttonGoText}>
@@ -198,6 +193,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     justifyContent: "center",
+    backgroundColor: "#eee",
   },
   title: {
     marginBottom: "auto",
@@ -238,7 +234,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 5,
     ...globalStyles.shadow_2,
-    backgroundColor: "#333333a0",
+    backgroundColor: "rgb(116, 116, 116)",
     gap: 8,
     flexDirection: "row",
     justifyContent: "center",

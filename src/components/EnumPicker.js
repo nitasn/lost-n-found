@@ -7,6 +7,7 @@ import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
  *   checkedOption: string,
  *   setCheckedOption: (option :string) => void,
  *   title: string
+ *   active: boolean
  * }}
  */
 export default function EnumPicker({
@@ -14,15 +15,16 @@ export default function EnumPicker({
   checkedOption,
   setCheckedOption,
   title,
+  active,
 }) {
   return (
-    <View style={styles.enumPicker}>
+    <View style={[styles.enumPicker, !active && styles.inactive]}>
       <Text style={styles.title}>{title}</Text>
       {options.map((option, idx) => (
         <TouchableOpacity
           style={[
             styles.optionWrapper,
-            option === checkedOption && styles.checkedOption,
+            active && checkedOption == option && styles.checkedOption,
           ]}
           onPress={() => setCheckedOption(option)}
           key={idx}
@@ -45,7 +47,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: "bold",
-    textTransform: 'capitalize'
+    textTransform: "capitalize",
+  },
+  inactive: {
+    opacity: 0.3,
   },
   optionWrapper: {
     paddingVertical: 10,
