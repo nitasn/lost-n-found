@@ -152,28 +152,28 @@ export default function FilterPicker({ filter, setFilter }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.form}>
-        <Text style={styles.label}>item description</Text>
-        <TextInputWithX text={query} setText={setQuery} />
+      {/* 
+        the .form is disabled because it breaks the locationPicker
+      */}
+      {/* <View style={styles.form}> */}
+      <Text style={styles.label}>item description</Text>
+      <TextInputWithX text={query} setText={setQuery} />
 
-        <Text style={styles.label}>from date</Text>
-        <DateInputWithX date={fromDate} setDate={setFromDate} />
+      <Text style={styles.label}>from date</Text>
+      <DateInputWithX date={fromDate} setDate={setFromDate} />
 
-        <Text style={styles.label}>until date</Text>
-        <DateInputWithX date={untilDate} setDate={setUntilDate} />
+      <Text style={styles.label}>until date</Text>
+      <DateInputWithX date={untilDate} setDate={setUntilDate} />
 
-        <Text style={styles.label}>{type} around</Text>
-        <LocationInputWithX
-          latLong={aroundLatLong}
-          setLatLong={setAroundWhere}
-        />
+      <Text style={styles.label}>{type} around</Text>
+      <LocationInputWithX latLong={aroundLatLong} setLatLong={setAroundWhere} />
 
-        <RadiusKmInput
-          visible={!!aroundLatLong}
-          radiusKm={radiusKm}
-          setRadiusKm={setRadiusKm}
-        />
-      </View>
+      <RadiusKmInput
+        visible={!!aroundLatLong}
+        radiusKm={radiusKm}
+        setRadiusKm={setRadiusKm}
+      />
+      {/* </View> */}
 
       <TouchableOpacity style={styles.buttonGo} onPress={onSubmit}>
         <Text style={styles.buttonGoText}>
