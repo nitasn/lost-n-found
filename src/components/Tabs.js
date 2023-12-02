@@ -23,7 +23,7 @@ export default function Tabs() {
       screenOptions={({ route }) => ({
         // don't show tab-bar icon for the not-found page
         tabBarButton: route.name === "NotFound" ? () => null : undefined,
-        tabBarActiveTintColor: '#6750a4',
+        // tabBarActiveTintColor: '#6750a4',
       })}
     >
       <Tab.Screen
