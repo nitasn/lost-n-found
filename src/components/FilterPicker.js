@@ -6,6 +6,7 @@ import {
   Button,
   Pressable,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { extractFields } from "../js/utils";
@@ -98,12 +99,19 @@ function LocationInputWithX({ latLong, setLatLong }) {
           <Ionicons size={24} color="black" name="close-outline" />
         </TouchableOpacity>
       </View>
+      {/* <Modal
+        animationType="fade"
+        transparent={false}
+        visible={open}
+        onRequestClose={() => setOpen(false)}
+      > */}
       <LocationPicker
         open={open}
         setOpen={setOpen}
         latLong={latLong}
         setLatLong={setLatLong}
       />
+      {/* </Modal> */}
     </>
   );
 }
@@ -144,7 +152,7 @@ export default function FilterPicker({ filter, setFilter }) {
       ...(query && { query }),
       ...(fromDate && { fromDate }),
       ...(untilDate && { untilDate }),
-      ...(aroundLatLong && { aroundLatLong }),
+      ...(aroundLatLong && { aroundWhere: aroundLatLong }),
       ...(radiusKm && { radiusKm }),
     });
     navigation.goBack();

@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import scopeCircle from "../../assets/scope-circle.png";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 function FloatingButton({ children, style, onPress }) {
   return (
@@ -75,8 +76,9 @@ export default function LocationPicker({ open, setOpen, latLong, setLatLong }) {
   const transformScale = { transform: [{ scale }] };
 
   return (
-    <Animated.View style={[styles.container, { opacity }]}>
-      <Animated.View style={[styles.locationPicker, transformScale]}>
+    <Animated.View style={[styles.container, { /**/ opacity /**/ }]}>
+      <Animated.View style={[styles.locationPicker, /**/ transformScale /**/]}>
+        <StatusBar translucent={true} />
         <MapView
           showsBuildings={false}
           showsIndoorLevelPicker={false}
