@@ -1,0 +1,1 @@
+export const colorSplash = "rgb(35 116 115)";

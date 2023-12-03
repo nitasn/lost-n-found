@@ -7,6 +7,7 @@ import {
   Pressable,
   TouchableOpacity,
   Modal,
+  ScrollView
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { extractFields } from "../js/utils";
@@ -20,6 +21,7 @@ import globalStyles from "../js/globalStyles";
 import EnumPicker from "./EnumPicker";
 import { StatusBar } from "expo-status-bar";
 import ModalWithShadow from "./ModalWithShadow";
+import { colorSplash } from "../js/theme";
 
 const filterFields = [
   "query",
@@ -155,7 +157,7 @@ export default function FilterPicker({ filter, setFilter }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.form && null}>
         <Text style={styles.label}>item description</Text>
         <TextInputWithX text={query} setText={setQuery} />
@@ -182,7 +184,7 @@ export default function FilterPicker({ filter, setFilter }) {
         </Text>
         <Ionicons size={18} color="white" name="search" />
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -190,7 +192,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    justifyContent: "center",
+    // justifyContent: "center",
   },
   title: {
     marginBottom: "auto",
@@ -225,13 +227,14 @@ const styles = StyleSheet.create({
     right: 20,
   },
   buttonGo: {
-    marginTop: 36,
+    marginTop: 20,
     minHeight: 40,
+    marginBottom: 8,
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 5,
     ...globalStyles.shadow_2,
-    backgroundColor: "rgb(35 116 115)",
+    backgroundColor: colorSplash,
     gap: 8,
     flexDirection: "row",
     justifyContent: "center",
