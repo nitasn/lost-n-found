@@ -1,9 +1,0 @@
-{
-  "background_color": "#ffffff",
-  "display": "standalone",
-  "lang": "en",
-  "name": "lost-n-found-hub",
-  "short_name": "lost-n-found-hub",
-  "start_url": "/?utm_source=web_app_manifest",
-  "orientation": "portrait"
-}
