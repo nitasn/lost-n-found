@@ -40,17 +40,17 @@ function linkToGoogleMapsAt(location) {
   return `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.long}`;
 }
 
-export default function ({ route }) {
+export default function PostPage({ route }) {
   const { id } = route.params;
   const type = useContext(TypeContext);
-
-  const getLinkToPost = async () => {
-    return `${await getBaseUrl()}/${type}/item?id=${post._id}`;
-  };
 
   const [posts] = useAllPosts();
   /** @type {import("./FeedPost").PostData} */
   const post = useMemo(() => posts.find((obj) => obj._id == id), [posts, id]);
+
+  const getLinkToPost = async () => {
+    return `${await getBaseUrl()}/${type}/item?id=${post._id}`;
+  };
 
   const linkToGoogleMaps = linkToGoogleMapsAt(post.location);
 
@@ -87,7 +87,7 @@ export default function ({ route }) {
                   styles.imageWrapper,
                   isLast && styles.imageWrapper_lastChild,
                 ]}
-                onPress={viewPost}
+                onPress={viewPost} // todo open in full page?
                 key={index}
               >
                 <Image style={styles.image} source={{ uri: item }} />
@@ -124,9 +124,9 @@ export default function ({ route }) {
             {prettyDistance(post.proximityInKm)} {placeName && `• ${placeName}`}
           </Text>
           {!!linkToGoogleMaps && (
-            <TouchableOpacity style={styles.iconShowLocation}>
+            <View style={styles.iconShowLocation}>
               <Ionicons name="navigate-circle" color={colorSplash} size={19} />
-            </TouchableOpacity>
+            </View>
           )}
           <Text style={styles.time}>{timeDeltaAsString(post.date)}</Text>
         </ViewOrTouchable>
