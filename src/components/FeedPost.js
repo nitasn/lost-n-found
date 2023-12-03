@@ -59,7 +59,9 @@ export default function FeedPost({ postData }) {
     <Pressable style={styles.post} onPress={viewPost}>
       <View style={styles.header}>
         <Text style={styles.title}>{postData.title}</Text>
-        <Text style={styles.text}>{postData.text}</Text>
+        <Text style={styles.text} numberOfLines={3}>
+          {postData.text}
+        </Text>
       </View>
       <FlatList
         style={styles.imagesList}
@@ -136,9 +138,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 12,
-  },
-  timeText: {
-    color: "rgb(35 116 115)",
   },
 });
 
