@@ -129,7 +129,6 @@ export default function ({ route }) {
             </TouchableOpacity>
           )}
           <Text style={styles.time}>{timeDeltaAsString(post.date)}</Text>
-
         </ViewOrTouchable>
       </View>
       <ReportAndShare getLinkToPost={getLinkToPost} type={type} />
@@ -166,13 +165,13 @@ function ReportAndShare({ getLinkToPost, type }) {
   };
 
   return (
-    <View style={reportAndShareStyles.container}>
+    <View style={styles.reportAndShare}>
       <TouchableOpacity onPress={doReport}>
-        <Text style={reportAndShareStyles.reportText}>Report Abuse</Text>
+        <Text style={styles.reportText}>Report Abuse</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={doShare} style={reportAndShareStyles.shareBtn}>
-        <Text style={reportAndShareStyles.shareBtnText}>Share </Text>
+      <TouchableOpacity onPress={doShare} style={styles.shareBtn}>
+        <Text style={styles.shareBtnText}>Share </Text>
         <BoldShareIcon color={colorSplash} />
       </TouchableOpacity>
     </View>
@@ -243,7 +242,7 @@ const styles = StyleSheet.create({
   },
   iconShowLocation: {
     marginLeft: 4,
-    transform: [{ translateY: -0.5 }]
+    transform: [{ translateY: -0.5 }],
   },
   time: {
     marginLeft: "auto",
@@ -285,15 +284,12 @@ const styles = StyleSheet.create({
   contactChatBtnText: {
     color: "white",
   },
-});
-
-const reportAndShareStyles = StyleSheet.create({
-  container: {
+  reportAndShare: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingVertical: 7,
+    paddingHorizontal: 15,
     marginBottom: 20,
   },
   reportText: {
