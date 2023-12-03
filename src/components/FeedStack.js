@@ -1,12 +1,11 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import Feed from "./Feed";
 
-import { TransitionPresets } from "@react-navigation/stack";
 import FilterPicker from "./FilterPicker";
 import PostPage from "./PostPage";
 
 import TypeContext from "../js/typeContext";
-import { useContext, useState, useMemo, useCallback, useEffect } from "react";
+import { useContext, useState, useCallback } from "react";
 
 export function FoundStack() {
   return (
@@ -54,6 +53,7 @@ export default function FeedStack() {
       screenOptions={{
         headerTitleAlign: "center",
         headerTitleStyle: { textTransform: "capitalize" },
+        headerBackTitleStyle: { textTransform: "capitalize" },
       }}
     >
       <Stack.Screen
@@ -66,8 +66,6 @@ export default function FeedStack() {
         component={FilterPicker_withProps}
         options={{
           headerTitle: `search ${type} items`,
-          // ...TransitionPresets.ModalFadeTransition,
-          // gestureEnabled: false,
         }}
       />
       <Stack.Screen

@@ -1,49 +1,67 @@
 [
-    {
-        "_id": "0",
-        "type": "found",
-        "isStillAvailable": true,
-        "title": "a doggo",
-        "text": "look at what i've found!",
-        "picsUrls": [
-            "https://fastly.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM",
-            "https://fastly.picsum.photos/id/234/300/300.jpg?hmac=h_wyR2RyqWlWBClKUtEB0PtIVBMKrf42kUI7IFbJ-UQ",
-            "https://fastly.picsum.photos/id/623/200/200.jpg?hmac=xquTjHIYmAPV3XEGlIUaV_KWyEofkbortxrK79jJhWA"
-        ],
-        "date": "2022-05-25T11:30:00.000Z",
-        "location": {
-            "lat": 29.5577,
-            "long": 34.9519,
-            "name": "Eilat"
-        },
-        "author": {
-            "_id": "boaz_id",
-            "name": "Boaz",
-            "profilePicUrl": "https://fastly.picsum.photos/id/409/200/200.jpg?hmac=AY8BYOBixnRqVEMdEhYmw49e-6qu3M3zf_xXjkAuHHc"
-        },
-        "proximityInKm": 2.33
+  {
+    "_id": "0",
+    "type": "found",
+    "isStillAvailable": true,
+    "title": "a doggo",
+    "text": "look at what i've found!",
+    "picsUrls": [
+      "https://fastly.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM",
+      "https://fastly.picsum.photos/id/234/300/300.jpg?hmac=h_wyR2RyqWlWBClKUtEB0PtIVBMKrf42kUI7IFbJ-UQ",
+      "https://fastly.picsum.photos/id/623/200/200.jpg?hmac=xquTjHIYmAPV3XEGlIUaV_KWyEofkbortxrK79jJhWA"
+    ],
+    "date": "2022-05-25T11:30:00.000Z",
+    "location": {
+      "lat": 29.5577,
+      "long": 34.9519,
+      "name": "Eilat"
     },
-    {
-        "_id": "1",
-        "type": "found",
-        "isStillAvailable": true,
-        "title": "some things",
-        "text": "also there is more stuff here.",
-        "picsUrls": [
-            "https://fastly.picsum.photos/id/1060/200/200.jpg?hmac=M0E6SK-_reDe8rAPtwDpww5ihTgL6yewgERGc7eX5z8",
-            "https://fastly.picsum.photos/id/370/200/200.jpg?hmac=HT9dVkM8BnOVYNnQU3Kiehyb9hJUPrehSqcOHXrq_y0"
-        ],
-        "date": "2021-10-27T18:15:00.000Z",
-        "location": {
-            "lat": 32.0853,
-            "long": 34.7818,
-            "name": "Tel Aviv"
-        },
-        "author": {
-            "_id": "naomi_id",
-            "name": "Naomi",
-            "profilePicUrl": "https://fastly.picsum.photos/id/281/200/200.jpg?hmac=5FvZ-Y5zbbpS3-mJ_mp6-eH61MkwhUJi9qnhscegqkY"
-        },
-        "proximityInKm": 15
+    "author": {
+      "_id": "boaz_id",
+      "name": "Boaz",
+      "profilePicUrl": "https://fastly.picsum.photos/id/409/200/200.jpg?hmac=AY8BYOBixnRqVEMdEhYmw49e-6qu3M3zf_xXjkAuHHc"
+    },
+    "proximityInKm": 2.33
+  },
+  {
+    "_id": "1",
+    "type": "found",
+    "isStillAvailable": true,
+    "title": "some things",
+    "text": "also there is more stuff here.",
+    "picsUrls": [
+      "https://fastly.picsum.photos/id/1060/200/200.jpg?hmac=M0E6SK-_reDe8rAPtwDpww5ihTgL6yewgERGc7eX5z8",
+      "https://fastly.picsum.photos/id/370/200/200.jpg?hmac=HT9dVkM8BnOVYNnQU3Kiehyb9hJUPrehSqcOHXrq_y0"
+    ],
+    "date": "2021-10-27T18:15:00.000Z",
+    "location": {
+      "lat": 32.0853,
+      "long": 34.7818,
+      "name": "Tel Aviv"
+    },
+    "author": {
+      "_id": "naomi_id",
+      "name": "Naomi",
+      "profilePicUrl": "https://fastly.picsum.photos/id/281/200/200.jpg?hmac=5FvZ-Y5zbbpS3-mJ_mp6-eH61MkwhUJi9qnhscegqkY"
+    },
+    "proximityInKm": 15
+  },
+  {
+    "_id": "2",
+    "type": "found",
+    "isStillAvailable": true,
+    "title": "info about linking in expo",
+    "text": "URLs are the most powerful way to launch native applications. Native operating systems like macOS, iOS, Android, Windows, and so on, have built-in link handling which chooses an app to handle a URL based on the URL scheme. The most common URL schemes are https and http which are delegated to web browsers like Chrome, or Safari. Native apps, like the ones built with React Native, can implement any URL scheme, and the JavaScript React layer can handle the URL used to launch the corresponding native app.",
+    "picsUrls": [
+      "https://fastly.picsum.photos/id/768/200/200.jpg?hmac=CZCVsqJECKhkvl5gzeCA0O5iSMmRn_RVFzVrREOE7ws",
+      "https://fastly.picsum.photos/id/173/200/200.jpg?hmac=avUVgEVHNuQ4yZJQhCWlX3wpnR7d_fGOKvwZcDMLM0I"
+    ],
+    "date": "2023-12-03T18:53:32.909Z",
+    "location": {},
+    "author": {
+      "_id": "yogever_id",
+      "name": "Yogevr",
+      "profilePicUrl": "https://fastly.picsum.photos/id/640/200/200.jpg?hmac=iFmWtlROU2QVjs0GSK5LASqVkXu6yl8MIQHJrpra6PA"
     }
+  }
 ]

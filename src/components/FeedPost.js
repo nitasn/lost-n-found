@@ -11,6 +11,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../js/globalStyles";
 import { geoDistance, timeDeltaAsString } from "../js/utils";
+import { prettyDistance } from "../js/utils";
 
 /**
  * @typedef {Object} PostData
@@ -141,15 +142,3 @@ const styles = StyleSheet.create({
   },
 });
 
-function prettyDistance(proximityInKm) {
-  if (proximityInKm >= 10) {
-    return `${proximityInKm.toFixed(0)} km away`;
-  }
-  if (proximityInKm >= 1) {
-    return `${proximityInKm.toFixed(1)} km away`;
-  }
-  if (proximityInKm <= 0.1) {
-    return "near you";
-  }
-  return `${proximityInKm.toFixed(2)} km away`;
-}

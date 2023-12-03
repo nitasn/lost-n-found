@@ -162,3 +162,19 @@ export function hashCyrb53(str, seed = 0) {
   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
+
+export function prettyDistance(proximityInKm) {
+  if (proximityInKm == undefined) {
+    return "Unspecified Location";
+  }
+  if (proximityInKm >= 10) {
+    return `${proximityInKm.toFixed(0)} km away`;
+  }
+  if (proximityInKm >= 1) {
+    return `${proximityInKm.toFixed(1)} km away`;
+  }
+  if (proximityInKm <= 0.1) {
+    return "Near You";
+  }
+  return `${proximityInKm.toFixed(2)} km away`;
+}

@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
   Alert,
   Share,
-  Clip,
+  Platform,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { useAllPosts } from "../js/useAllPosts";
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import globalStyles from "../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { timeDeltaAsString } from "../js/utils";
@@ -21,6 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import TypeContext from "../js/typeContext";
 import { colorSplash } from "../js/theme";
+import { prettyDistance } from "../js/utils";
 
 async function getBaseUrl() {
   const url = await Linking.getInitialURL();
@@ -34,6 +35,11 @@ function HR() {
   return <View style={styles.hr} />;
 }
 
+function linkToGoogleMapsAt(location) {
+  if (!location?.lat || !location?.long) return "";
+  return `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.long}`;
+}
+
 export default function ({ route }) {
   const { id } = route.params;
   const type = useContext(TypeContext);
@@ -45,6 +51,20 @@ export default function ({ route }) {
   const [posts] = useAllPosts();
   /** @type {import("./FeedPost").PostData} */
   const post = useMemo(() => posts.find((obj) => obj._id == id), [posts, id]);
+
+  const linkToGoogleMaps = linkToGoogleMapsAt(post.location);
+
+  const ViewOrTouchable = (props) => {
+    if (linkToGoogleMaps) {
+      return (
+        <TouchableOpacity
+          onPress={() => Linking.openURL(linkToGoogleMaps)}
+          {...props}
+        />
+      );
+    }
+    return <View {...props} />;
+  };
 
   const navigation = useNavigation();
   const placeName = post.location.name?.trim();
@@ -99,13 +119,18 @@ export default function ({ route }) {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.locationAndTime}>
+        <ViewOrTouchable style={styles.locationAndTime}>
           <Text>
-            <Text>{prettyDistance(post.proximityInKm)}</Text>
-            <Text>{placeName && ` • ${placeName}`}</Text>
+            {prettyDistance(post.proximityInKm)} {placeName && `• ${placeName}`}
           </Text>
-          <Text>{timeDeltaAsString(post.date)}</Text>
-        </View>
+          {!!linkToGoogleMaps && (
+            <TouchableOpacity style={styles.iconShowLocation}>
+              <Ionicons name="navigate-circle" color={colorSplash} size={19} />
+            </TouchableOpacity>
+          )}
+          <Text style={styles.time}>{timeDeltaAsString(post.date)}</Text>
+
+        </ViewOrTouchable>
       </View>
       <ReportAndShare getLinkToPost={getLinkToPost} type={type} />
     </ScrollView>
@@ -129,6 +154,8 @@ function ReportAndShare({ getLinkToPost, type }) {
     const linkToPost = await getLinkToPost();
     const body = `Check this ${type} item out on lost-n-found-hub!\n\n${linkToPost}`;
     try {
+      if (Platform.OS !== "ios" && Platform.OS !== "android") throw null;
+      // TODO share doesn't work on web
       await Share.share({ message: body });
     } catch {
       const copied = await Clipboard.setStringAsync(linkToPost);
@@ -141,7 +168,7 @@ function ReportAndShare({ getLinkToPost, type }) {
   return (
     <View style={reportAndShareStyles.container}>
       <TouchableOpacity onPress={doReport}>
-        <Text style={reportAndShareStyles.reportText}>Report Post</Text>
+        <Text style={reportAndShareStyles.reportText}>Report Abuse</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={doShare} style={reportAndShareStyles.shareBtn}>
@@ -154,7 +181,7 @@ function ReportAndShare({ getLinkToPost, type }) {
 
 function BoldShareIcon({ color }) {
   return (
-    <View style={{ position: "relative", transform: [{ translateY: -1 }] }}>
+    <View style={{ position: "relative", transform: [{ translateY: -1.5 }] }}>
       <Ionicons size={20} name="share-outline" color={color} />
       <Ionicons
         size={19}
@@ -210,9 +237,16 @@ const styles = StyleSheet.create({
   },
   locationAndTime: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",
     padding: 12,
     paddingTop: 6,
+  },
+  iconShowLocation: {
+    marginLeft: 4,
+    transform: [{ translateY: -0.5 }]
+  },
+  time: {
+    marginLeft: "auto",
   },
   contactRow: {
     flexDirection: "row",
@@ -230,7 +264,6 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontWeight: "bold",
     letterSpacing: 1.1,
-    fontStyle: "italic"
   },
   contactImageWRapper: {
     ...globalStyles.shadow_2,
@@ -273,18 +306,6 @@ const reportAndShareStyles = StyleSheet.create({
   shareBtnText: {
     color: colorSplash,
     fontWeight: "bold",
+    textDecorationLine: "underline",
   },
 });
-
-function prettyDistance(proximityInKm) {
-  if (proximityInKm >= 10) {
-    return `${proximityInKm.toFixed(0)} km away`;
-  }
-  if (proximityInKm >= 1) {
-    return `${proximityInKm.toFixed(1)} km away`;
-  }
-  if (proximityInKm <= 0.1) {
-    return "near you";
-  }
-  return `${proximityInKm.toFixed(2)} km away`;
-}
