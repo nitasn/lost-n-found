@@ -137,6 +137,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 12,
   },
+  timeText: {
+    color: "rgb(35 116 115)",
+  },
 });
 
 function prettyDistance(proximityInKm) {

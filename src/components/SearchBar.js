@@ -14,7 +14,7 @@ export default function SearchBar({ filterOn }) {
       <Text style={[styles.text, filterOn && styles.text_filterOn]}>
         {filterOn ? "Tap to View Filter" : "Search..."}
       </Text>
-      <Ionicons size={20} color="black" name="search" />
+      <Ionicons size={20} color="rgb(35 116 115)" name="search" />
     </TouchableOpacity>
   );
 }

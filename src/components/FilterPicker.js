@@ -115,7 +115,7 @@ function RadiusKmInput({ visible, radiusKm, setRadiusKm }) {
   const { current: options } = useRef(["5 Km", "15 Km", "50 Km"]);
 
   useEffect(() => {
-    setRadiusKm(visible && "15 Km");
+    setRadiusKm(visible ? radiusKm || "15 Km" : "");
   }, [visible]);
 
   return (
@@ -137,15 +137,13 @@ export default function FilterPicker({ filter, setFilter }) {
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
   const [untilDate, setUntilDate] = useState(filter.untilDate || null);
   const [latLong, setLatLong] = useState(filter.latLong || null);
-  const [radiusKm, setRadiusKm] = useState(filter.radiusKm || 0);
+  const [radiusKm, setRadiusKm] = useState(filter.radiusKm || "");
 
   const anyFilterPicked = Boolean(
     query || fromDate || untilDate || latLong || radiusKm
   );
 
   const onSubmit = () => {
-    console.log("submit", { radiusKm });
-
     setFilter({
       ...(query && { query }),
       ...(fromDate && { fromDate }),
@@ -193,7 +191,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     justifyContent: "center",
-    backgroundColor: "#eee",
   },
   title: {
     marginBottom: "auto",
@@ -234,7 +231,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 5,
     ...globalStyles.shadow_2,
-    backgroundColor: "rgb(116, 116, 116)",
+    backgroundColor: "rgb(35 116 115)",
     gap: 8,
     flexDirection: "row",
     justifyContent: "center",
