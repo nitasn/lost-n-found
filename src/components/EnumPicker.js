@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   },
   inactive: {
     opacity: 0.3,
+    pointerEvents: "none"
   },
   optionWrapper: {
     paddingVertical: 10,
