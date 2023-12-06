@@ -60,6 +60,8 @@ export default function LocationPicker({ latLong, setLatLong, doClose }) {
         initialCamera={{
           center: pinLatLong,
           zoom: 15,
+          pitch: 0, // needed for android
+          heading: 0, // needed for android
         }}
         minZoomLevel={8}
         maxZoomLevel={15}
