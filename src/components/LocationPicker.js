@@ -13,7 +13,6 @@ import { useEffect, useRef, useState } from "react";
 import scopeCircle from "../../assets/scope-circle.png";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
 
 function FloatingButton({ children, style, onPress }) {
   return (
@@ -26,10 +25,7 @@ function FloatingButton({ children, style, onPress }) {
   );
 }
 
-const useGoogleMapsUnlessOnAppleDevice = Platform.OS !== "ios" && {
-  provider: "google",
-  googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-};
+const usingGoogleMaps = Platform.OS !== "ios";
 
 export default function LocationPicker({ latLong, setLatLong, doClose }) {
   // used internally until the user hits "OK",
@@ -42,7 +38,7 @@ export default function LocationPicker({ latLong, setLatLong, doClose }) {
   );
 
   return (
-    <View style={styles.locationPicker}>
+    <View style={[styles.locationPicker, usingGoogleMaps && { overflow: "hidden" }]}>
       <MapView
         showsBuildings={false}
         showsIndoorLevelPicker={false}
@@ -56,7 +52,10 @@ export default function LocationPicker({ latLong, setLatLong, doClose }) {
           disableDefaultUI: true,
         }}
         style={styles.mapView}
-        {...useGoogleMapsUnlessOnAppleDevice}
+        {...(usingGoogleMaps && {
+          provider: "google",
+          googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+        })}
         initialCamera={{
           center: pinLatLong,
           zoom: 15,
@@ -75,10 +74,7 @@ export default function LocationPicker({ latLong, setLatLong, doClose }) {
       </View>
       <FloatingButton
         onPress={() => {
-          setLatLong({
-            latitude: pinLatLong.latitude.toFixed(4),
-            longitude: pinLatLong.longitude.toFixed(4),
-          });
+          setLatLong(pinLatLong);
           doClose();
         }}
         style={styles.floatingBtn_OK}

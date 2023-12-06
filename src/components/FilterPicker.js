@@ -7,7 +7,7 @@ import {
   Pressable,
   TouchableOpacity,
   Modal,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { extractFields } from "../js/utils";
@@ -81,15 +81,26 @@ function DateInputWithX({ date, setDate }) {
   );
 }
 
+function latLongToText({ latitude, longitude }) {
+  const N_S = latitude >= 0 ? "N" : "S";
+  const E_W = longitude >= 0 ? "E" : "W";
+
+  const lat = Math.abs(latitude).toFixed(4);
+  const long = Math.abs(longitude).toFixed(4);
+
+  return `${lat}° ${N_S}, ${long}° ${E_W}`;
+}
+
 function LocationInputWithX({ latLong, setLatLong }) {
   const [modalVisible, setModalVisible] = useState(false);
   const closeModal = () => setModalVisible(false);
+
   return (
     <View style={styles.inputWithX}>
       <Pressable onPress={() => setModalVisible(true)}>
         <TextInput
           style={styles.textInput}
-          value={latLong ? `${latLong.latitude}° ${latLong.longitude}°` : ""}
+          value={latLong ? latLongToText(latLong) : ""}
           placeholder="Choose Location..."
           placeholderTextColor="gray"
           editable={false}
@@ -221,6 +232,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderRadius: 5,
+    color: "black",
   },
   clearInputX: {
     position: "absolute",
