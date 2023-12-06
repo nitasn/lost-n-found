@@ -1,5 +1,5 @@
 export const linking = {
-  prefixes: ["https://lost-n-found-hub.vercel.app", "lostnfoundhub://"],
+  prefixes: ["lost-it.vercel.app", "lostit://"],
   config: {
     screens: {
       FoundStack: {
