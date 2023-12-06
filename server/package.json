@@ -4,8 +4,7 @@
   "description": "",
   "main": "local-server.mjs",
   "scripts": {
-    "dev": "nodemon -r dotenv/config local-server.mjs",
-    "app": "node -r dotenv/config local-server.mjs"
+    "dev": "nodemon -r dotenv/config local-server.mjs"
   },
   "keywords": [],
   "author": "",

@@ -20,13 +20,12 @@ fs.readdir("./api", (err, fnames) => {
   fnames.forEach((fname) => {
     if (fname.endsWith(".js") || fname.endsWith(".mjs")) {
       import(`./api/${fname}`).then(({ default: handler }) => {
-        app.use(`/api/${path.parse(fname).name}`, handler);
+        const route = `/api/${path.parse(fname).name}`;
+        app.use(route, handler);
+        console.log("registered", route);
       });
     }
   });
 });
-
-// Serve static files from './public'
-app.use(express.static("public"));
 
 app.listen(PORT, () => console.log(`local server on http://localhost:3000`));
