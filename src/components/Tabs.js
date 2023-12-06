@@ -6,10 +6,7 @@ import { FoundStack, LostStack } from "./FeedStack";
 
 import ChatsStack from "./ChatsStack";
 import { colorSplash } from "../js/theme";
-
-function SettingsStack() {
-  return <View style={{ flex: 1 }} />;
-}
+import SettingsStack from "./SettingsStack";
 
 function NotFound() {
   return <View style={{ flex: 1 }} />;

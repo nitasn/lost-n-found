@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { useAllPosts } from "../js/useAllPosts";
-import { useCallback, useContext, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import globalStyles from "../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { timeDeltaAsString } from "../js/utils";
@@ -109,7 +109,7 @@ export default function PostPage({ route }) {
                 source={{ uri: post.author.profilePicUrl }}
               />
             </View>
-            <Text style={styles.contactName}>{post.author.name}</Text>
+            <Text style={styles.contactName}>{post.author.firstName}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.contactChatBtn}

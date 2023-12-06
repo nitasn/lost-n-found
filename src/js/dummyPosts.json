@@ -18,7 +18,8 @@
     },
     "author": {
       "_id": "boaz_id",
-      "name": "Boaz",
+      "firstName": "Boaz",
+      "lastName": "Hayapo",
       "profilePicUrl": "https://fastly.picsum.photos/id/409/200/200.jpg?hmac=AY8BYOBixnRqVEMdEhYmw49e-6qu3M3zf_xXjkAuHHc"
     },
     "proximityInKm": 2.33
@@ -41,7 +42,8 @@
     },
     "author": {
       "_id": "naomi_id",
-      "name": "Naomi",
+      "firstName": "Naomi",
+      "lastName": "Hamalka",
       "profilePicUrl": "https://fastly.picsum.photos/id/281/200/200.jpg?hmac=5FvZ-Y5zbbpS3-mJ_mp6-eH61MkwhUJi9qnhscegqkY"
     },
     "proximityInKm": 15
@@ -60,7 +62,8 @@
     "location": {},
     "author": {
       "_id": "yogever_id",
-      "name": "Yogevr",
+      "firstName": "Yogever",
+      "lastName": "Lifschitz-Birenbaumstein",
       "profilePicUrl": "https://fastly.picsum.photos/id/640/200/200.jpg?hmac=iFmWtlROU2QVjs0GSK5LASqVkXu6yl8MIQHJrpra6PA"
     }
   }
