@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "lost-n-found-hub",
-    "slug": "Lost and Found Hub",
+    "name": "Lost It",
+    "slug": "lost-n-found",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
