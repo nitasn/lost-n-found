@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Platform, SafeAreaView, StyleSheet, View } from "react-native";
 import React from "react";
 import Tabs from "./Tabs";
 import { linking } from "../js/linking";
@@ -10,17 +10,34 @@ const navRef = createNavigationContainerRef();
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
+    <SafeAreaView style={Platform.OS === "web" ? styles.outerWeb : styles.outerMobile}>
       <NavigationContainer linking={linking} ref={navRef}>
-        <Tabs />
+        <View style={Platform.OS === "web" ? styles.innerWeb : styles.innerMobile}>
+          <StatusBar style="auto" />
+          <Tabs />
+        </View>
       </NavigationContainer>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  outerMobile: {
     flex: 1,
+  },
+  outerWeb: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#333",
+    overflow: "hidden",
+  },
+  innerMobile: {
+    flex: 1,
+  },
+  innerWeb: {
+    flex: 1,
+    maxWidth: 932,
+    width: "100%",
   },
 });

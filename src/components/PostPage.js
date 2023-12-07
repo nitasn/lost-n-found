@@ -56,20 +56,12 @@ export default function PostPage({ route }) {
 
   const ViewOrTouchable = (props) => {
     if (linkToGoogleMaps) {
-      return (
-        <TouchableOpacity
-          onPress={() => Linking.openURL(linkToGoogleMaps)}
-          {...props}
-        />
-      );
+      return <TouchableOpacity onPress={() => Linking.openURL(linkToGoogleMaps)} {...props} />;
     }
     return <View {...props} />;
   };
 
-  const navigation = useNavigation();
   const placeName = post.location.name?.trim();
-
-  const viewPost = () => {};
 
   return (
     <ScrollView>
@@ -82,16 +74,9 @@ export default function PostPage({ route }) {
           {post.picsUrls.map((item, index) => {
             const isLast = index + 1 === post.picsUrls.length;
             return (
-              <Pressable
-                style={[
-                  styles.imageWrapper,
-                  isLast && styles.imageWrapper_lastChild,
-                ]}
-                onPress={viewPost} // todo open in full page?
-                key={index}
-              >
+              <View style={[styles.imageWrapper, isLast && styles.imageWrapper_lastChild]} key={index}>
                 <Image style={styles.image} source={{ uri: item }} />
-              </Pressable>
+              </View>
             );
           })}
         </View>
@@ -99,22 +84,13 @@ export default function PostPage({ route }) {
         <HR />
 
         <View style={styles.contactRow}>
-          <TouchableOpacity
-            style={styles.contactImageAndName}
-            onPress={() => Alert.alert("hi ma nish")}
-          >
+          <TouchableOpacity style={styles.contactImageAndName} onPress={() => Alert.alert("hi ma nish")}>
             <View style={styles.contactImageWRapper}>
-              <Image
-                style={styles.contactImage}
-                source={{ uri: post.author.profilePicUrl }}
-              />
+              <Image style={styles.contactImage} source={{ uri: post.author.profilePicUrl }} />
             </View>
             <Text style={styles.contactName}>{post.author.firstName}</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.contactChatBtn}
-            onPress={() => Alert.alert("Chats Coming Soon...  ❤️")}
-          >
+          <TouchableOpacity style={styles.contactChatBtn} onPress={() => Alert.alert("Chats Coming Soon...  ❤️")}>
             <Text style={styles.contactChatBtnText}>Tap to Chat</Text>
           </TouchableOpacity>
         </View>
@@ -153,14 +129,20 @@ function ReportAndShare({ getLinkToPost, type }) {
     const linkToPost = await getLinkToPost();
     const body = `Check this ${type} item out on lost-n-found-hub!\n\n${linkToPost}`;
     try {
-      if (Platform.OS !== "ios" && Platform.OS !== "android") throw null;
-      // TODO share doesn't work on web
-      await Share.share({ message: body });
-    } catch {
+      if (Platform.OS === "web") {
+        await window.navigator.share({ text: body });
+      } else {
+        await Share.share({ message: body });
+      }
+    } catch (err) {
+      console.error("could not share, using copy-to-clipboard fallback", err);
       const copied = await Clipboard.setStringAsync(linkToPost);
       const msgOk = "Link to Post was Copied to Clipboard";
-      const msgErr = `Could not acess clipboard. Here's the link: ${linkToPost}`;
-      Alert.alert(copied ? msgOk : msgErr);
+      const msgErr = `Please share the link to this page :)\n\n${linkToPost}`;
+
+      const $alert = Platform.OS === "web" ? window.alert : Alert.alert;
+      // todo use my alerts library
+      $alert(!copied ? msgOk : msgErr);
     }
   };
 
@@ -182,12 +164,7 @@ function BoldShareIcon({ color }) {
   return (
     <View style={{ position: "relative", transform: [{ translateY: -1.5 }] }}>
       <Ionicons size={20} name="share-outline" color={color} />
-      <Ionicons
-        size={19}
-        name="share-outline"
-        color={color}
-        style={{ position: "absolute" }}
-      />
+      <Ionicons size={19} name="share-outline" color={color} style={{ position: "absolute" }} />
     </View>
   );
 }

@@ -1,25 +1,14 @@
 import MapView from "react-native-maps";
-import {
-  Platform,
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Animated,
-  Easing,
-} from "react-native";
+import { Platform, View, Text, StyleSheet, Image, TouchableOpacity, Animated, Easing } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import scopeCircle from "../../assets/scope-circle.png";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
+import { getLocation } from "../js/location";
 
 function FloatingButton({ children, style, onPress }) {
   return (
-    <TouchableOpacity
-      style={[styles.floatingBtnWrapper, style]}
-      onPress={onPress}
-    >
+    <TouchableOpacity style={[styles.floatingBtnWrapper, style]} onPress={onPress}>
       <View style={styles.floatingBtn}>{children}</View>
     </TouchableOpacity>
   );
@@ -32,11 +21,31 @@ export default function LocationPicker({ latLong, setLatLong, doClose }) {
   // later we'll setLatLong(pinLatLong).
   const [pinLatLong, setPinLatLong] = useState(latLong);
 
+  const mapRef = useRef();
+
+  useEffect(() => {
+    !pinLatLong &&
+      getLocation().then((loc) => {
+        (function moveToUserLocation() {
+          // this hack is due to a bug that's probably in @teovilla/react-native-web-maps
+          if (!mapRef.current.animateCamera) {
+            console.log("will retry since there's no mapRef.current.animateCamera");
+            return setTimeout(moveToUserLocation);
+          }
+          mapRef.current.animateCamera({
+            center: loc,
+            zoom: 15,
+            pitch: 0, // needed for android
+            heading: 0, // needed for android
+          });
+        })();
+      });
+  }, []);
+
   return (
-    <View
-      style={[styles.locationPicker, usingGoogleMaps && { overflow: "hidden" }]}
-    >
+    <View style={[styles.locationPicker, usingGoogleMaps && { overflow: "hidden" }]}>
       <MapView
+        ref={mapRef}
         showsBuildings={false}
         showsIndoorLevelPicker={false}
         showsIndoors={false}
@@ -56,13 +65,13 @@ export default function LocationPicker({ latLong, setLatLong, doClose }) {
         {...(pinLatLong && {
           initialCamera: {
             center: pinLatLong,
-            zoom: 15,
+            zoom: 16,
             pitch: 0, // needed for android
             heading: 0, // needed for android
           },
         })}
         minZoomLevel={0}
-        maxZoomLevel={15}
+        maxZoomLevel={17}
         showsCompass={false}
         onRegionChangeComplete={({ latitude, longitude }) => {
           setPinLatLong({ latitude, longitude });
