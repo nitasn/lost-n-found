@@ -30,15 +30,12 @@ const usingGoogleMaps = Platform.OS !== "ios";
 export default function LocationPicker({ latLong, setLatLong, doClose }) {
   // used internally until the user hits "OK",
   // later we'll setLatLong(pinLatLong).
-  const [pinLatLong, setPinLatLong] = useState(
-    latLong || {
-      latitude: 32.086358,
-      longitude: 34.849895,
-    }
-  );
+  const [pinLatLong, setPinLatLong] = useState(latLong);
 
   return (
-    <View style={[styles.locationPicker, usingGoogleMaps && { overflow: "hidden" }]}>
+    <View
+      style={[styles.locationPicker, usingGoogleMaps && { overflow: "hidden" }]}
+    >
       <MapView
         showsBuildings={false}
         showsIndoorLevelPicker={false}
@@ -56,13 +53,15 @@ export default function LocationPicker({ latLong, setLatLong, doClose }) {
           provider: "google",
           googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
         })}
-        initialCamera={{
-          center: pinLatLong,
-          zoom: 15,
-          pitch: 0, // needed for android
-          heading: 0, // needed for android
-        }}
-        minZoomLevel={8}
+        {...(pinLatLong && {
+          initialCamera: {
+            center: pinLatLong,
+            zoom: 15,
+            pitch: 0, // needed for android
+            heading: 0, // needed for android
+          },
+        })}
+        minZoomLevel={0}
         maxZoomLevel={15}
         showsCompass={false}
         onRegionChangeComplete={({ latitude, longitude }) => {

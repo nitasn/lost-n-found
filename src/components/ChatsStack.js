@@ -15,7 +15,7 @@ import { jwtDecode } from "jwt-decode";
 export default function App() {
   const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
   const [userToken, setUserToken] = useState();
-  console.log("hi");
+  // console.log("hi");
 
   useEffect(() => {
     const checkAvailable = async () => {

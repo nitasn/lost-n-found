@@ -3,4 +3,6 @@
 
 2. share button (on post-page) doesn't work on web
 
-3. use current location
+3. rewrite location picker to include input text (and prompt for location permissions)
+
+4. use uncontrolled input for the search thingy, it's slow rn

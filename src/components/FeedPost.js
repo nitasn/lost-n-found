@@ -70,12 +70,11 @@ export default function FeedPost({ postData }) {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => {
-          const isLast = index + 1 === postData.picsUrls.length;
           return (
             <Pressable
               style={[
                 styles.imageWrapper,
-                isLast && styles.imageWrapper_lastChild,
+                index === 0 && styles.imageWrapper_firstChild,
               ]}
               onPress={viewPost}
             >
@@ -119,15 +118,15 @@ const styles = StyleSheet.create({
   },
   text: {},
   imagesList: {
-    padding: 12,
   },
   imageWrapper: {
-    ...globalStyles.shadow_3,
+    ...globalStyles.shadow_2,
     borderRadius: 5,
-    marginEnd: 12,
+    marginRight: 12,
+    marginVertical: 12,
   },
-  imageWrapper_lastChild: {
-    marginEnd: 24,
+  imageWrapper_firstChild: {
+    marginLeft: 12,
   },
   image: {
     width: 250,
@@ -141,4 +140,3 @@ const styles = StyleSheet.create({
     padding: 12,
   },
 });
-

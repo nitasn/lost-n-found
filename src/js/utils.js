@@ -178,3 +178,14 @@ export function prettyDistance(proximityInKm) {
   }
   return `${proximityInKm.toFixed(2)} km away`;
 }
+
+export const TimePeriod = Object.freeze({
+  seconds: (s) => ({
+    to_milliseconds: () => s * 1000,
+    to_seconds: () => s,
+    to_minutes: () => s / 60,
+    to_hours: () => s / 3600,
+  }),
+  minutes: (m) => TimePeriod.seconds(m * 60),
+  hours: (h) => TimePeriod.seconds(h * 3600),
+})
