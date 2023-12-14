@@ -22,14 +22,9 @@ import EnumPicker from "./EnumPicker";
 import { StatusBar } from "expo-status-bar";
 import ModalWithShadow from "./ModalWithShadow";
 import { colorSplash } from "../js/theme";
+import LocationChooser from "./LocationChooser";
 
-const filterFields = [
-  "query",
-  "fromDate",
-  "untilDate",
-  "aroundLatLong",
-  "radiusKm",
-];
+const filterFields = ["query", "fromDate", "untilDate", "aroundLatLong", "radiusKm"];
 
 function TextInputWithX({ text, setText }) {
   return (
@@ -91,7 +86,10 @@ function latLongToText({ latitude, longitude }) {
   return `${lat}° ${N_S}, ${long}° ${E_W}`;
 }
 
-function LocationInputWithX({ latLong, setLatLong }) {
+/**
+ * @param {{ region: import("./FeedStack").Region | null }} 
+ */
+function LocationInputWithX({ region, setRegion }) {
   const [modalVisible, setModalVisible] = useState(false);
   const closeModal = () => setModalVisible(false);
 
@@ -100,26 +98,26 @@ function LocationInputWithX({ latLong, setLatLong }) {
       <Pressable onPress={() => setModalVisible(true)}>
         <TextInput
           style={styles.textInput}
-          value={latLong ? latLongToText(latLong) : ""}
+          value={region ? latLongToText(region) : ""}
           placeholder="Choose Location..."
           placeholderTextColor="gray"
           editable={false}
           pointerEvents="none"
         />
       </Pressable>
-      <TouchableOpacity
-        style={styles.clearInputX}
-        onPress={() => setLatLong(null)}
-      >
+      <TouchableOpacity style={styles.clearInputX} onPress={() => setRegion(null)}>
         <Ionicons size={24} color="black" name="close-outline" />
       </TouchableOpacity>
-      <ModalWithShadow visible={modalVisible} doClose={closeModal}>
+      {/* <ModalWithShadow visible={modalVisible} doClose={closeModal}>
         <LocationPicker
           doClose={closeModal}
-          latLong={latLong}
-          setLatLong={setLatLong}
+          latLong={region}
+          setLatLong={setRegion}
         />
-      </ModalWithShadow>
+      </ModalWithShadow> */}
+      <Modal visible={modalVisible} onRequestClose={closeModal} animationType="fade">
+        <LocationChooser doClose={closeModal} region={region} setRegion={setRegion} />
+      </Modal>
     </View>
   );
 }
@@ -149,19 +147,17 @@ export default function FilterPicker({ filter, setFilter }) {
   const [query, setQuery] = useState(filter.query || "");
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
   const [untilDate, setUntilDate] = useState(filter.untilDate || null);
-  const [latLong, setLatLong] = useState(filter.latLong || null);
+  const [region, setRegion] = useState(filter.region || null);
   const [radiusKm, setRadiusKm] = useState(filter.radiusKm || "");
 
-  const anyFilterPicked = Boolean(
-    query || fromDate || untilDate || latLong || radiusKm
-  );
+  const anyFilterPicked = Boolean(query || fromDate || untilDate || region || radiusKm);
 
   const onSubmit = () => {
     setFilter({
       ...(query && { query }),
       ...(fromDate && { fromDate }),
       ...(untilDate && { untilDate }),
-      ...(latLong && { latLong }),
+      ...(region && { region }),
       ...(radiusKm && { radiusKm }),
     });
     navigation.goBack();
@@ -180,19 +176,13 @@ export default function FilterPicker({ filter, setFilter }) {
         <DateInputWithX date={untilDate} setDate={setUntilDate} />
 
         <Text style={styles.label}>{type} around</Text>
-        <LocationInputWithX latLong={latLong} setLatLong={setLatLong} />
+        <LocationInputWithX region={region} setRegion={setRegion} />
 
-        <RadiusKmInput
-          visible={!!latLong}
-          radiusKm={radiusKm}
-          setRadiusKm={setRadiusKm}
-        />
+        <RadiusKmInput visible={!!region} radiusKm={radiusKm} setRadiusKm={setRadiusKm} />
       </View>
 
       <TouchableOpacity style={styles.buttonGo} onPress={onSubmit}>
-        <Text style={styles.buttonGoText}>
-          {anyFilterPicked ? "Search" : "Don't Filter"}
-        </Text>
+        <Text style={styles.buttonGoText}>{anyFilterPicked ? "Search" : "Don't Filter"}</Text>
         <Ionicons size={18} color="white" name="search" />
       </TouchableOpacity>
     </ScrollView>

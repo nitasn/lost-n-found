@@ -26,11 +26,19 @@ export function LostStack() {
 const Stack = createStackNavigator();
 
 /**
+ * @typedef {Object} Region
+ * @property {number} latitude
+ * @property {number} longitude
+ * @property {number} latitudeDelta - inversely proportional to zoom level on latitude
+ * @property {number} longitudeDelta - inversely proportional to zoom level on longitude
+ */
+
+/**
  * @typedef {Object} Filter
  * @property {string} [query]
  * @property {Date} [fromDate]
  * @property {Date} [untilDate]
- * @property {[number, number]} [aroundLatLong]
+ * @property {Region} [region]
  * @property {number} [radiusKm]
  */
 
