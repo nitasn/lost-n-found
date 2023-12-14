@@ -15,7 +15,6 @@ import { useEffect, useRef, useState } from "react";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { getLocation } from "../js/location";
-import { StatusBar } from "expo-status-bar";
 
 const usingGoogleMaps = Platform.OS !== "ios";
 

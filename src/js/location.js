@@ -33,12 +33,12 @@ export async function getLocation() {
   }
 };
 
-async function geocode(address) {
-  const latLong = await Location.geocodeAsync(address);
-  console.log("Geocoded Address:", latLong);
+export async function addrToLatLong(address) {
+  const { latitude, longitude } = await Location.geocodeAsync(address);
+  return { latitude, longitude };
 };
 
-async function reverseGeocode(latLong) {
-  const address = await Location.reverseGeocodeAsync(latLong);
-  console.log("Reverse Geocoded:", address);
+export async function latLongToAddr({ latitude, longitude }) {
+  const address = await Location.reverseGeocodeAsync({ latitude, longitude });
+  return address;
 };
