@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { getLocation } from "../js/location";
+import { colorSplash } from "../js/theme";
 
 const usingGoogleMaps = Platform.OS !== "ios";
 
@@ -29,7 +30,26 @@ export default function ({ region, setRegion, doClose }) {
   const { current: once } = useRef(new Animated.Value(0));
 
   const [isMovingAround, setIsMovingAround] = useState(false);
+
+  // hack because <MapView> also fires a 'regionChange' event on inital paint
   const [isFirstRender, setIsFirstRender] = useState(true);
+
+  const moveToCurrentLocation = () => {
+    getLocation().then((location) => {
+      if (!location) return;
+      const newRegion = {
+        ...location,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02,
+      };
+      mapRef.current.animateToRegion(newRegion, 1000); // in milliseconds
+      setPinRegion(newRegion);
+    });
+  };
+
+  useEffect(() => {
+    !pinRegion && moveToCurrentLocation();
+  }, []);
 
   const startPinAnimations = () => {
     Animated.parallel([
@@ -99,36 +119,45 @@ export default function ({ region, setRegion, doClose }) {
     }
   }, [isMovingAround, isFirstRender]);
 
+  const mapRef = useRef(null);
+
   return (
     <View style={styles.locationPicker}>
-      <SafeAreaView style={styles.header}>
-        <View style={styles.headerRow}>
-          <TouchableOpacity style={[styles.btn, styles.btn_CANCEL]} onPress={doClose}>
-            <Ionicons size={26} color="gray" name="chevron-back" />
+      <SafeAreaView style={styles.headerContainer}>
+        <View style={styles.headerTopRow}>
+          <TouchableOpacity style={styles.btn} onPress={doClose}>
+            <Ionicons size={28} color="gray" name="chevron-back" />
           </TouchableOpacity>
 
           <Text style={styles.headerTitle}>Choose Location</Text>
 
+          <TouchableOpacity style={styles.toCurrentLocationBtn} onPress={moveToCurrentLocation}>
+            <Ionicons size={24} color="gray" name="navigate" />
+          </TouchableOpacity>
+
           <TouchableOpacity
-            style={[styles.btn, styles.btn_OK]}
+            style={styles.btn}
             onPress={() => {
               setRegion(pinRegion);
               doClose();
             }}
           >
-            <Ionicons size={26} color="green" name="checkmark" />
+            <Ionicons size={28} color={colorSplash} name="checkmark" />
           </TouchableOpacity>
         </View>
-        <TextInput
-          placeholder="Type Place Name..."
-          style={styles.input}
-          placeholderTextColor="gray"
-          value={text}
-          onChangeText={setText}
-        />
+        <View style={styles.inputsRow}>
+          <TextInput
+            placeholder="Type Place Name..."
+            style={styles.input}
+            placeholderTextColor="gray"
+            value={text}
+            onChangeText={setText}
+          />
+        </View>
       </SafeAreaView>
 
       <MapView
+        ref={mapRef}
         showsBuildings={false}
         showsIndoorLevelPicker={false}
         showsIndoors={false}
@@ -145,7 +174,7 @@ export default function ({ region, setRegion, doClose }) {
           provider: "google",
           googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
         })}
-        region={pinRegion}
+        initialRegion={pinRegion}
         onRegionChange={() => {
           isFirstRender ? setIsFirstRender(false) : setIsMovingAround(true);
         }}
@@ -157,6 +186,7 @@ export default function ({ region, setRegion, doClose }) {
         maxZoomLevel={17}
         showsCompass={false}
       />
+
       <Animated.View style={[styles.pinWrapper, pinAnimtedStyle]}>
         <Image source={require("../../assets/pin.png")} style={styles.pinImage} />
       </Animated.View>
@@ -168,31 +198,37 @@ const pinImgSize = 48;
 
 const styles = StyleSheet.create({
   locationPicker: {
-    position: "absolute",
     top: 0,
     bottom: 0,
     right: 0,
     left: 0,
     flex: 1,
   },
-  header: {
+  headerContainer: {
     ...globalStyles.shadow_3,
   },
   headerTitle: {
-    fontSize: 22,
-    // fontWeight: 900,
+    fontSize: 18,
+    fontWeight: "500",
+    position: "absolute",
+    textAlign: "center",
+    width: "100%",
+    marginHorizontal: 12,
+
+    // because `pointerEvents: "none"` doesn't work
+    zIndex: -1,
   },
-  headerRow: {
-    padding: 12,
+  headerTopRow: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     gap: 12,
     flexDirection: "row",
-    justifyContent: "space-between",
-    // alignItems: "center",
+    alignItems: "center",
   },
-  btn: {
+  btn: {},
+  inputsRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 4,
   },
   input: {
     minHeight: 40,
@@ -202,6 +238,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: "black",
     margin: 12,
+    flex: 1,
+  },
+  toCurrentLocationBtn: {
+    marginLeft: "auto",
   },
   mapView: {
     flex: 1,
