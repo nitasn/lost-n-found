@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   ScrollView,
-  Platform
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState, useCallback, useContext, useRef, forwardRef } from "react";
@@ -229,13 +229,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textInput: {
-    margin: 12,
     minHeight: 40,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    borderWidth: 1,
     borderRadius: 5,
     color: "black",
+    margin: 12,
+    flex: 1,
+    backgroundColor: "#ffffff",
+    ...globalStyles.noInputOutline,
+    ...globalStyles.shadow_1,
   },
   clearInputX: {
     position: "absolute",
@@ -248,7 +251,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 5,
-    ...globalStyles.shadow_2,
+    ...globalStyles.shadow_3,
     backgroundColor: colorSplash,
     gap: 8,
     flexDirection: "row",
