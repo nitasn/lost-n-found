@@ -151,12 +151,7 @@ export default function ({ region, setRegion, doClose }) {
             <Ionicons size={28} color="gray" name="chevron-back" />
           </TouchableOpacity>
 
-          <Text
-            onPress={() => moveTo({ latitude: 32.08632880005854, longitude: 34.84998553401527 })}
-            style={styles.headerTitle}
-          >
-            Choose Location
-          </Text>
+          <Text style={styles.headerTitle}>Choose Location</Text>
 
           <TouchableOpacity style={styles.toCurrentLocationBtn} onPress={moveToCurrentLocation}>
             <Ionicons size={24} color="gray" name="navigate" />
