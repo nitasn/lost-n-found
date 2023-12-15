@@ -226,7 +226,6 @@ export default function ({ region, setRegion, doClose }) {
 
         {/* todo make fallback for web using normal css animation */}
         {/* todo actually that's not the issue prob... why can't i scroll in the web */}
-        {/* todo also the title is not centered in web */}
         <Animated.View style={[styles.pinWrapper, Platform.OS !== "web" && pinAnimtedStyle]}>
           <Image source={require("../../assets/pin3.png")} style={styles.pinImage} />
         </Animated.View>
@@ -269,12 +268,12 @@ const styles = StyleSheet.create({
     minHeight: 40,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    // borderWidth: 1,
     borderRadius: 5,
     color: "black",
     margin: 12,
     flex: 1,
     backgroundColor: "#e0e0e0",
+    ...globalStyles.noInputOutline,
   },
   clearInputX: {
     position: "absolute",

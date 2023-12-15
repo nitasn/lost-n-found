@@ -1,7 +1,7 @@
 import { Platform, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  noInputOutline: Platform.OS === "web" ? { outlineStyle: "none" } : {},
+  noInputOutline: Platform.OS === "web" && { outlineStyle: "none" },
   shadow_1: {
     // iOS Shadow
     shadowColor: "black",
