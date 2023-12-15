@@ -257,8 +257,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "500",
     position: "absolute",
-    // because `pointerEvents: "none"` doesn't work
-    zIndex: -1,
   },
   inputWrapper: {
     flexDirection: "row",
