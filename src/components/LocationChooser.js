@@ -15,6 +15,7 @@ import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { addrToLatLong, getLocation } from "../js/location";
 import { colorSplash } from "../js/theme";
+import { StatusBar } from "expo-status-bar";
 
 const usingGoogleMaps = Platform.OS !== "ios";
 
@@ -154,9 +155,9 @@ export default function ({ region, setRegion, doClose }) {
 
   return (
     <View style={styles.locationPicker}>
-      <SafeAreaView style={styles.headerContainer}>
+      <View style={styles.headerContainer}>
         <View style={styles.headerTopRow}>
-          <TouchableOpacity style={styles.btn} onPress={doClose}>
+          <TouchableOpacity onPress={doClose}>
             <Ionicons size={28} color="gray" name="chevron-back" />
           </TouchableOpacity>
 
@@ -167,7 +168,6 @@ export default function ({ region, setRegion, doClose }) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.btn}
             onPress={() => {
               setRegion(pinRegion);
               doClose();
@@ -176,7 +176,7 @@ export default function ({ region, setRegion, doClose }) {
             <Ionicons size={28} color={colorSplash} name="checkmark" />
           </TouchableOpacity>
         </View>
-        <View style={styles.inputsRow}>
+        <View style={styles.inputWrapper}>
           <TextInput
             ref={inputRef}
             placeholder="Search by Name..."
@@ -190,7 +190,7 @@ export default function ({ region, setRegion, doClose }) {
             <Ionicons size={24} color="gray" name="close-outline" />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
 
       <View style={styles.mapWrapper}>
         <MapView
@@ -239,25 +239,12 @@ const pinImgSize = 52;
 
 const styles = StyleSheet.create({
   locationPicker: {
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    flex: 1,
+    ...StyleSheet.absoluteFill,
   },
   headerContainer: {
-    ...globalStyles.shadow_3,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "500",
-    position: "absolute",
-    textAlign: "center",
-    width: "100%",
-    marginHorizontal: 10,
-
-    // because `pointerEvents: "none"` doesn't work
-    zIndex: -1,
+    paddingTop: Platform.OS === "ios" ? 15 : Platform.OS === "android" ? StatusBar.currentHeight : 5,
+    ...globalStyles.shadow_1,
+    zIndex: 1,
   },
   headerTopRow: {
     paddingHorizontal: 12,
@@ -265,9 +252,16 @@ const styles = StyleSheet.create({
     gap: 12,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
   },
-  btn: {},
-  inputsRow: {
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "500",
+    position: "absolute",
+    // because `pointerEvents: "none"` doesn't work
+    zIndex: -1,
+  },
+  inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
   },
