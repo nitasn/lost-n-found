@@ -1,7 +1,20 @@
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  noInputOutline: Platform.OS === 'web' ? { outlineStyle: 'none' } : {},
+  noInputOutline: Platform.OS === "web" ? { outlineStyle: "none" } : {},
+  shadow_1: {
+    // iOS Shadow
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    // Android Shadow
+    elevation: 1,
+    backgroundColor: "white",
+  },
   shadow_2: {
     // iOS Shadow
     shadowColor: "black",
@@ -9,7 +22,7 @@ export default StyleSheet.create({
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.20,
+    shadowOpacity: 0.2,
     shadowRadius: 1.41,
     // Android Shadow
     elevation: 2,
