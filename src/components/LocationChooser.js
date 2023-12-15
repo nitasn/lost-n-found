@@ -170,6 +170,10 @@ export default function ({ region, setRegion, doClose }) {
             onSubmitEditing={onAddressSearch}
             returnKeyType="search"
           />
+
+          <TouchableOpacity style={styles.clearInputX} onPress={() => setText("")}>
+            <Ionicons size={24} color="gray" name="close-outline" />
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
 
@@ -256,7 +260,11 @@ const styles = StyleSheet.create({
     color: "black",
     margin: 12,
     flex: 1,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: "#e0e0e0",
+  },
+  clearInputX: {
+    position: "absolute",
+    right: 20,
   },
   toCurrentLocationBtn: {
     marginLeft: "auto",

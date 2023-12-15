@@ -105,16 +105,11 @@ function LocationInputWithX({ region, setRegion }) {
           pointerEvents="none"
         />
       </Pressable>
+      
       <TouchableOpacity style={styles.clearInputX} onPress={() => setRegion(null)}>
         <Ionicons size={24} color="black" name="close-outline" />
       </TouchableOpacity>
-      {/* <ModalWithShadow visible={modalVisible} doClose={closeModal}>
-        <LocationPicker
-          doClose={closeModal}
-          latLong={region}
-          setLatLong={setRegion}
-        />
-      </ModalWithShadow> */}
+
       <Modal visible={modalVisible} onRequestClose={closeModal} animationType="fade">
         <LocationChooser doClose={closeModal} region={region} setRegion={setRegion} />
       </Modal>
