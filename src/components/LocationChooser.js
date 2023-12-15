@@ -10,7 +10,7 @@ import {
   Animated,
   TextInput,
 } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { addrToLatLong, getLocation } from "../js/location";
@@ -19,8 +19,6 @@ import { colorSplash } from "../js/theme";
 const usingGoogleMaps = Platform.OS !== "ios";
 
 export default function ({ region, setRegion, doClose }) {
-  const [textQuery, setTextQuery] = useState("");
-
   // used by this component while it's open;
   // when user hits "OK", we setRegion(pinRegion) to alter parent's state.
   const [pinRegion, setPinRegion] = useState(region);
@@ -125,23 +123,34 @@ export default function ({ region, setRegion, doClose }) {
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
     };
-    mapRef.current.animateToRegion(newPinRegion, 1000); // in milliseconds
+    const duration_ms = 1000;
+    mapRef.current.animateToRegion(newPinRegion, duration_ms);
     setPinRegion(newPinRegion);
   };
 
-  const onAddressSearch = async () => {
-    if (!textQuery) return;
+  useEffect(() => {
+    !pinRegion && moveToCurrentLocation();
+  }, []);
+
+  const onAddressSearch = async ({ nativeEvent: { text } }) => {
+    if (!text) return;
     try {
-      const latLong = await addrToLatLong(textQuery);
+      const latLong = await addrToLatLong(text);
       moveTo(latLong);
     } catch (err) {
       console.error(err);
     }
   };
 
-  useEffect(() => {
-    !pinRegion && moveToCurrentLocation();
-  }, []);
+  const inputRef = useRef(null);
+
+  const clearQuery = useCallback(() => {
+    if (Platform.OS === "web") {
+      inputRef.current.value = "";
+    } else {
+      inputRef.current.setNativeProps({ text: "" });
+    }
+  }, [inputRef]);
 
   return (
     <View style={styles.locationPicker}>
@@ -169,16 +178,15 @@ export default function ({ region, setRegion, doClose }) {
         </View>
         <View style={styles.inputsRow}>
           <TextInput
+            ref={inputRef}
             placeholder="Search by Name..."
             style={styles.input}
             placeholderTextColor="gray"
-            value={textQuery}
-            onChangeText={setTextQuery}
             onSubmitEditing={onAddressSearch}
             returnKeyType="search"
           />
 
-          <TouchableOpacity style={styles.clearInputX} onPress={() => setTextQuery("")}>
+          <TouchableOpacity style={styles.clearInputX} onPress={clearQuery}>
             <Ionicons size={24} color="gray" name="close-outline" />
           </TouchableOpacity>
         </View>
@@ -217,7 +225,9 @@ export default function ({ region, setRegion, doClose }) {
         />
 
         {/* todo make fallback for web using normal css animation */}
-        <Animated.View style={[styles.pinWrapper, Platform.OS !== 'web' && pinAnimtedStyle]}>
+        {/* todo actually that's not the issue prob... why can't i scroll in the web */}
+        {/* todo also the title is not centered in web */}
+        <Animated.View style={[styles.pinWrapper, Platform.OS !== "web" && pinAnimtedStyle]}>
           <Image source={require("../../assets/pin3.png")} style={styles.pinImage} />
         </Animated.View>
       </View>
