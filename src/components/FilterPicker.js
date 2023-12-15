@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   Modal,
   ScrollView,
+  Platform
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState, useCallback, useContext, useRef, forwardRef } from "react";
 import { DatePickerModal } from "react-native-paper-dates";
 import TypeContext from "../js/typeContext";
@@ -19,13 +20,27 @@ import EnumPicker from "./EnumPicker";
 import { colorSplash } from "../js/theme";
 import LocationChooser from "./LocationChooser";
 
-const UncontrolledTextInputWithX = forwardRef(({ initlalText, onChangeText, clearText }, inputRef) => {
+function UncontrolledTextInputWithX({ initlalText, onChangeText }) {
+  const inputRef = useRef(null);
+
+  const setInputValue = useCallback(
+    (text) => {
+      if (Platform.OS === "web") {
+        inputRef.current.value = text;
+      } else {
+        inputRef.current.setNativeProps({ text });
+      }
+    },
+    [inputRef]
+  );
+
+  const clearText = useCallback(() => {
+    setInputValue("");
+    onChangeText("");
+  }, [inputRef]);
+
   useEffect(() => {
-    if (Platform.OS === "web") {
-      inputRef.current.value = initlalText;
-    } else {
-      inputRef.current.setNativeProps({ text: initlalText });
-    }
+    setInputValue(initlalText);
   }, [inputRef]);
 
   return (
@@ -42,7 +57,7 @@ const UncontrolledTextInputWithX = forwardRef(({ initlalText, onChangeText, clea
       </TouchableOpacity>
     </View>
   );
-});
+}
 
 function DateInputWithX({ date, setDate }) {
   const [open, setOpen] = useState(false);
@@ -140,10 +155,8 @@ export default function FilterPicker({ filter, setFilter }) {
   const type = useContext(TypeContext);
   const navigation = useNavigation();
 
-  // const [query, setQuery] = useState(filter.query || "");
-
   const textQueryRef = useRef(filter.query || "");
-  const inputRef = useRef(null);
+  const onChangeText = useCallback((text) => (textQueryRef.current = text), [textQueryRef]);
 
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
   const [untilDate, setUntilDate] = useState(filter.untilDate || null);
@@ -163,27 +176,11 @@ export default function FilterPicker({ filter, setFilter }) {
     navigation.goBack();
   };
 
-  const clearQuery = useCallback(() => {
-    if (Platform.OS === "web") {
-      inputRef.current.value = "";
-    } else {
-      inputRef.current.setNativeProps({ text: "" });
-    }
-    textQueryRef.current = "";
-  }, [textQueryRef, inputRef]);
-
-  const onChangeText = useCallback((text) => (textQueryRef.current = text), [textQueryRef]);
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form && null}>
         <Text style={styles.label}>item description</Text>
-        <UncontrolledTextInputWithX
-          ref={inputRef}
-          initlalText={textQueryRef.current}
-          onChangeText={onChangeText}
-          clearText={clearQuery}
-        />
+        <UncontrolledTextInputWithX initlalText={textQueryRef.current} onChangeText={onChangeText} />
 
         <Text style={styles.label}>from date</Text>
         <DateInputWithX date={fromDate} setDate={setFromDate} />
