@@ -10,38 +10,39 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { extractFields } from "../js/utils";
-import { useEffect, useState, useCallback, useContext, useRef } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useEffect, useState, useCallback, useContext, useRef, forwardRef } from "react";
 import { DatePickerModal } from "react-native-paper-dates";
 import TypeContext from "../js/typeContext";
 import { Ionicons } from "@expo/vector-icons";
-import LocationPicker from "./LocationPicker";
 import globalStyles from "../js/globalStyles";
 import EnumPicker from "./EnumPicker";
-import { StatusBar } from "expo-status-bar";
-import ModalWithShadow from "./ModalWithShadow";
 import { colorSplash } from "../js/theme";
 import LocationChooser from "./LocationChooser";
 
-const filterFields = ["query", "fromDate", "untilDate", "aroundLatLong", "radiusKm"];
+const UncontrolledTextInputWithX = forwardRef(({ initlalText, onChangeText, clearText }, inputRef) => {
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      inputRef.current.value = initlalText;
+    } else {
+      inputRef.current.setNativeProps({ text: initlalText });
+    }
+  }, [inputRef]);
 
-function TextInputWithX({ text, setText }) {
   return (
     <View style={styles.inputWithX}>
       <TextInput
+        ref={inputRef}
         style={styles.textInput}
-        value={text}
-        onChangeText={setText}
+        onChangeText={onChangeText}
         placeholder="Enter keywords..."
         placeholderTextColor="gray"
       />
-      <TouchableOpacity style={styles.clearInputX} onPress={() => setText("")}>
+      <TouchableOpacity style={styles.clearInputX} onPress={clearText}>
         <Ionicons size={24} color="black" name="close-outline" />
       </TouchableOpacity>
     </View>
   );
-}
+});
 
 function DateInputWithX({ date, setDate }) {
   const [open, setOpen] = useState(false);
@@ -87,7 +88,7 @@ function latLongToText({ latitude, longitude }) {
 }
 
 /**
- * @param {{ region: import("./FeedStack").Region | null }} 
+ * @param {{ region: import("./FeedStack").Region | null }}
  */
 function LocationInputWithX({ region, setRegion }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -105,7 +106,7 @@ function LocationInputWithX({ region, setRegion }) {
           pointerEvents="none"
         />
       </Pressable>
-      
+
       <TouchableOpacity style={styles.clearInputX} onPress={() => setRegion(null)}>
         <Ionicons size={24} color="black" name="close-outline" />
       </TouchableOpacity>
@@ -139,17 +140,21 @@ export default function FilterPicker({ filter, setFilter }) {
   const type = useContext(TypeContext);
   const navigation = useNavigation();
 
-  const [query, setQuery] = useState(filter.query || "");
+  // const [query, setQuery] = useState(filter.query || "");
+
+  const textQueryRef = useRef(filter.query || "");
+  const inputRef = useRef(null);
+
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
   const [untilDate, setUntilDate] = useState(filter.untilDate || null);
   const [region, setRegion] = useState(filter.region || null);
   const [radiusKm, setRadiusKm] = useState(filter.radiusKm || "");
 
-  const anyFilterPicked = Boolean(query || fromDate || untilDate || region || radiusKm);
+  const anyFilterPicked = Boolean(textQueryRef.current || fromDate || untilDate || region || radiusKm);
 
   const onSubmit = () => {
     setFilter({
-      ...(query && { query }),
+      ...(textQueryRef.current && { query: textQueryRef.current }),
       ...(fromDate && { fromDate }),
       ...(untilDate && { untilDate }),
       ...(region && { region }),
@@ -158,11 +163,27 @@ export default function FilterPicker({ filter, setFilter }) {
     navigation.goBack();
   };
 
+  const clearQuery = useCallback(() => {
+    if (Platform.OS === "web") {
+      inputRef.current.value = "";
+    } else {
+      inputRef.current.setNativeProps({ text: "" });
+    }
+    textQueryRef.current = "";
+  }, [textQueryRef, inputRef]);
+
+  const onChangeText = useCallback((text) => (textQueryRef.current = text), [textQueryRef]);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form && null}>
         <Text style={styles.label}>item description</Text>
-        <TextInputWithX text={query} setText={setQuery} />
+        <UncontrolledTextInputWithX
+          ref={inputRef}
+          initlalText={textQueryRef.current}
+          onChangeText={onChangeText}
+          clearText={clearQuery}
+        />
 
         <Text style={styles.label}>from date</Text>
         <DateInputWithX date={fromDate} setDate={setFromDate} />
