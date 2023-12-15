@@ -162,7 +162,7 @@ export default function ({ region, setRegion, doClose }) {
         </View>
         <View style={styles.inputsRow}>
           <TextInput
-            placeholder="Type Place Name..."
+            placeholder="Search by Name..."
             style={styles.input}
             placeholderTextColor="gray"
             value={text}
@@ -251,12 +251,12 @@ const styles = StyleSheet.create({
     minHeight: 40,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    borderWidth: 1,
+    // borderWidth: 1,
     borderRadius: 5,
     color: "black",
     margin: 12,
     flex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: '#e0e0e0',
   },
   toCurrentLocationBtn: {
     marginLeft: "auto",
