@@ -1,20 +1,21 @@
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
+import { useEffect, useState } from "react";
 export const deviceName = Constants.deviceName;
 
 export function prettyDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  return new Date(date).toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
 export function prettyDateNoWeekday(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
@@ -36,12 +37,12 @@ export const timeDeltaAsString = (() => {
    * @param {number|Date|string} reference defaults to Date.now()
    */
   return (timestamp, reference = Date.now()) => {
-    if (typeof timestamp === 'string') timestamp = new Date(timestamp);
-    if (typeof reference === 'string') reference = new Date(reference);
+    if (typeof timestamp === "string") timestamp = new Date(timestamp);
+    if (typeof reference === "string") reference = new Date(reference);
     const elapsed = Number(timestamp) - Number(reference);
 
     for (const unit in units) {
-      if (Math.abs(elapsed) > units[unit] || unit == 'second') {
+      if (Math.abs(elapsed) > units[unit] || unit == "second") {
         const howMany = Math.abs(Math.round(elapsed / units[unit]));
         const countString = howMany === 1 ? `${howMany} ${unit}` : `${howMany} ${unit}s`;
         if (elapsed < 0) return `${countString} ago`;
@@ -85,11 +86,7 @@ export const newID = (() => {
 })();
 
 export const capitalize = (phrase) => {
-  return phrase
-    .toLowerCase()
-    .split(' ')
-    .map(capitalizeWord)
-    .join(' ');
+  return phrase.toLowerCase().split(" ").map(capitalizeWord).join(" ");
 };
 
 export const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
@@ -101,13 +98,13 @@ export const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
  * @param {string?} jwt
  */
 export function sendPostReq(url, body, jwt = undefined) {
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = { "Content-Type": "application/json" };
   if (jwt) headers.Authorization = `Bearer ${jwt}`;
 
   return fetch(url, {
     headers,
-    method: 'POST',
-    mode: 'cors',
+    method: "POST",
+    mode: "cors",
     body: JSON.stringify(body),
   });
 }
@@ -188,4 +185,4 @@ export const TimePeriod = Object.freeze({
   }),
   minutes: (m) => TimePeriod.seconds(m * 60),
   hours: (h) => TimePeriod.seconds(h * 3600),
-})
+});

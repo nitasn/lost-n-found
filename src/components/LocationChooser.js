@@ -14,7 +14,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
-import { getLocation } from "../js/location";
+import { addrToLatLong, getLocation, useLocationSample } from "../js/location";
 import { colorSplash } from "../js/theme";
 
 const usingGoogleMaps = Platform.OS !== "ios";
@@ -35,16 +35,31 @@ export default function ({ region, setRegion, doClose }) {
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   const moveToCurrentLocation = () => {
-    getLocation().then((location) => {
-      if (!location) return;
-      const newRegion = {
-        ...location,
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02,
-      };
-      mapRef.current.animateToRegion(newRegion, 1000); // in milliseconds
-      setPinRegion(newRegion);
-    });
+    getLocation()
+      .then(moveTo)
+      .catch((err) => {
+        console.error("oopsie coudn't get user location", err);
+      });
+  };
+
+  const moveTo = (latLong) => {
+    const newPinRegion = {
+      ...latLong,
+      latitudeDelta: 0.02,
+      longitudeDelta: 0.02,
+    };
+    mapRef.current.animateToRegion(newPinRegion, 1000); // in milliseconds
+    setPinRegion(newPinRegion);
+  };
+
+  const onAddressSearch = async () => {
+    if (!text) return;
+    try {
+      const latLong = await addrToLatLong(text);
+      moveTo(latLong);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -152,6 +167,8 @@ export default function ({ region, setRegion, doClose }) {
             placeholderTextColor="gray"
             value={text}
             onChangeText={setText}
+            onSubmitEditing={onAddressSearch}
+            returnKeyType="search"
           />
         </View>
       </SafeAreaView>
@@ -239,6 +256,7 @@ const styles = StyleSheet.create({
     color: "black",
     margin: 12,
     flex: 1,
+    backgroundColor: '#eee',
   },
   toCurrentLocationBtn: {
     marginLeft: "auto",
