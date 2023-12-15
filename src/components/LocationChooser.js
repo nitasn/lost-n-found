@@ -216,7 +216,8 @@ export default function ({ region, setRegion, doClose }) {
           showsCompass={false}
         />
 
-        <Animated.View style={[styles.pinWrapper, pinAnimtedStyle]}>
+        {/* todo make fallback for web using normal css animation */}
+        <Animated.View style={[styles.pinWrapper, Platform.OS !== 'web' && pinAnimtedStyle]}>
           <Image source={require("../../assets/pin3.png")} style={styles.pinImage} />
         </Animated.View>
       </View>
