@@ -8,23 +8,26 @@ import {
   Image,
   TouchableOpacity,
   Animated,
-  Easing,
   TextInput,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
-import { addrToLatLong, getLocation, useLocationSample } from "../js/location";
+import { addrToLatLong, getLocation } from "../js/location";
 import { colorSplash } from "../js/theme";
 
 const usingGoogleMaps = Platform.OS !== "ios";
 
 export default function ({ region, setRegion, doClose }) {
-  const [text, setText] = useState("");
+  const [textQuery, setTextQuery] = useState("");
 
-  // used internally until the user hits "OK",
-  // then we setRegion(pinRegion)
+  // used by this component while it's open;
+  // when user hits "OK", we setRegion(pinRegion) to alter parent's state.
   const [pinRegion, setPinRegion] = useState(region);
+
+  ///////////////////////////////////////////////////////////
+  ///              P I N   A N I M A T I O N              ///
+  ///////////////////////////////////////////////////////////
 
   const { current: loop } = useRef(new Animated.Value(0));
   const { current: once } = useRef(new Animated.Value(0));
@@ -33,38 +36,6 @@ export default function ({ region, setRegion, doClose }) {
 
   // hack because <MapView> also fires a 'regionChange' event on inital paint
   const [isFirstRender, setIsFirstRender] = useState(true);
-
-  const moveToCurrentLocation = () => {
-    getLocation()
-      .then(moveTo)
-      .catch((err) => {
-        console.error("oopsie coudn't get user location", err);
-      });
-  };
-
-  const moveTo = (latLong) => {
-    const newPinRegion = {
-      ...latLong,
-      latitudeDelta: 0.02,
-      longitudeDelta: 0.02,
-    };
-    mapRef.current.animateToRegion(newPinRegion, 1000); // in milliseconds
-    setPinRegion(newPinRegion);
-  };
-
-  const onAddressSearch = async () => {
-    if (!text) return;
-    try {
-      const latLong = await addrToLatLong(text);
-      moveTo(latLong);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    !pinRegion && moveToCurrentLocation();
-  }, []);
 
   const startPinAnimations = () => {
     Animated.parallel([
@@ -136,6 +107,42 @@ export default function ({ region, setRegion, doClose }) {
 
   const mapRef = useRef(null);
 
+  ///////////////////////////////////////////////////////////
+  ///     A N I M A T I N G   M A P   M O V E M E N T     ///
+  ///////////////////////////////////////////////////////////
+
+  const moveToCurrentLocation = () => {
+    getLocation()
+      .then(moveTo)
+      .catch((err) => {
+        console.error("oopsie coudn't get user location", err);
+      });
+  };
+
+  const moveTo = (latLong) => {
+    const newPinRegion = {
+      ...latLong,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    };
+    mapRef.current.animateToRegion(newPinRegion, 1000); // in milliseconds
+    setPinRegion(newPinRegion);
+  };
+
+  const onAddressSearch = async () => {
+    if (!textQuery) return;
+    try {
+      const latLong = await addrToLatLong(textQuery);
+      moveTo(latLong);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    !pinRegion && moveToCurrentLocation();
+  }, []);
+
   return (
     <View style={styles.locationPicker}>
       <SafeAreaView style={styles.headerContainer}>
@@ -144,7 +151,12 @@ export default function ({ region, setRegion, doClose }) {
             <Ionicons size={28} color="gray" name="chevron-back" />
           </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>Choose Location</Text>
+          <Text
+            onPress={() => moveTo({ latitude: 32.08632880005854, longitude: 34.84998553401527 })}
+            style={styles.headerTitle}
+          >
+            Choose Location
+          </Text>
 
           <TouchableOpacity style={styles.toCurrentLocationBtn} onPress={moveToCurrentLocation}>
             <Ionicons size={24} color="gray" name="navigate" />
@@ -165,57 +177,59 @@ export default function ({ region, setRegion, doClose }) {
             placeholder="Search by Name..."
             style={styles.input}
             placeholderTextColor="gray"
-            value={text}
-            onChangeText={setText}
+            value={textQuery}
+            onChangeText={setTextQuery}
             onSubmitEditing={onAddressSearch}
             returnKeyType="search"
           />
 
-          <TouchableOpacity style={styles.clearInputX} onPress={() => setText("")}>
+          <TouchableOpacity style={styles.clearInputX} onPress={() => setTextQuery("")}>
             <Ionicons size={24} color="gray" name="close-outline" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
 
-      <MapView
-        ref={mapRef}
-        showsBuildings={false}
-        showsIndoorLevelPicker={false}
-        showsIndoors={false}
-        showsMyLocationButton={false}
-        showsPointsOfInterest={false}
-        showsScale={false}
-        showsTraffic={false}
-        showsUserLocation={false}
-        options={{
-          disableDefaultUI: true,
-        }}
-        style={styles.mapView}
-        {...(usingGoogleMaps && {
-          provider: "google",
-          googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-        })}
-        initialRegion={pinRegion}
-        onRegionChange={() => {
-          isFirstRender ? setIsFirstRender(false) : setIsMovingAround(true);
-        }}
-        onRegionChangeComplete={(region) => {
-          setIsMovingAround(false);
-          setPinRegion(region);
-        }}
-        minZoomLevel={0}
-        maxZoomLevel={17}
-        showsCompass={false}
-      />
+      <View style={styles.mapWrapper}>
+        <MapView
+          ref={mapRef}
+          showsBuildings={false}
+          showsIndoorLevelPicker={false}
+          showsIndoors={false}
+          showsMyLocationButton={false}
+          showsPointsOfInterest={false}
+          showsScale={false}
+          showsTraffic={false}
+          showsUserLocation={false}
+          options={{
+            disableDefaultUI: true,
+          }}
+          style={styles.mapView}
+          {...(usingGoogleMaps && {
+            provider: "google",
+            googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+          })}
+          initialRegion={pinRegion}
+          onRegionChange={() => {
+            isFirstRender ? setIsFirstRender(false) : setIsMovingAround(true);
+          }}
+          onRegionChangeComplete={(region) => {
+            setIsMovingAround(false);
+            setPinRegion(region);
+          }}
+          minZoomLevel={0}
+          maxZoomLevel={17}
+          showsCompass={false}
+        />
 
-      <Animated.View style={[styles.pinWrapper, pinAnimtedStyle]}>
-        <Image source={require("../../assets/pin.png")} style={styles.pinImage} />
-      </Animated.View>
+        <Animated.View style={[styles.pinWrapper, pinAnimtedStyle]}>
+          <Image source={require("../../assets/pin3.png")} style={styles.pinImage} />
+        </Animated.View>
+      </View>
     </View>
   );
 }
 
-const pinImgSize = 48;
+const pinImgSize = 52;
 
 const styles = StyleSheet.create({
   locationPicker: {
@@ -234,7 +248,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     textAlign: "center",
     width: "100%",
-    marginHorizontal: 12,
+    marginHorizontal: 10,
 
     // because `pointerEvents: "none"` doesn't work
     zIndex: -1,
@@ -269,6 +283,9 @@ const styles = StyleSheet.create({
   toCurrentLocationBtn: {
     marginLeft: "auto",
   },
+  mapWrapper: {
+    flex: 1,
+  },
   mapView: {
     flex: 1,
   },
@@ -276,8 +293,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "50%",
     left: "50%",
+    // center pin in x-axis
     marginLeft: -pinImgSize / 2,
-    marginTop: -pinImgSize / 2,
+    // make pin's top on point
+    marginTop: -pinImgSize * 0.9367,
     opacity: 0.9,
     pointerEvents: "none",
   },
