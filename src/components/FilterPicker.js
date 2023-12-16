@@ -11,7 +11,7 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState, useCallback, useContext, useRef, forwardRef } from "react";
+import { useEffect, useState, useCallback, useContext, useRef, forwardRef, useMemo } from "react";
 import { DatePickerModal } from "react-native-paper-dates";
 import TypeContext from "../js/typeContext";
 import { Ionicons } from "@expo/vector-icons";
@@ -37,25 +37,29 @@ function UncontrolledTextInputWithX({ initlalText, onChangeText }) {
   const clearText = useCallback(() => {
     setInputValue("");
     onChangeText("");
-  }, [inputRef]);
+  }, [setInputValue, onChangeText]);
 
   useEffect(() => {
-    setInputValue(initlalText);
-  }, [inputRef]);
+    setInputValue(initlalText || "");
+  }, [setInputValue]);
 
-  return (
-    <View style={styles.inputWithX}>
-      <TextInput
-        ref={inputRef}
-        style={styles.textInput}
-        onChangeText={onChangeText}
-        placeholder="Enter keywords..."
-        placeholderTextColor="gray"
-      />
-      <TouchableOpacity style={styles.clearInputX} onPress={clearText}>
-        <Ionicons size={24} color="black" name="close-outline" />
-      </TouchableOpacity>
-    </View>
+  return useMemo(
+    () => (
+      console.log('renderrr'),
+      <View style={styles.inputWithX}>
+        <TextInput
+          ref={inputRef}
+          style={styles.textInput}
+          onChangeText={onChangeText}
+          placeholder="Enter keywords..."
+          placeholderTextColor="gray"
+        />
+        <TouchableOpacity style={styles.clearInputX} onPress={clearText}>
+          <Ionicons size={24} color="black" name="close-outline" />
+        </TouchableOpacity>
+      </View>
+    ),
+    [inputRef, onChangeText, clearText]
   );
 }
 
@@ -155,19 +159,17 @@ export default function FilterPicker({ filter, setFilter }) {
   const type = useContext(TypeContext);
   const navigation = useNavigation();
 
-  const textQueryRef = useRef(filter.query || "");
-  const onChangeText = useCallback((text) => (textQueryRef.current = text), [textQueryRef]);
-
+  const [query, setQuery] = useState(filter.query || "");
   const [fromDate, setFromDate] = useState(filter.fromDate || null);
   const [untilDate, setUntilDate] = useState(filter.untilDate || null);
   const [region, setRegion] = useState(filter.region || null);
   const [radiusKm, setRadiusKm] = useState(filter.radiusKm || "");
 
-  const anyFilterPicked = Boolean(textQueryRef.current || fromDate || untilDate || region || radiusKm);
+  const anyFilterPicked = Boolean(query || fromDate || untilDate || region || radiusKm);
 
   const onSubmit = () => {
     setFilter({
-      ...(textQueryRef.current && { query: textQueryRef.current }),
+      ...(query && { query }),
       ...(fromDate && { fromDate }),
       ...(untilDate && { untilDate }),
       ...(region && { region }),
@@ -180,7 +182,7 @@ export default function FilterPicker({ filter, setFilter }) {
     <ScrollView style={styles.container}>
       <View style={styles.form && null}>
         <Text style={styles.label}>item description</Text>
-        <UncontrolledTextInputWithX initlalText={textQueryRef.current} onChangeText={onChangeText} />
+        <UncontrolledTextInputWithX initlalText={query} onChangeText={setQuery} />
 
         <Text style={styles.label}>from date</Text>
         <DateInputWithX date={fromDate} setDate={setFromDate} />
