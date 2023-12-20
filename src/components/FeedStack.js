@@ -39,7 +39,7 @@ const Stack = createStackNavigator();
  * @property {Date} [fromDate]
  * @property {Date} [untilDate]
  * @property {Region} [region]
- * @property {number} [radiusKm]
+ * @property {`${number} Km`} [radiusKm]
  */
 
 export default function FeedStack() {
