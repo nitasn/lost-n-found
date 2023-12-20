@@ -45,7 +45,6 @@ function UncontrolledTextInputWithX({ initlalText, onChangeText }) {
 
   return useMemo(
     () => (
-      console.log('renderrr'),
       <View style={styles.inputWithX}>
         <TextInput
           ref={inputRef}
