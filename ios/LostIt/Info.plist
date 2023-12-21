@@ -30,6 +30,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>com.nitsanbh.lostit</string>
+          <string>com.nitsanbh.lostit</string>
         </array>
       </dict>
       <dict>
