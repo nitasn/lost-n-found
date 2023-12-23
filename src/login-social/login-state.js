@@ -3,27 +3,35 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithCredential,
+  signInWithRedirect,
+  getRedirectResult,
 } from "firebase/auth";
 
-import { createContext, useEffect, useState, Context, useContext } from "react";
-import { maybeCompleteAuthSession } from "expo-web-browser";
+import { createContext, useEffect, useState, Context, useContext, useCallback } from "react";
 import { useIdTokenAuthRequest as useGoogleIdTokenAuthRequest } from "expo-auth-session/providers/google";
 
 import { auth } from "../../firebase.config.js";
 
-maybeCompleteAuthSession();
+import * as WebBrowser from "expo-web-browser";
+import { Platform } from "react-native";
+WebBrowser.maybeCompleteAuthSession();
 
 const AuthContext = createContext([]);
 
-export default function useAuthContextProvider() {
-  const [user, setUser] = useState(null);
+function useWebPromptSignInWithGoogle() {
+  // useEffect(() => {
+  //   getRedirectResult(auth).then((result) => {
+  //     if (!result) return;
+  //     const { accessToken } = GoogleAuthProvider.credentialFromResult(result);
+  //     console.log(accessToken);
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return unsubscribe;
-  }, []);
+  return () => signInWithRedirect(auth, new GoogleAuthProvider());
+}
 
-  const [_, googleResponse, googleDoPrompt] = useGoogleIdTokenAuthRequest({
+function useNativePromptSignInWithGoogle() {
+  const [googleRequest, googleResponse, googleDoPrompt] = useGoogleIdTokenAuthRequest({
     iosClientId: process.env.firebase_iosClientId,
     androidClientId: process.env.firebase_androidClientId,
   });
@@ -37,12 +45,30 @@ export default function useAuthContextProvider() {
     // todo handle response types "cancel" and "error"
   }, [googleResponse]);
 
-  const doSignOut = () => {
-    firebaseSignOut(auth).then(setUser);
-  };
-
   // important: must create a new fn instance!
-  const promptSignInWithGoogle = () => googleDoPrompt();
+  return () => googleDoPrompt();
+}
+
+export default function useAuthContextProvider() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    console.log({ user });
+  }, [user]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return unsubscribe;
+  }, []);
+
+  const promptSignInWithGoogle = Platform.select({
+    web: useWebPromptSignInWithGoogle,
+    native: useNativePromptSignInWithGoogle,
+  })();
+
+  const doSignOut = useCallback(() => {
+    firebaseSignOut(auth).then(setUser);
+  }, [setUser]);
 
   const value = [user, promptSignInWithGoogle, doSignOut];
 

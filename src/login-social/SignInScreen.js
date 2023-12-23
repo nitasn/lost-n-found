@@ -3,21 +3,21 @@ import { useAuth } from "./login-state";
 import globalStyles from "../js/globalStyles";
 
 export default function SignInScreen() {
-  const [userInfo, promptSignInWithGoogle, doSignOut] = useAuth();
+  const [user, promptSignInWithGoogle, doSignOut] = useAuth();
 
   return (
     <View style={styles.container}>
-      {!!userInfo ? (
-        <>
-          <Text>{userInfo.displayName}</Text>
-          <Text>{userInfo.email}</Text>
-          <Button title="Sign Out" onPress={doSignOut} />
-        </>
-      ) : (
+      {!user ? (
         <TouchableOpacity style={styles.signInButton} onPress={promptSignInWithGoogle}>
           <Image style={styles.logo} source={require("../../assets/google-logo.png")} />
           <Text style={styles.buttonText}>Sign In with Google</Text>
         </TouchableOpacity>
+      ) : (
+        <View>
+          <Text>{user.displayName}</Text>
+          <Text>{user.email}</Text>
+          <Button title="Sign Out" onPress={doSignOut} />
+        </View>
       )}
     </View>
   );

@@ -28,4 +28,18 @@ fs.readdir("./api", (err, fnames) => {
   });
 });
 
+app.use((req, res, next) => {
+  // Set Cross-Origin-Opener-Policy (COOP) header
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+
+  // Set Cross-Origin-Resource-Policy (CORP) header, if needed
+  // res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+
+  next();
+});
+
+app.use(express.static("web-build"));
+
+app.get("/*", (req, res) => res.sendFile("index.html", { root: "web-build" }));
+
 app.listen(PORT, () => console.log(`local server on http://localhost:3000`));

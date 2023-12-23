@@ -1,6 +1,7 @@
-import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import { initializeAuth, getReactNativePersistence, getAuth } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
+import { Platform } from "react-native";
 
 const firebaseConfig = {
   apiKey: process.env.firebase_apiKey,
@@ -13,13 +14,14 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-});
+function getNativeAuth() {
+  const persistence = getReactNativePersistence(ReactNativeAsyncStorage);
+  return initializeAuth(app, { persistence });
+}
 
-// import { initializeApp } from "firebase/app";
-// import { getAuth } from "firebase/auth";
-// // https://firebase.google.com/docs/web/setup#available-libraries
+export const auth = Platform.OS === "web" ? getAuth(app) : getNativeAuth();
+
+// https://firebase.google.com/docs/web/setup#available-libraries
 
 // const firebaseConfig = {
 //   apiKey:             process.env.firebase_apiKey,
@@ -29,7 +31,3 @@ export const auth = initializeAuth(app, {
 //   messagingSenderId:  process.env.firebase_messagingSenderId,
 //   appId:              process.env.firebase_appId,
 // };
-
-// export const app = initializeApp(firebaseConfig);
-// export const auth = getAuth(app);
-
