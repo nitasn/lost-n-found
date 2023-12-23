@@ -1,29 +1,54 @@
-import { createGlobalState, useGlobalState } from "../js/useGlobalState";
-import * as SecureStore from "expo-secure-store";
+import {
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithCredential,
+} from "firebase/auth";
 
-/**
- * @typedef {Object} User
- * @property {string} firstName
- * @property {string} lastName
- * @property {string} email
- * @property {('apple' | 'facebook' | 'google')} signInMethod
- */
+import { createContext, useEffect, useState, Context, useContext } from "react";
+import { maybeCompleteAuthSession } from "expo-web-browser";
+import { useIdTokenAuthRequest as useGoogleIdTokenAuthRequest } from "expo-auth-session/providers/google";
 
-const userState = createGlobalState(null);
+import { auth } from "../../firebase.config.js";
 
-export const useUser = () => useGlobalState(userState);
+maybeCompleteAuthSession();
 
-// on load, init user (if user was already logged in)
-// SecureStore.getItemAsync("user-credentials").then((json) => {
-//   if (json) {
-//     console.log("init: getting user object from storage...");
-//     userState.set(JSON.parse(json));
-//   } else {
-//     console.log("init: could NOT get user object from storage");
-//   }
-// });
+const AuthContext = createContext([]);
 
-// userState.subscribe((newState) => {
-//   console.log("setting storage to", newState);
-//   SecureStore.setItemAsync("user-credentials", JSON.stringify(newState));
-// });
+export default function useAuthContextProvider() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return unsubscribe;
+  }, []);
+
+  const [_, googleResponse, googleDoPrompt] = useGoogleIdTokenAuthRequest({
+    iosClientId: process.env.firebase_iosClientId,
+    androidClientId: process.env.firebase_androidClientId,
+  });
+
+  useEffect(() => {
+    if (googleResponse?.type === "success") {
+      const { id_token } = googleResponse.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential);
+    }
+    // todo handle response types "cancel" and "error"
+  }, [googleResponse]);
+
+  const doSignOut = () => {
+    firebaseSignOut(auth).then(setUser);
+  };
+
+  // important: must create a new fn instance!
+  const promptSignInWithGoogle = () => googleDoPrompt();
+
+  const value = [user, promptSignInWithGoogle, doSignOut];
+
+  return ({ children }) => <AuthContext.Provider value={value} children={children} />;
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+}

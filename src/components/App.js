@@ -5,16 +5,21 @@ import Tabs from "./Tabs";
 import { linking } from "../js/linking";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNavigationContainerRef } from "@react-navigation/native";
+import useAuthContextProvider from "../login-social/login-state";
 
 const navRef = createNavigationContainerRef();
 
 export default function App() {
+  const AuthContextProvider = useAuthContextProvider();
+  
   return (
     <SafeAreaView style={Platform.OS === "web" ? styles.outerWeb : styles.outerMobile}>
       <NavigationContainer linking={linking} ref={navRef}>
         <View style={Platform.OS === "web" ? styles.innerWeb : styles.innerMobile}>
           <StatusBar style="auto" />
-          <Tabs />
+          <AuthContextProvider>
+            <Tabs />
+          </AuthContextProvider>
         </View>
       </NavigationContainer>
     </SafeAreaView>
