@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Button, Image } from "react-native";
-import { useAuth } from "./login-state";
+import { useAuth } from "./login";
 import globalStyles from "../js/globalStyles";
 
 export default function SignInScreen() {

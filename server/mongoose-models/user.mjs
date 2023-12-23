@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 const { model, Schema } = mongoose;
 
 const userSchema = new Schema({
-  "firstName": {
+  "_id": {
+    // is firebase's user_id
     type: String,
-    required: true,
+    required: true
   },
-  "lastName": {
+  "name": {
     type: String,
     required: true,
   },
@@ -16,13 +17,14 @@ const userSchema = new Schema({
     required: false,
   },
   "profilePicUrl": {
-    // link to an image stored at cloudinary
+    // link to an image hosted at cloudinary
     type: String,
     required: false,
   },
   "dateJoined": {
     type: Date,
     required: true,
+    default: Date.now,
   },
 });
 
