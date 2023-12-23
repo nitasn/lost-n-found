@@ -40,6 +40,7 @@ app.use((req, res, next) => {
 
 app.use(express.static("web-build"));
 
-app.get("/*", (req, res) => res.sendFile("index.html", { root: "web-build" }));
+// must do this AFTER dymanic routes were added
+// app.get("/*", (req, res) => res.sendFile("index.html", { root: "web-build" }));
 
 app.listen(PORT, () => console.log(`local server on http://localhost:3000`));

@@ -53,7 +53,10 @@ export default function useAuthContextProvider() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    console.log({ user });
+    if (!user) return;
+    console.log("we have a user!");
+    const { accessToken } = user.stsTokenManager;
+    console.log("accessToken:", accessToken);
   }, [user]);
 
   useEffect(() => {
