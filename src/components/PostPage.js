@@ -49,9 +49,7 @@ export default function PostPage({ route }) {
   /** @type {import("./FeedPost").PostData} */
   const post = useMemo(() => posts.find((obj) => obj._id == id), [posts, id]);
 
-  const getLinkToPost = async () => {
-    return `${await getBaseUrl()}/${type}/item?id=${post._id}`;
-  };
+  const linkToPost = `${process.env.ServerUrl}/${type}/item?id=${post._id}`;
 
   const linkToGoogleMaps = linkToGoogleMapsAt(post.location);
 
@@ -91,7 +89,11 @@ export default function PostPage({ route }) {
             </View>
             <Text style={styles.contactName}>{post.author.name}</Text>
           </TouchableOpacity>
-          <ButtonInSplashColor title="Tap to Chat" style={styles.btnToChat} onPress={() => alert("Chats Coming Soon...  ❤️")} />
+          <ButtonInSplashColor
+            title="Tap to Chat"
+            style={styles.btnToChat}
+            onPress={() => alert("Chats Coming Soon...  ❤️")}
+          />
         </View>
 
         <ViewOrTouchable style={styles.locationAndTime}>
@@ -106,14 +108,13 @@ export default function PostPage({ route }) {
           <Text style={styles.time}>{timeDeltaAsString(post.date)}</Text>
         </ViewOrTouchable>
       </View>
-      <ReportAndShare getLinkToPost={getLinkToPost} type={type} />
+      <ReportAndShareRow linkToPost={linkToPost} type={type} />
     </ScrollView>
   );
 }
 
-function ReportAndShare({ getLinkToPost, type }) {
+function ReportAndShareRow({ linkToPost, type }) {
   const doReport = async () => {
-    const linkToPost = await getLinkToPost();
     const body = `\n\nLink to Post: ${linkToPost}`;
     const subject = "Report Post";
     const uri = `mailto:lost.n.found.nitsan@gmail.com?&subject=${subject}&body=${body}`;
@@ -125,22 +126,22 @@ function ReportAndShare({ getLinkToPost, type }) {
   };
 
   const doShare = async () => {
-    const linkToPost = await getLinkToPost();
-    const body = `Check this ${type} item out on lost-n-found-hub!\n\n${linkToPost}`;
+    const body = `Yo check out this item on Lost-it!\n${linkToPost}`;
     try {
       if (Platform.OS === "web") {
-        await window.navigator.share({ text: body });
+        await navigator.share({ text: body });
       } else {
         await Share.share({ message: body });
       }
     } catch (err) {
       console.error("could not share, using copy-to-clipboard fallback", err);
-      const copied = await Clipboard.setStringAsync(linkToPost);
-      const msgOk = "Link to Post was Copied to Clipboard";
+
+      const couldCopy = await Clipboard.setStringAsync(linkToPost);
+      const msgOk = "Link to this page was Copied to Clipboard :)";
       const msgErr = `Please share the link to this page :)\n\n${linkToPost}`;
 
       // todo use my alerts library
-      alert(!copied ? msgOk : msgErr);
+      alert(couldCopy ? msgOk : msgErr);
     }
   };
 
