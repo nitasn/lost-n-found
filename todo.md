@@ -6,5 +6,3 @@
    and with a way to set the value
 
 4. map on web has many issues: pin animation state, map's not moving, doesn't goto current location on load
-
-5. social login (firebase?)
