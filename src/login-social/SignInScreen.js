@@ -6,8 +6,6 @@ import ButtonInSplashColor from "../components/ButtonInSplashColor";
 export default function SignInScreen() {
   const [user, promptSignInWithGoogle, doSignOut] = useAuth();
 
-  console.log(user);
-
   return (
     <View style={styles.container}>
       {!user ? (
