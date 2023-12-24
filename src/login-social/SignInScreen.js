@@ -1,22 +1,26 @@
 import { StyleSheet, Text, View, TouchableOpacity, Button, Image } from "react-native";
 import { useAuth } from "./login";
 import globalStyles from "../js/globalStyles";
+import ButtonInSplashColor from "../components/ButtonInSplashColor";
 
 export default function SignInScreen() {
   const [user, promptSignInWithGoogle, doSignOut] = useAuth();
+
+  console.log(user);
 
   return (
     <View style={styles.container}>
       {!user ? (
         <TouchableOpacity style={styles.signInButton} onPress={promptSignInWithGoogle}>
           <Image style={styles.logo} source={require("../../assets/google-logo.png")} />
-          <Text style={styles.buttonText}>Sign In with Google</Text>
+          <Text style={styles.signInText}>Sign In with Google</Text>
         </TouchableOpacity>
       ) : (
-        <View>
+        <View style={styles.userView}>
+          <Image source={{ url: user.photoURL }} style={styles.profilePic} />
           <Text>{user.displayName}</Text>
           <Text>{user.email}</Text>
-          <Button title="Sign Out" onPress={doSignOut} />
+          <ButtonInSplashColor title="Sign Out" onPress={doSignOut} style={styles.btnSignOut} />
         </View>
       )}
     </View>
@@ -44,9 +48,22 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
-  buttonText: {
+  signInText: {
     fontWeight: "bold",
     color: "#333",
     fontSize: 18,
+  },
+  userView: {
+    alignItems: "center",
+    gap: 15,
+  },
+  profilePic: {
+    width: 50,
+    height: 50,
+    borderRadius: 50 / 2,
+    marginBottom: 5,
+  },
+  btnSignOut: {
+    marginTop: 15,
   },
 });

@@ -62,6 +62,7 @@ export default function FeedStack() {
         headerTitleAlign: "center",
         headerTitleStyle: { textTransform: "capitalize" },
         headerBackTitleStyle: { textTransform: "capitalize" },
+        headerBackTitle: "Back",
       }}
     >
       <Stack.Screen

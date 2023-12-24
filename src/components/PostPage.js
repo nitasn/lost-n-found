@@ -22,6 +22,7 @@ import * as Linking from "expo-linking";
 import TypeContext from "../js/typeContext";
 import { colorSplash } from "../js/theme";
 import { prettyDistance } from "../js/utils";
+import ButtonInSplashColor from "./ButtonInSplashColor";
 
 async function getBaseUrl() {
   const url = await Linking.getInitialURL();
@@ -84,15 +85,13 @@ export default function PostPage({ route }) {
         <HR />
 
         <View style={styles.contactRow}>
-          <TouchableOpacity style={styles.contactImageAndName} onPress={() => Alert.alert("hi ma nish")}>
+          <TouchableOpacity style={styles.contactImageAndName} /*onPress={() => alert("hi ma nish")}*/>
             <View style={styles.contactImageWRapper}>
               <Image style={styles.contactImage} source={{ uri: post.author.profilePicUrl }} />
             </View>
-            <Text style={styles.contactName}>{post.author.firstName}</Text>
+            <Text style={styles.contactName}>{post.author.name}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.contactChatBtn} onPress={() => Alert.alert("Chats Coming Soon...  ❤️")}>
-            <Text style={styles.contactChatBtnText}>Tap to Chat</Text>
-          </TouchableOpacity>
+          <ButtonInSplashColor title="Tap to Chat" style={styles.btnToChat} onPress={() => alert("Chats Coming Soon...  ❤️")} />
         </View>
 
         <ViewOrTouchable style={styles.locationAndTime}>
@@ -121,7 +120,7 @@ function ReportAndShare({ getLinkToPost, type }) {
     try {
       Linking.openURL(encodeURI(uri));
     } catch {
-      Alert.alert(`Please write to lost.n.found.nitsan@gmail.com`);
+      alert(`Please write to lost.n.found.nitsan@gmail.com`);
     }
   };
 
@@ -140,9 +139,8 @@ function ReportAndShare({ getLinkToPost, type }) {
       const msgOk = "Link to Post was Copied to Clipboard";
       const msgErr = `Please share the link to this page :)\n\n${linkToPost}`;
 
-      const $alert = Platform.OS === "web" ? window.alert : Alert.alert;
       // todo use my alerts library
-      $alert(!copied ? msgOk : msgErr);
+      alert(!copied ? msgOk : msgErr);
     }
   };
 
@@ -238,8 +236,8 @@ const styles = StyleSheet.create({
   },
   contactName: {
     textTransform: "capitalize",
-    fontWeight: "bold",
-    letterSpacing: 1.1,
+    fontWeight: "700",
+    letterSpacing: 0.1,
   },
   contactImageWRapper: {
     ...globalStyles.shadow_2,
@@ -250,13 +248,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 50 / 2,
   },
-  contactChatBtn: {
+  btnToChat: {
     marginLeft: "auto",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    ...globalStyles.shadow_2,
-    backgroundColor: colorSplash,
-    borderRadius: 5,
   },
   contactChatBtnText: {
     color: "white",

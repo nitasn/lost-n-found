@@ -23,15 +23,15 @@ async function maybeSignUpOnServer(user) {
   const name = user.displayName;
   const email = user.email;
   const profilePicUrl = user.photoURL;
+
   // check if user is already known
   const oldJson = await AsyncStorage.getItem(`user:${_id}`);
   const newJson = JSON.stringify({ name, email, profilePicUrl });
-  if (oldJson === newJson) {
-    return console.log("was already signed up.");
-  }
+  if (oldJson === newJson) return;
+
   // we've got a new user!
   const token = user.stsTokenManager.accessToken;
-  const res = await fetch(`https://lost-it.vercel.app/api/sign-up?token=${token}`);
+  const res = await fetch(`${process.env.ServerUrl}/api/sign-up?token=${token}`);
   const json = await res.json();
   if (!res.ok) return console.error("could not sign up!", json);
   console.log("signed up :)", json);
