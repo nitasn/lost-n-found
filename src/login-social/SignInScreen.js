@@ -15,7 +15,7 @@ export default function SignInScreen() {
         </TouchableOpacity>
       ) : (
         <View style={styles.userView}>
-          <Image source={{ url: user.photoURL }} style={styles.profilePic} />
+          <Image source={{ uri: user.photoURL }} style={styles.profilePic} />
           <Text>{user.displayName}</Text>
           <Text>{user.email}</Text>
           <ButtonInSplashColor title="Sign Out" onPress={doSignOut} style={styles.btnSignOut} />
