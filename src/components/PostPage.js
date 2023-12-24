@@ -83,12 +83,12 @@ export default function PostPage({ route }) {
         <HR />
 
         <View style={styles.contactRow}>
-          <TouchableOpacity style={styles.contactImageAndName} /*onPress={() => alert("hi ma nish")}*/>
+          <View style={styles.contactImageAndName}>
             <View style={styles.contactImageWRapper}>
               <Image style={styles.contactImage} source={{ uri: post.author.profilePicUrl }} />
             </View>
             <Text style={styles.contactName}>{post.author.name}</Text>
-          </TouchableOpacity>
+          </View>
           <ButtonInSplashColor
             title="Tap to Chat"
             style={styles.btnToChat}
@@ -234,11 +234,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+    flex: 1,
   },
   contactName: {
     textTransform: "capitalize",
     fontWeight: "700",
     letterSpacing: 0.1,
+    flexShrink: 1,
   },
   contactImageWRapper: {
     ...globalStyles.shadow_2,
@@ -251,9 +253,6 @@ const styles = StyleSheet.create({
   },
   btnToChat: {
     marginLeft: "auto",
-  },
-  contactChatBtnText: {
-    color: "white",
   },
   reportAndShare: {
     flexDirection: "row",
