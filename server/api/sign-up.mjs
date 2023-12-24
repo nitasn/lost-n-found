@@ -10,14 +10,19 @@ admin.initializeApp({
 await initMongoose();
 
 export default async (req, res) => {
+  const { token } = req.query;
+  if (!token) {
+    return res.status(400).send({ error: "missing token param" });
+  }
+
   try {
-    const decodedToken = await admin.auth().verifyIdToken(req.query.token);
+    const decodedToken = await admin.auth().verifyIdToken(token);
     const { user_id: _id, name, picture: profilePicUrl, email } = decodedToken;
     const record = {
       _id,
       name,
-      profilePicUrl,
       email,
+      profilePicUrl,
     };
     const user = await User.findOneAndUpdate({ _id }, record, { upsert: true, new: true });
     res.status(200).send(user);

@@ -9,6 +9,7 @@ import {
 
 import { createContext, useEffect, useState, Context, useContext, useCallback } from "react";
 import { useIdTokenAuthRequest as useGoogleIdTokenAuthRequest } from "expo-auth-session/providers/google";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { auth } from "../../firebase.config.js";
 
@@ -16,17 +17,30 @@ import * as WebBrowser from "expo-web-browser";
 import { Platform } from "react-native";
 WebBrowser.maybeCompleteAuthSession();
 
+async function maybeSignUpOnServer(user) {
+  // extract fields
+  const _id = user.uid;
+  const name = user.displayName;
+  const email = user.email;
+  const profilePicUrl = user.photoURL;
+  // check if user is already known
+  const oldJson = await AsyncStorage.getItem(`user:${_id}`);
+  const newJson = JSON.stringify({ name, email, profilePicUrl });
+  if (oldJson === newJson) {
+    return console.log("was already signed up.");
+  }
+  // we've got a new user!
+  const token = user.stsTokenManager.accessToken;
+  const res = await fetch(`https://lost-it.vercel.app/api/sign-up?token=${token}`);
+  const json = await res.json();
+  if (!res.ok) return console.error("could not sign up!", json);
+  console.log("signed up :)", json);
+  await AsyncStorage.setItem(`user:${_id}`, newJson);
+}
+
 const AuthContext = createContext([]);
 
 function useWebPromptSignInWithGoogle() {
-  // useEffect(() => {
-  //   getRedirectResult(auth).then((result) => {
-  //     if (!result) return;
-  //     const { accessToken } = GoogleAuthProvider.credentialFromResult(result);
-  //     console.log(accessToken);
-  //   });
-  // }, []);
-
   return () => signInWithRedirect(auth, new GoogleAuthProvider());
 }
 
@@ -54,9 +68,7 @@ export default function useAuthContextProvider() {
 
   useEffect(() => {
     if (!user) return;
-    console.log("we have a user!");
-    const { accessToken } = user.stsTokenManager;
-    console.log("accessToken:", accessToken);
+    maybeSignUpOnServer(user);
   }, [user]);
 
   useEffect(() => {

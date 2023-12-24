@@ -3,6 +3,7 @@
 BUILD_DIR="../www"
 
 npx expo export:web
+rm -rf server/web-build/
 mv web-build "server/web-build"
 
 mkdir -p "$BUILD_DIR"
