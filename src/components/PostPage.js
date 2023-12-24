@@ -121,7 +121,7 @@ function ReportAndShareRow({ linkToPost, type }) {
     try {
       await Linking.openURL(encodeURI(uri));
     } catch {
-      alert(`Please write to lost.n.found.nitsan@gmail.com`);
+      alert(`Please write an email to lost.n.found.nitsan@gmail.com`);
     }
   };
 
