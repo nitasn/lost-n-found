@@ -119,7 +119,7 @@ function ReportAndShareRow({ linkToPost, type }) {
     const subject = "Report Post";
     const uri = `mailto:lost.n.found.nitsan@gmail.com?&subject=${subject}&body=${body}`;
     try {
-      Linking.openURL(encodeURI(uri));
+      await Linking.openURL(encodeURI(uri));
     } catch {
       alert(`Please write to lost.n.found.nitsan@gmail.com`);
     }
