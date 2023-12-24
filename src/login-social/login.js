@@ -3,8 +3,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithCredential,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup
 } from "firebase/auth";
 
 import { createContext, useEffect, useState, Context, useContext, useCallback } from "react";
@@ -41,7 +40,7 @@ async function maybeSignUpOnServer(user) {
 const AuthContext = createContext([]);
 
 function useWebPromptSignInWithGoogle() {
-  return () => signInWithRedirect(auth, new GoogleAuthProvider());
+  return () => signInWithPopup(auth, new GoogleAuthProvider());
 }
 
 function useNativePromptSignInWithGoogle() {
