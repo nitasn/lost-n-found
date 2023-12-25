@@ -31,17 +31,25 @@ export function AlertoProvider({ children }) {
 }
 
 /**
- * @param {Animated.Value} value
+ * @param {Animated.Value} opacity
+ * @param {Animated.Value} scale
  * @param {{ to: number }}
  */
-async function animate(value, { to }) {
+async function animate(opacity, scale, { to }) {
   return new Promise((resolve) => {
-    Animated.timing(value, {
-      toValue: to,
-      duration: 400,
-      easing: Easing.exp,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: to,
+        duration: 100,
+        easing: Easing.exp,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: to,
+        friction: 7,
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
       finished && resolve();
     });
   });
@@ -53,22 +61,23 @@ function AlertoContainer() {
 
   const [anyAlertShown, setAnyAlertShown] = useState(false);
 
-  const { current: value } = useRef(new Animated.Value(0));
+  const { current: opacity } = useRef(new Animated.Value(0));
+  const { current: scale } = useRef(new Animated.Value(0));
 
   useEffect(() => {
     if (!anyAlertShown && queue.length > 0) {
       setAnyAlertShown(true);
-      animate(value, { to: 1 });
+      animate(opacity, scale, { to: 1 });
     }
   }, [queue]);
 
   if (queue.length === 0) return null;
 
   const closeAlerto = () => {
-    animate(value, { to: 0 }).then(() => {
+    animate(opacity, scale, { to: 0 }).then(() => {
       setQueue(queue.slice(1));
       if (queue.length > 1) {
-        animate(value, { to: 1 });
+        animate(opacity, scale, { to: 1 });
       } else {
         setAnyAlertShown(false);
       }
@@ -76,8 +85,8 @@ function AlertoContainer() {
   };
 
   return (
-    <Animated.View style={[styles.fullScreenContainer, { opacity: value }]}>
-      <AlertoBox alertoProps={queue[0]} doClose={closeAlerto} animatedValue={value} />
+    <Animated.View style={[styles.fullScreenContainer, { opacity }]}>
+      <AlertoBox alertoProps={queue[0]} doClose={closeAlerto} animatedValue={scale} />
     </Animated.View>
   );
 }
