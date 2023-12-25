@@ -37,11 +37,11 @@ export function AlertoProvider({ children }) {
  */
 async function animate(opacity, scale, { to }) {
   return new Promise((resolve) => {
-    Animated.parallel([
+    const animation = Animated.parallel([
       Animated.timing(opacity, {
         toValue: to,
         duration: 100,
-        easing: Easing.exp,
+        easing: Easing.circle,
         useNativeDriver: true,
       }),
       Animated.spring(scale, {
@@ -49,7 +49,8 @@ async function animate(opacity, scale, { to }) {
         friction: 7.5,
         useNativeDriver: true,
       }),
-    ]).start(({ finished }) => {
+    ]);
+    animation.start(({ finished }) => {
       finished && resolve();
     });
   });
@@ -87,8 +88,10 @@ function AlertoContainer() {
   };
 
   // todo
-  // the app is does not respond to touch for half a second after the last alert is dismissed
-  // this can be solved using { pointerEvents: "none" } in the right state
+  // 1. the app does not respond to touch for half a second after the last alert is dismissed
+  //    this can be solved using { pointerEvents: "none" } in the right state
+  // 2. WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered"
+  //    when i show the alert in PostPage, then dismiss, then hot-reload the app.
 
   return (
     <Animated.View style={[styles.fullScreenContainer, { opacity }]}>

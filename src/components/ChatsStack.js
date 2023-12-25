@@ -17,9 +17,9 @@ export default function () {
         title="Alerto"
         onPress={() => {
           alerto({ title: "A Notice", message: "Did you notice this notice my friend?" });
-          setTimeout(() => {
-            alerto({ message: "This message has no title." });
-          }, 1000);
+          // setTimeout(() => {
+          //   alerto({ message: "This message has no title." });
+          // }, 1000);
         }}
       />
     </View>
