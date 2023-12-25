@@ -19,7 +19,7 @@ export const linking = {
         },
       },
       ChatsStack: "chats",
-      SettingsStack: "settings",
+      MoreStack: "more",
       NotFound: "*",
     },
   },

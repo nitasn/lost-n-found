@@ -6,7 +6,7 @@ import { FoundStack, LostStack } from "./FeedStack";
 
 import ChatsStack from "./ChatsStack";
 import { colorSplash } from "../js/theme";
-import SettingsStack from "./SettingsStack";
+import MoreStack from "./MoreStack";
 
 function NotFound() {
   return <View style={{ flex: 1 }} />;
@@ -73,16 +73,16 @@ export default function Tabs() {
       />
 
       <Tab.Screen
-        name="SettingsStack"
-        component={SettingsStack}
+        name="MoreStack"
+        component={MoreStack}
         options={{
-          title: "Settings",
+          title: "More",
           headerTitleAlign: "center",
           tabBarIcon: ({ size, color, focused }) => (
             <Ionicons
               size={size}
               color={color}
-              name={focused ? "settings-sharp" : "settings-outline"}
+              name={focused ? "add-circle-sharp" : "add-circle-outline"}
             />
           ),
         }}
