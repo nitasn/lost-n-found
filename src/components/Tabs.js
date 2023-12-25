@@ -77,7 +77,7 @@ export default function Tabs() {
         component={MoreStack}
         options={{
           title: "More",
-          headerTitleAlign: "center",
+          headerShown: false,
           tabBarIcon: ({ size, color, focused }) => (
             <Ionicons
               size={size}

@@ -3,7 +3,7 @@ export const linking = {
   config: {
     screens: {
       FoundStack: {
-        initialRouteName: 'Feed',
+        initialRouteName: "Feed",
         screens: {
           Feed: "found",
           FilterPicker: "found/search",
@@ -11,7 +11,7 @@ export const linking = {
         },
       },
       LostStack: {
-        initialRouteName: 'Feed',
+        initialRouteName: "Feed",
         screens: {
           Feed: "lost",
           FilterPicker: "lost/search",
@@ -19,7 +19,13 @@ export const linking = {
         },
       },
       ChatsStack: "chats",
-      MoreStack: "more",
+      MoreStack: {
+        initialRouteName: "MorePage",
+        screens: {
+          MorePage: "more",
+          PostComposer: "new-post",
+        },
+      },
       NotFound: "*",
     },
   },

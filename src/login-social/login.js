@@ -17,6 +17,8 @@ import { Platform } from "react-native";
 WebBrowser.maybeCompleteAuthSession();
 
 async function maybeSignUpOnServer(user) {
+  return; // todo enable!
+
   // extract fields
   const _id = user.uid;
   const name = user.displayName;
