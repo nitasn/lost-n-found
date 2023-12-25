@@ -1,17 +1,10 @@
-import {
-  Animated,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Easing,
-  Button,
-  Pressable,
-} from "react-native";
+import { Animated, StyleSheet, TouchableOpacity, View, Text, Easing } from "react-native";
+
+import { useRef, useState, useEffect } from "react";
+
+import { colorSplash } from "../js/theme";
 import globalStyles from "../js/globalStyles";
 import { createGlobalState, useGlobalState } from "../js/useGlobalState";
-import { colorSplash } from "../js/theme";
-import { useRef, useState, useEffect } from "react";
 
 /**
  * @typedef {Object} AlertoProps
@@ -39,12 +32,12 @@ export function AlertoProvider({ children }) {
 
 /**
  * @param {Animated.Value} value
- * @param {{ toValue: number }}
+ * @param {{ to: number }}
  */
-async function animate(value, { toValue }) {
+async function animate(value, { to }) {
   return new Promise((resolve) => {
     Animated.timing(value, {
-      toValue: toValue,
+      toValue: to,
       duration: 400,
       easing: Easing.exp,
       useNativeDriver: true,
@@ -60,22 +53,22 @@ function AlertoContainer() {
 
   const [anyAlertShown, setAnyAlertShown] = useState(false);
 
-  const { current: opacity } = useRef(new Animated.Value(0));
+  const { current: value } = useRef(new Animated.Value(0));
 
   useEffect(() => {
     if (!anyAlertShown && queue.length > 0) {
       setAnyAlertShown(true);
-      animate(opacity, { toValue: 1 });
+      animate(value, { to: 1 });
     }
   }, [queue]);
 
   if (queue.length === 0) return null;
 
   const closeAlerto = () => {
-    animate(opacity, { toValue: 0 }).then(() => {
+    animate(value, { to: 0 }).then(() => {
       setQueue(queue.slice(1));
       if (queue.length > 1) {
-        animate(opacity, { toValue: 1 });
+        animate(value, { to: 1 });
       } else {
         setAnyAlertShown(false);
       }
@@ -83,8 +76,8 @@ function AlertoContainer() {
   };
 
   return (
-    <Animated.View style={[styles.fullScreenContainer, { opacity }]}>
-      <AlertoBox alertoProps={queue[0]} doClose={closeAlerto} />
+    <Animated.View style={[styles.fullScreenContainer, { opacity: value }]}>
+      <AlertoBox alertoProps={queue[0]} doClose={closeAlerto} animatedValue={value} />
     </Animated.View>
   );
 }
@@ -92,9 +85,14 @@ function AlertoContainer() {
 /**
  * @param {{ alertoProps: AlertoProps, doClose: () => void }}
  */
-function AlertoBox({ alertoProps, doClose }) {
+function AlertoBox({ alertoProps, doClose, animatedValue }) {
+  const scale = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.4, 1],
+  });
+
   return (
-    <View style={styles.alertoBox}>
+    <Animated.View style={[styles.alertoBox, { transform: [{ scale }] }]}>
       <Text style={styles.title}>{alertoProps.title}</Text>
       <Text style={styles.message}>{alertoProps.message}</Text>
       <View style={styles.actionsRow}>
@@ -102,7 +100,7 @@ function AlertoBox({ alertoProps, doClose }) {
           <Text style={styles.actionBtnText}>Ok</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
