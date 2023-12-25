@@ -63,9 +63,7 @@ function AlertoContainer() {
   const { current: opacity } = useRef(new Animated.Value(0));
 
   useEffect(() => {
-    console.log("queue effect. length:", queue.length);
     if (!shouldStillRender && queue.length > 0) {
-      console.log("opening up");
       setShouldStillRender(true);
       animate(opacity, { toValue: 1 });
     }
@@ -74,9 +72,13 @@ function AlertoContainer() {
   if (queue.length === 0) return null;
 
   const closeAlerto = () => {
-    animate(opacity, { toValue: queue.length > 1 ? 1 : 0 }).then(() => {
+    animate(opacity, { toValue: 0 }).then(() => {
       setQueue(queue.slice(1));
-      setShouldStillRender(queue.length > 1);
+      if (queue.length > 1) {
+        animate(opacity, { toValue: 1 });
+      } else {
+        setShouldStillRender(false);
+      }
     });
   };
 
