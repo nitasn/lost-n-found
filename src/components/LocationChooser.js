@@ -19,7 +19,7 @@ import { StatusBar } from "expo-status-bar";
 
 const usingGoogleMaps = Platform.OS !== "ios";
 
-export default function ({ region, setRegion, doClose }) {
+export default function LocationChooser({ region, setRegion, doClose }) {
   // used by this component while it's open;
   // when user hits "OK", we setRegion(pinRegion) to alter parent's state.
   const [pinRegion, setPinRegion] = useState(region);
@@ -154,7 +154,7 @@ export default function ({ region, setRegion, doClose }) {
   }, [inputRef]);
 
   return (
-    <View style={styles.locationPicker}>
+    <View style={styles.locationChooser}>
       <View style={styles.headerContainer}>
         <View style={styles.headerTopRow}>
           <TouchableOpacity onPress={doClose}>
@@ -237,7 +237,7 @@ export default function ({ region, setRegion, doClose }) {
 const pinImgSize = 52;
 
 const styles = StyleSheet.create({
-  locationPicker: {
+  locationChooser: {
     ...StyleSheet.absoluteFill,
   },
   headerContainer: {

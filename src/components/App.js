@@ -6,6 +6,7 @@ import { linking } from "../js/linking";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNavigationContainerRef } from "@react-navigation/native";
 import useAuthContextProvider from "../login-social/login";
+import { AlertoProvider } from "./Alerto";
 
 const navRef = createNavigationContainerRef();
 
@@ -13,16 +14,18 @@ export default function App() {
   const AuthContextProvider = useAuthContextProvider();
 
   return (
-    <SafeAreaView style={Platform.OS === "web" ? styles.outerWeb : styles.outerMobile}>
-      <NavigationContainer linking={linking} ref={navRef}>
-        <View style={Platform.OS === "web" ? styles.innerWeb : styles.innerMobile}>
-          <StatusBar style="auto" />
-          <AuthContextProvider>
-            <Tabs />
-          </AuthContextProvider>
-        </View>
-      </NavigationContainer>
-    </SafeAreaView>
+    <AlertoProvider>
+      <SafeAreaView style={Platform.OS === "web" ? styles.outerWeb : styles.outerMobile}>
+        <NavigationContainer linking={linking} ref={navRef}>
+          <View style={Platform.OS === "web" ? styles.innerWeb : styles.innerMobile}>
+            <StatusBar style="auto" />
+            <AuthContextProvider>
+              <Tabs />
+            </AuthContextProvider>
+          </View>
+        </NavigationContainer>
+      </SafeAreaView>
+    </AlertoProvider>
   );
 }
 
