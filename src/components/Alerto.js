@@ -46,7 +46,7 @@ async function animate(opacity, scale, { to }) {
       }),
       Animated.spring(scale, {
         toValue: to,
-        friction: 7,
+        friction: 7.5,
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
@@ -75,14 +75,20 @@ function AlertoContainer() {
 
   const closeAlerto = () => {
     animate(opacity, scale, { to: 0 }).then(() => {
-      setQueue(queue.slice(1));
-      if (queue.length > 1) {
-        animate(opacity, scale, { to: 1 });
-      } else {
-        setAnyAlertShown(false);
-      }
+      setQueue((queue) => {
+        if (queue.length > 1) {
+          animate(opacity, scale, { to: 1 });
+        } else {
+          setAnyAlertShown(false);
+        }
+        return queue.slice(1);
+      });
     });
   };
+
+  // todo 
+  // the app is does not respond to touch for half a second after the last alert is dismissed
+  // this can be solved using { pointerEvents: "none" } in the right state
 
   return (
     <Animated.View style={[styles.fullScreenContainer, { opacity }]}>
@@ -127,6 +133,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     ...globalStyles.shadow_2,
     width: "75%",
+    maxWidth: 450,
   },
   title: {
     fontSize: 20,
