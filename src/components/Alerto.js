@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 5,
     ...globalStyles.shadow_2,
-    width: "75%",
+    width: "80%",
     maxWidth: 450,
   },
   title: {
@@ -148,6 +148,8 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     marginLeft: "auto",
+    margin: -25,
+    padding: 25,
   },
   actionBtnText: {
     color: colorSplash,
