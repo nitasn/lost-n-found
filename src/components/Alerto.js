@@ -58,13 +58,13 @@ function AlertoContainer() {
   /** @type {[Array<AlertoProps>]} */
   const [queue, setQueue] = useGlobalState(queueState);
 
-  const [shouldStillRender, setShouldStillRender] = useState(false);
+  const [anyAlertShown, setAnyAlertShown] = useState(false);
 
   const { current: opacity } = useRef(new Animated.Value(0));
 
   useEffect(() => {
-    if (!shouldStillRender && queue.length > 0) {
-      setShouldStillRender(true);
+    if (!anyAlertShown && queue.length > 0) {
+      setAnyAlertShown(true);
       animate(opacity, { toValue: 1 });
     }
   }, [queue]);
@@ -77,15 +77,13 @@ function AlertoContainer() {
       if (queue.length > 1) {
         animate(opacity, { toValue: 1 });
       } else {
-        setShouldStillRender(false);
+        setAnyAlertShown(false);
       }
     });
   };
 
-  const pointerEvents = shouldStillRender ? "auto" : "none";
-
   return (
-    <Animated.View style={[styles.fullScreenContainer, { opacity }, { pointerEvents }]}>
+    <Animated.View style={[styles.fullScreenContainer, { opacity }]}>
       <AlertoBox alertoProps={queue[0]} doClose={closeAlerto} />
     </Animated.View>
   );
