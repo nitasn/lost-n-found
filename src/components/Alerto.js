@@ -45,19 +45,20 @@ function AlertoContainer() {
 
   return (
     <View style={styles.fullScreenContainer}>
-      <AlertoBox alertoProps={queue[0]} doClose={() => setQueue(queue.slice(1))} />
+      <AlertoBox initialProps={queue[0]} doClose={() => setQueue(queue.slice(1))} />
     </View>
   );
 }
 
 /**
- * @param {{ alertoProps: AlertoProps, doClose: () => void }}
+ * @param {{ initialProps: AlertoProps, doClose: () => void }}
  */
-function AlertoBox({ alertoProps, doClose }) {
+function AlertoBox({ initialProps, doClose }) {
+  const { current: props } = useRef(initialProps);
   return (
     <View style={styles.alertoBox}>
-      <Text style={styles.title}>{alertoProps.title}</Text>
-      <Text style={styles.message}>{alertoProps.message}</Text>
+      <Text style={styles.title}>{props.title}</Text>
+      <Text style={styles.message}>{props.message}</Text>
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.actionBtn} onPress={doClose}>
           <Text style={styles.actionBtnText}>Ok</Text>
