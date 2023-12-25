@@ -23,6 +23,7 @@ import TypeContext from "../js/typeContext";
 import { colorSplash } from "../js/theme";
 import { prettyDistance } from "../js/utils";
 import ButtonInSplashColor from "./ButtonInSplashColor";
+import { alerto } from "./Alerto";
 
 async function getBaseUrl() {
   const url = await Linking.getInitialURL();
@@ -73,7 +74,10 @@ export default function PostPage({ route }) {
           {post.picsUrls.map((item, index) => {
             const isLast = index + 1 === post.picsUrls.length;
             return (
-              <View style={[styles.imageWrapper, isLast && styles.imageWrapper_lastChild]} key={index}>
+              <View
+                style={[styles.imageWrapper, isLast && styles.imageWrapper_lastChild]}
+                key={index}
+              >
                 <Image style={styles.image} source={{ uri: item }} />
               </View>
             );
@@ -92,7 +96,12 @@ export default function PostPage({ route }) {
           <ButtonInSplashColor
             title="Tap to Chat"
             style={styles.btnToChat}
-            onPress={() => alert("Chats Coming Soon...  ❤️")}
+            onPress={() =>
+              alerto({
+                title: "I'm building that",
+                message: "Chats feature coming soon... ❤️",
+              })
+            }
           />
         </View>
 
@@ -115,13 +124,17 @@ export default function PostPage({ route }) {
 
 function ReportAndShareRow({ linkToPost, type }) {
   const doReport = async () => {
-    const body = `\n\nLink to Post: ${linkToPost}`;
+    const body = `\n\nLink to post:\n${linkToPost}`;
     const subject = "Report Post";
     const uri = `mailto:lost.n.found.nitsan@gmail.com?&subject=${subject}&body=${body}`;
     try {
+      t = r;
       await Linking.openURL(encodeURI(uri));
     } catch {
-      alert(`Please write an email to lost.n.found.nitsan@gmail.com`);
+      alerto({
+        title: "Couldn't Launch Mail App",
+        message: "Please write an email to lost.n.found.nitsan@gmail.com",
+      });
     }
   };
 
@@ -137,11 +150,18 @@ function ReportAndShareRow({ linkToPost, type }) {
       console.error("could not share, using copy-to-clipboard fallback", err);
 
       const couldCopy = await Clipboard.setStringAsync(linkToPost);
-      const msgOk = "Link to this page was Copied to Clipboard :)";
-      const msgErr = `Please share the link to this page :)\n\n${linkToPost}`;
 
-      // todo use my alerts library
-      alert(couldCopy ? msgOk : msgErr);
+      if (couldCopy) {
+        alerto({
+          title: "Link Copied to Clipboard",
+          message: "This post's URL was copied to clipboard :)",
+        });
+      } else {
+        alerto({
+          title: "Please Share the URL",
+          message: `Please share the this page's URL (it is ${linkToPost})`,
+        });
+      }
     }
   };
 

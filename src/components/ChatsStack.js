@@ -18,7 +18,7 @@ export default function () {
         onPress={() => {
           alerto({ title: "A Notice", message: "Did you notice this notice my friend?" });
           setTimeout(() => {
-            alerto({ title: "Hey hey!", message: "Makore veze :)" });
+            alerto({ message: "This message has no title." });
           }, 1000);
         }}
       />

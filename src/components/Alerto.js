@@ -8,8 +8,8 @@ import { createGlobalState, useGlobalState } from "../js/useGlobalState";
 
 /**
  * @typedef {Object} AlertoProps
- * @property {string} title
- * @property {string} message
+ * @property {string} [title]
+ * @property {string} [message]
  */
 
 const queueState = createGlobalState([]);
@@ -86,7 +86,7 @@ function AlertoContainer() {
     });
   };
 
-  // todo 
+  // todo
   // the app is does not respond to touch for half a second after the last alert is dismissed
   // this can be solved using { pointerEvents: "none" } in the right state
 
@@ -108,8 +108,8 @@ function AlertoBox({ alertoProps, doClose, animatedValue }) {
 
   return (
     <Animated.View style={[styles.alertoBox, { transform: [{ scale }] }]}>
-      <Text style={styles.title}>{alertoProps.title}</Text>
-      <Text style={styles.message}>{alertoProps.message}</Text>
+      {alertoProps.title && <Text style={styles.title}>{alertoProps.title}</Text>}
+      {alertoProps.message && <Text style={styles.message}>{alertoProps.message}</Text>}
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.actionBtn} onPress={doClose}>
           <Text style={styles.actionBtnText}>Ok</Text>
