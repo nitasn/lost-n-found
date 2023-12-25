@@ -3,6 +3,8 @@ const unsignedPreset = 'mobile-uploads';
 
 const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
+// todo can i do signed upload (with credentials??)
+
 /**
  * @returns {Promise<string?>} url of the hosted image, or null if error
  */
