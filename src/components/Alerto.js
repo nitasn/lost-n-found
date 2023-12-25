@@ -37,28 +37,66 @@ export function AlertoProvider({ children }) {
   );
 }
 
+/**
+ * @param {Animated.Value} value
+ * @param {{ toValue: number }}
+ */
+async function animate(value, { toValue }) {
+  return new Promise((resolve) => {
+    Animated.timing(value, {
+      toValue: toValue,
+      duration: 400,
+      easing: Easing.exp,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      finished && resolve();
+    });
+  });
+}
+
 function AlertoContainer() {
   /** @type {[Array<AlertoProps>]} */
   const [queue, setQueue] = useGlobalState(queueState);
 
+  const [shouldStillRender, setShouldStillRender] = useState(false);
+
+  const { current: opacity } = useRef(new Animated.Value(0));
+
+  useEffect(() => {
+    console.log("queue effect. length:", queue.length);
+    if (!shouldStillRender && queue.length > 0) {
+      console.log("opening up");
+      setShouldStillRender(true);
+      animate(opacity, { toValue: 1 });
+    }
+  }, [queue]);
+
   if (queue.length === 0) return null;
 
+  const closeAlerto = () => {
+    animate(opacity, { toValue: queue.length > 1 ? 1 : 0 }).then(() => {
+      setQueue(queue.slice(1));
+      setShouldStillRender(queue.length > 1);
+    });
+  };
+
+  const pointerEvents = shouldStillRender ? "auto" : "none";
+
   return (
-    <View style={styles.fullScreenContainer}>
-      <AlertoBox initialProps={queue[0]} doClose={() => setQueue(queue.slice(1))} />
-    </View>
+    <Animated.View style={[styles.fullScreenContainer, { opacity }, { pointerEvents }]}>
+      <AlertoBox alertoProps={queue[0]} doClose={closeAlerto} />
+    </Animated.View>
   );
 }
 
 /**
- * @param {{ initialProps: AlertoProps, doClose: () => void }}
+ * @param {{ alertoProps: AlertoProps, doClose: () => void }}
  */
-function AlertoBox({ initialProps, doClose }) {
-  const { current: props } = useRef(initialProps);
+function AlertoBox({ alertoProps, doClose }) {
   return (
     <View style={styles.alertoBox}>
-      <Text style={styles.title}>{props.title}</Text>
-      <Text style={styles.message}>{props.message}</Text>
+      <Text style={styles.title}>{alertoProps.title}</Text>
+      <Text style={styles.message}>{alertoProps.message}</Text>
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.actionBtn} onPress={doClose}>
           <Text style={styles.actionBtnText}>Ok</Text>
