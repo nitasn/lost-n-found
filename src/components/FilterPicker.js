@@ -108,7 +108,7 @@ function latLongToText({ latitude, longitude }) {
 /**
  * @param {{ region: import("./FeedStack").Region | null }}
  */
-function LocationInputWithX({ region, setRegion }) {
+export function LocationInputWithX({ region, setRegion }) {
   const [modalVisible, setModalVisible] = useState(false);
   const closeModal = () => setModalVisible(false);
 
