@@ -1,9 +1,9 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useEffect, useReducer, useState } from "react";
-import { TextInputWithX } from "./TextInputWithX";
+import TextInputWithX from "./TextInputWithX";
 import { Ionicons } from "@expo/vector-icons";
 import globalStyles from "../js/globalStyles";
-import { LocationInputWithX } from "./FilterPicker";
+import { alerto } from "./Alerto";
 
 function SelectPostType({ type, setType }) {
   return (
@@ -66,23 +66,18 @@ export default function PostComposer({ navigation, route }) {
     <View style={styles.screen}>
       <SelectPostType type={postType} setType={setPostType} />
       <TextInputWithX
-        initlalText={title}
+        initialText={title}
         label="Title *"
         onChangeText={setTitle}
         placeholder={`What have you ${postType}?`}
       />
       <TextInputWithX
-        initlalText={text}
+        initialText={text}
         label="Details"
         onChangeText={setText}
         placeholder="Elaborate here..."
         multiline
       />
-      <LocationInputWithX region={region} setRegion={setRegion} />
-      <View style={{ margin: 40, gap: 12 }}>
-        <Text>Title: {title}</Text>
-        <Text>Text: {text}</Text>
-      </View>
     </View>
   );
 }

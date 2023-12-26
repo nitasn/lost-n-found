@@ -20,7 +20,7 @@ import EnumPicker from "./EnumPicker";
 import { colorSplash } from "../js/theme";
 import LocationChooser from "./LocationChooser";
 
-function UncontrolledTextInputWithX({ initlalText, onChangeText }) {
+function UncontrolledTextInputWithX({ initialText, onChangeText }) {
   const inputRef = useRef(null);
 
   const setInputValue = useCallback(
@@ -40,7 +40,7 @@ function UncontrolledTextInputWithX({ initlalText, onChangeText }) {
   }, [setInputValue, onChangeText]);
 
   useEffect(() => {
-    setInputValue(initlalText || "");
+    setInputValue(initialText || "");
   }, [setInputValue]);
 
   return useMemo(
@@ -181,7 +181,7 @@ export default function FilterPicker({ filter, setFilter }) {
     <ScrollView style={styles.container}>
       <View style={styles.form && null}>
         <Text style={styles.label}>item description</Text>
-        <UncontrolledTextInputWithX initlalText={query} onChangeText={setQuery} />
+        <UncontrolledTextInputWithX initialText={query} onChangeText={setQuery} />
 
         <Text style={styles.label}>from date</Text>
         <DateInputWithX date={fromDate} setDate={setFromDate} />
