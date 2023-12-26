@@ -3,83 +3,34 @@ import {
   TextInput,
   Text,
   StyleSheet,
-  Button,
   Pressable,
   TouchableOpacity,
-  Modal,
   ScrollView,
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState, useCallback, useContext, useRef, forwardRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useContext, useRef, useMemo } from "react";
 import { DatePickerModal } from "react-native-paper-dates";
 import TypeContext from "../js/typeContext";
 import { Ionicons } from "@expo/vector-icons";
 import globalStyles from "../js/globalStyles";
 import EnumPicker from "./EnumPicker";
 import { colorSplash } from "../js/theme";
-import LocationChooser from "./LocationChooser";
+import LocationInputWithX from "./LocationInputWithX";
+import TextInputWithX from "./TextInputWithX";
+import { BigButtonInSplashColor } from "./ButtonInSplashColor";
 
-function UncontrolledTextInputWithX({ initialText, onChangeText }) {
-  const inputRef = useRef(null);
-
-  const setInputValue = useCallback(
-    (text) => {
-      if (Platform.OS === "web") {
-        inputRef.current.value = text;
-      } else {
-        inputRef.current.setNativeProps({ text });
-      }
-    },
-    [inputRef]
-  );
-
-  const clearText = useCallback(() => {
-    setInputValue("");
-    onChangeText("");
-  }, [setInputValue, onChangeText]);
-
-  useEffect(() => {
-    setInputValue(initialText || "");
-  }, [setInputValue]);
-
-  return useMemo(
-    () => (
-      <View style={styles.inputWithX}>
-        <TextInput
-          ref={inputRef}
-          style={styles.textInput}
-          onChangeText={onChangeText}
-          placeholder="Enter keywords..."
-          placeholderTextColor="gray"
-        />
-        <TouchableOpacity style={styles.clearInputX} onPress={clearText}>
-          <Ionicons size={24} color="black" name="close-outline" />
-        </TouchableOpacity>
-      </View>
-    ),
-    [inputRef, onChangeText, clearText]
-  );
-}
-
-function DateInputWithX({ date, setDate }) {
+function DateInputWithX({ date, setDate, label }) {
   const [open, setOpen] = useState(false);
   return (
-    <View style={styles.inputWithX}>
-      <Pressable onPress={() => setOpen(true)}>
-        <TextInput
-          style={styles.textInput}
-          value={date ? formatDate(date) : ""}
-          placeholder="DD/MM/YYYY"
-          placeholderTextColor="gray"
-          editable={false}
-          pointerEvents="none"
-        />
-      </Pressable>
-      <TouchableOpacity style={styles.clearInputX} onPress={() => setDate("")}>
-        <Ionicons size={24} color="black" name="close-outline" />
-      </TouchableOpacity>
-
+    <>
+      <TextInputWithX
+        text={date ? formatDate(date) : ""}
+        placeholder="DD/MM/YYYY"
+        editable={false}
+        onPress={() => setOpen(true)}
+        label={label}
+      />
       <DatePickerModal
         locale="en-GB"
         mode="single"
@@ -91,48 +42,7 @@ function DateInputWithX({ date, setDate }) {
           setDate(date);
         }}
       />
-    </View>
-  );
-}
-
-function latLongToText({ latitude, longitude }) {
-  const N_S = latitude >= 0 ? "N" : "S";
-  const E_W = longitude >= 0 ? "E" : "W";
-
-  const lat = Math.abs(latitude).toFixed(4);
-  const long = Math.abs(longitude).toFixed(4);
-
-  return `${lat}° ${N_S}, ${long}° ${E_W}`;
-}
-
-/**
- * @param {{ region: import("./FeedStack").Region | null }}
- */
-export function LocationInputWithX({ region, setRegion }) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const closeModal = () => setModalVisible(false);
-
-  return (
-    <View style={styles.inputWithX}>
-      <Pressable onPress={() => setModalVisible(true)}>
-        <TextInput
-          style={styles.textInput}
-          value={region ? latLongToText(region) : ""}
-          placeholder="Choose Location..."
-          placeholderTextColor="gray"
-          editable={false}
-          pointerEvents="none"
-        />
-      </Pressable>
-
-      <TouchableOpacity style={styles.clearInputX} onPress={() => setRegion(null)}>
-        <Ionicons size={24} color="black" name="close-outline" />
-      </TouchableOpacity>
-
-      <Modal visible={modalVisible} onRequestClose={closeModal} animationType="fade">
-        <LocationChooser doClose={closeModal} region={region} setRegion={setRegion} />
-      </Modal>
-    </View>
+    </>
   );
 }
 
@@ -179,26 +89,26 @@ export default function FilterPicker({ filter, setFilter }) {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.form && null}>
-        <Text style={styles.label}>item description</Text>
-        <UncontrolledTextInputWithX initialText={query} onChangeText={setQuery} />
+      <TextInputWithX
+        initialText={query}
+        onChangeText={setQuery}
+        label="item description"
+        placeholder="Enter keywords..."
+      />
 
-        <Text style={styles.label}>from date</Text>
-        <DateInputWithX date={fromDate} setDate={setFromDate} />
+      <DateInputWithX date={fromDate} setDate={setFromDate} label="from date" />
 
-        <Text style={styles.label}>until date</Text>
-        <DateInputWithX date={untilDate} setDate={setUntilDate} />
+      <DateInputWithX date={untilDate} setDate={setUntilDate} label="until date" />
 
-        <Text style={styles.label}>{type} around</Text>
-        <LocationInputWithX region={region} setRegion={setRegion} />
+      <LocationInputWithX region={region} setRegion={setRegion} label={`${type} around`} />
 
-        <RadiusKmInput visible={!!region} radiusKm={radiusKm} setRadiusKm={setRadiusKm} />
-      </View>
+      <RadiusKmInput visible={!!region} radiusKm={radiusKm} setRadiusKm={setRadiusKm} />
 
-      <TouchableOpacity style={styles.buttonGo} onPress={onSubmit}>
-        <Text style={styles.buttonGoText}>{anyFilterPicked ? "Search" : "Don't Filter"}</Text>
-        <Ionicons size={18} color="white" name="search" />
-      </TouchableOpacity>
+      <BigButtonInSplashColor
+        title={anyFilterPicked ? "Search" : "Don't Filter"}
+        onPress={onSubmit}
+        iconName="search"
+      />
     </ScrollView>
   );
 }
@@ -207,7 +117,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    // justifyContent: "center",
   },
   title: {
     marginBottom: "auto",

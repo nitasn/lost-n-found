@@ -1,4 +1,12 @@
-import { View, Text, TextInput, TouchableOpacity, Platform, Pressable, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Platform,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import { useEffect, useRef, memo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -35,7 +43,7 @@ function TextInputWithX({
 
   const clearText = () => {
     setInputValue("");
-    onChangeText("");
+    onChangeText?.("");
   };
 
   return (

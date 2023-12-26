@@ -4,6 +4,8 @@ import TextInputWithX from "./TextInputWithX";
 import { Ionicons } from "@expo/vector-icons";
 import globalStyles from "../js/globalStyles";
 import { alerto } from "./Alerto";
+import LocationInputWithX from "./LocationInputWithX";
+import { BigButtonInSplashColor } from "./ButtonInSplashColor";
 
 function SelectPostType({ type, setType }) {
   return (
@@ -57,6 +59,10 @@ export default function PostComposer({ navigation, route }) {
     }
   }, [route.params]);
 
+  /**
+   * change query param is url as postType effect
+   */
+
   const [postType, setPostType] = useState(route.params?.type);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
@@ -77,6 +83,13 @@ export default function PostComposer({ navigation, route }) {
         onChangeText={setText}
         placeholder="Elaborate here..."
         multiline
+      />
+      <LocationInputWithX region={region} setRegion={setRegion} label={`${postType} around`} />
+      {/* todo picsUrls */}
+      <BigButtonInSplashColor
+        title="Post"
+        onPress={() => alerto({ message: "ma nish" })}
+        iconName="send"
       />
     </View>
   );

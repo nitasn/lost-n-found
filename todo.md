@@ -6,3 +6,5 @@
    and with a way to set the value
 
 4. map on web has many issues: pin animation state, map's not moving, doesn't goto current location on load
+
+5. on search, if there are no items, even if a filter is applied, it should say `there are no items </3`
