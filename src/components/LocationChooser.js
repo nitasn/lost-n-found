@@ -157,24 +157,27 @@ export default function LocationChooser({ region, setRegion, doClose }) {
     <View style={styles.locationChooser}>
       <View style={styles.headerContainer}>
         <View style={styles.headerTopRow}>
-          <TouchableOpacity onPress={doClose}>
+          <TouchableOpacity style={styles.backBtn} onPress={doClose}>
             <Ionicons size={28} color="gray" name="chevron-back" />
           </TouchableOpacity>
 
           <Text style={styles.headerTitle}>Choose Location</Text>
 
           <TouchableOpacity style={styles.toCurrentLocationBtn} onPress={moveToCurrentLocation}>
-            <Ionicons size={24} color="gray" name="navigate" />
+            <Ionicons size={24} color="rgb(155, 35, 116)" name="navigate" />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {
-              setRegion(pinRegion);
-              doClose();
-            }}
-          >
-            <Ionicons size={28} color={primaryColor} name="checkmark" />
-          </TouchableOpacity>
+          {pinRegion && (
+            <TouchableOpacity
+              style={styles.okBtn}
+              onPress={() => {
+                setRegion(pinRegion);
+                doClose();
+              }}
+            >
+              <Ionicons size={28} color={primaryColor} name="checkmark" />
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.inputWrapper}>
           <TextInput
@@ -241,14 +244,16 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
   },
   headerContainer: {
-    paddingTop: Platform.OS === "ios" ? 15 : Platform.OS === "android" ? StatusBar.currentHeight : 5,
+    paddingTop:
+      Platform.OS === "ios" ? 15 : Platform.OS === "android" ? StatusBar.currentHeight : 5,
     ...globalStyles.shadow_1,
     zIndex: 1,
   },
   headerTopRow: {
     paddingHorizontal: 12,
+    paddingRight: 16,
     paddingVertical: 10,
-    gap: 12,
+    gap: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -277,8 +282,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
   },
+  backBtn: {
+    marginRight: "auto",
+  },
   toCurrentLocationBtn: {
-    marginLeft: "auto",
+    margin: -24,
+    padding: 24,
+  },
+  okBtn: {
+    margin: -24,
+    padding: 24,
   },
   mapWrapper: {
     flex: 1,

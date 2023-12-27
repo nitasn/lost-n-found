@@ -8,8 +8,11 @@ import "core-js/stable/atob"; // polly-fill for jwt-decode
 import { jwtDecode } from "jwt-decode";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import alerto from "./Alerto";
+import ImagePickerUploader from "./ImagePickerUploader";
 
 export default function () {
+
+  return <ImagePickerUploader />
   return (
     <View style={styles.container}>
       <Text>Alerto Test</Text>

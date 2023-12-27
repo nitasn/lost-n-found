@@ -1,6 +1,9 @@
 .env
 firebase.secret.mjs
 
+ios/
+android/
+
 # dependencies
 node_modules/
 
