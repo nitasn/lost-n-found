@@ -7,7 +7,7 @@ import * as SecureStore from "expo-secure-store";
 import "core-js/stable/atob"; // polly-fill for jwt-decode
 import { jwtDecode } from "jwt-decode";
 import ButtonInSplashColor from "./ButtonInSplashColor";
-import { alerto } from "./Alerto";
+import alerto from "./Alerto";
 
 export default function () {
   return (
@@ -17,9 +17,9 @@ export default function () {
         title="Alerto"
         onPress={() => {
           alerto({ title: "A Notice", message: "Did you notice this notice my friend?" });
-          // setTimeout(() => {
-          //   alerto({ message: "This message has no title." });
-          // }, 1000);
+          setTimeout(() => {
+            alerto({ message: "This message has no title." });
+          });
         }}
       />
     </View>

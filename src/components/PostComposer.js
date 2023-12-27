@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import TextInputWithX from "./TextInputWithX";
 import { Ionicons } from "@expo/vector-icons";
 import globalStyles, { OnePixelWide } from "../js/globalStyles";
-import { alerto } from "./Alerto";
+import alerto from "./Alerto";
 import LocationInputWithX from "./LocationInputWithX";
 import { BigButtonInSplashColor } from "./ButtonInSplashColor";
 

@@ -23,7 +23,7 @@ import TypeContext from "../js/typeContext";
 import { primaryColor } from "../js/theme";
 import { prettyDistance } from "../js/utils";
 import ButtonInSplashColor from "./ButtonInSplashColor";
-import { alerto } from "./Alerto";
+import alerto from "./Alerto";
 
 async function getBaseUrl() {
   const url = await Linking.getInitialURL();

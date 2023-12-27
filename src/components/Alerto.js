@@ -17,10 +17,14 @@ const queueState = createGlobalState([]);
 /**
  * @param {AlertoProps} props
  */
-export function alerto(props) {
+export default function alerto(props) {
+  // todo allow props to be either { title, message } or string or React.JSX.Element!
   queueState.set([...queueState.get(), props]);
 }
 
+/**
+ * @param {{ children: React.ReactNode }}  
+ */
 export function AlertoProvider({ children }) {
   return (
     <>
@@ -37,7 +41,7 @@ export function AlertoProvider({ children }) {
  */
 async function animate(opacity, scale, { to }) {
   return new Promise((resolve) => {
-    const animation = Animated.parallel([
+    Animated.parallel([
       Animated.timing(opacity, {
         toValue: to,
         duration: 100,
@@ -49,10 +53,8 @@ async function animate(opacity, scale, { to }) {
         friction: 7.5,
         useNativeDriver: true,
       }),
-    ]);
-    animation.start(({ finished }) => {
-      finished && resolve();
-    });
+    ]).start();
+    setTimeout(resolve, 100);
   });
 }
 
@@ -77,10 +79,13 @@ function AlertoContainer() {
   const closeAlerto = () => {
     animate(opacity, scale, { to: 0 }).then(() => {
       setQueue((queue) => {
-        if (queue.length > 1) {
-          animate(opacity, scale, { to: 1 });
-        } else {
+        if (queue.length === 1) {
           setAnyAlertShown(false);
+        } else {
+          setTimeout(() => {
+            // have a little delay between subsuqent alertos
+            animate(opacity, scale, { to: 1 });
+          }, 300);
         }
         return queue.slice(1);
       });
@@ -88,9 +93,7 @@ function AlertoContainer() {
   };
 
   // todo
-  // 1. the app does not respond to touch for half a second after the last alert is dismissed
-  //    this can be solved using { pointerEvents: "none" } in the right state
-  // 2. WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered"
+  // 1. WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered"
   //    when i show the alert in PostPage, then dismiss, then hot-reload the app.
 
   return (

@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { primaryColor } from "../js/theme.js";
 import globalStyles from "../js/globalStyles.js";
 import Hr from "./Hr.js";
-import { alerto } from "./Alerto.js";
+import alerto from "./Alerto.js";
 import { useNavigation } from "@react-navigation/native";
 
 /**
