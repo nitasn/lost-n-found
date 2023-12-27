@@ -111,8 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     ...globalStyles.noInputOutline,
     ...globalStyles.shadow_1,
-    borderWidth: OnePixelWide,
-    borderColor: "gray",
+    ...globalStyles.veryThinBorder,
   },
   multilineInput: {
     minHeight: 100,

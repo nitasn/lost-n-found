@@ -2,10 +2,11 @@ import { StyleSheet, View, Text, TouchableOpacity, Platform } from "react-native
 import { useEffect, useState } from "react";
 import TextInputWithX from "./TextInputWithX";
 import { Ionicons } from "@expo/vector-icons";
-import globalStyles, { OnePixelWide } from "../js/globalStyles";
+import globalStyles from "../js/globalStyles";
 import alerto from "./Alerto";
 import LocationInputWithX from "./LocationInputWithX";
 import { BigButtonInSplashColor } from "./ButtonInSplashColor";
+import DismissKeyboardView from "./DismissKeyboardView";
 
 function SelectPostType({ type, setType }) {
   return (
@@ -38,8 +39,7 @@ const select = StyleSheet.create({
   box: {
     padding: 12,
     paddingVertical: 6,
-    borderWidth: OnePixelWide,
-    borderColor: "gray",
+    ...globalStyles.veryThinBorder,
     borderRadius: 5,
     flexDirection: "row",
     gap: 12,
@@ -73,7 +73,7 @@ export default function PostComposer({ navigation, route }) {
   }
 
   return (
-    <View style={styles.screen}>
+    <DismissKeyboardView style={styles.screen}>
       <SelectPostType type={postType} setType={setPostType} />
       <TextInputWithX
         initialText={title}
@@ -95,7 +95,7 @@ export default function PostComposer({ navigation, route }) {
         onPress={() => alerto({ message: "ma nish" })}
         iconName="send"
       />
-    </View>
+    </DismissKeyboardView>
   );
 }
 

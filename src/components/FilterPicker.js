@@ -7,6 +7,7 @@ import LocationInputWithX from "./LocationInputWithX";
 import TextInputWithX from "./TextInputWithX";
 import { BigButtonInSplashColor } from "./ButtonInSplashColor";
 import DateInputWithX from "./DateInputWithX";
+import DismissKeyboardView from "./DismissKeyboardView";
 
 function RadiusKmInput({ visible, radiusKm, setRadiusKm }) {
   const { current: options } = useRef(["5 Km", "15 Km", "50 Km"]);
@@ -36,7 +37,7 @@ export default function FilterPicker({ filter, setFilter }) {
   const [region, setRegion] = useState(filter.region || null);
   const [radiusKm, setRadiusKm] = useState(filter.radiusKm || "");
 
-  console.log('filter:', {
+  console.log("filter:", {
     ...(query && { query }),
     ...(fromDate && { fromDate }),
     ...(untilDate && { untilDate }),
@@ -59,26 +60,23 @@ export default function FilterPicker({ filter, setFilter }) {
 
   return (
     <ScrollView style={styles.container}>
-      <TextInputWithX
-        initialText={query}
-        onChangeText={setQuery}
-        label="item description"
-        placeholder="Enter keywords..."
-      />
-
-      <DateInputWithX date={fromDate} setDate={setFromDate} label="from date" />
-
-      <DateInputWithX date={untilDate} setDate={setUntilDate} label="until date" />
-
-      <LocationInputWithX region={region} setRegion={setRegion} label={`${type} around`} />
-
-      <RadiusKmInput visible={!!region} radiusKm={radiusKm} setRadiusKm={setRadiusKm} />
-
-      <BigButtonInSplashColor
-        title={anyFilterPicked ? "Search" : "Don't Filter"}
-        onPress={onSubmit}
-        iconName="search"
-      />
+      <DismissKeyboardView>
+        <TextInputWithX
+          initialText={query}
+          onChangeText={setQuery}
+          label="item description"
+          placeholder="Enter keywords..."
+        />
+        <DateInputWithX date={fromDate} setDate={setFromDate} label="from date" />
+        <DateInputWithX date={untilDate} setDate={setUntilDate} label="until date" />
+        <LocationInputWithX region={region} setRegion={setRegion} label={`${type} around`} />
+        <RadiusKmInput visible={!!region} radiusKm={radiusKm} setRadiusKm={setRadiusKm} />
+        <BigButtonInSplashColor
+          title={anyFilterPicked ? "Search" : "Don't Filter"}
+          onPress={onSubmit}
+          iconName="search"
+        />
+      </DismissKeyboardView>
     </ScrollView>
   );
 }
