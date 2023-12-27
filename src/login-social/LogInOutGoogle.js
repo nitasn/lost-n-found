@@ -59,15 +59,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
+    marginBottom: 5,
   },
   profilePic: {
-    width: 50,
-    height: 50,
-    borderRadius: 50 / 2,
-    marginBottom: 5,
+    width: 46,
+    height: 46,
+    borderRadius: 46 / 2,
   },
   displayName: {
     letterSpacing: 0.1,
+    marginRight: "auto",
   },
   btnSignOut: {
     marginTop: 5,
