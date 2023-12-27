@@ -37,14 +37,6 @@ export default function FilterPicker({ filter, setFilter }) {
   const [region, setRegion] = useState(filter.region || null);
   const [radiusKm, setRadiusKm] = useState(filter.radiusKm || "");
 
-  console.log("filter:", {
-    ...(query && { query }),
-    ...(fromDate && { fromDate }),
-    ...(untilDate && { untilDate }),
-    ...(region && { region }),
-    ...(radiusKm && { radiusKm }),
-  });
-
   const anyFilterPicked = Boolean(query || fromDate || untilDate || region || radiusKm);
 
   const onSubmit = () => {

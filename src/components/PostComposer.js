@@ -7,6 +7,7 @@ import alerto from "./Alerto";
 import LocationInputWithX from "./LocationInputWithX";
 import { BigButtonInSplashColor } from "./ButtonInSplashColor";
 import DismissKeyboardView from "./DismissKeyboardView";
+import { ScrollView } from "react-native-gesture-handler";
 
 function SelectPostType({ type, setType }) {
   return (
@@ -73,29 +74,31 @@ export default function PostComposer({ navigation, route }) {
   }
 
   return (
-    <DismissKeyboardView style={styles.screen}>
-      <SelectPostType type={postType} setType={setPostType} />
-      <TextInputWithX
-        initialText={title}
-        label="Title *"
-        onChangeText={setTitle}
-        placeholder={`What have you ${postType}?`}
-      />
-      <TextInputWithX
-        initialText={text}
-        label="Details"
-        onChangeText={setText}
-        placeholder="Elaborate here..."
-        multiline
-      />
-      <LocationInputWithX region={region} setRegion={setRegion} label={`${postType} around`} />
-      {/* todo picsUrls */}
-      <BigButtonInSplashColor
-        title="Post"
-        onPress={() => alerto({ message: "ma nish" })}
-        iconName="send"
-      />
-    </DismissKeyboardView>
+    <ScrollView>
+      <DismissKeyboardView style={styles.screen}>
+        <SelectPostType type={postType} setType={setPostType} />
+        <TextInputWithX
+          initialText={title}
+          label="Title *"
+          onChangeText={setTitle}
+          placeholder={`What have you ${postType}?`}
+        />
+        <TextInputWithX
+          initialText={text}
+          label="Details"
+          onChangeText={setText}
+          placeholder="Elaborate here..."
+          multiline
+        />
+        <LocationInputWithX region={region} setRegion={setRegion} label={`${postType} around`} />
+
+        <BigButtonInSplashColor
+          title="Post"
+          onPress={() => alerto({ message: "ma nish" })}
+          iconName="send"
+        />
+      </DismissKeyboardView>
+    </ScrollView>
   );
 }
 
