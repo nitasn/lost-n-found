@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Platform } from "react-native";
 import { useEffect, useState } from "react";
 import TextInputWithX from "./TextInputWithX";
 import { Ionicons } from "@expo/vector-icons";
@@ -53,20 +53,24 @@ const select = StyleSheet.create({
 });
 
 export default function PostComposer({ navigation, route }) {
+  // ensure valid type was passed
   useEffect(() => {
     if (!["lost", "found"].includes(route.params?.type)) {
       navigation.goBack();
     }
   }, [route.params]);
 
-  /**
-   * change query param is url as postType effect
-   */
-
   const [postType, setPostType] = useState(route.params?.type);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [region, setRegion] = useState(null);
+
+  if (Platform.OS === "web") {
+    // match url's 'type' query param to postType stated
+    useEffect(() => {
+      navigation.navigate("PostComposer", { type: postType });
+    }, [postType]);
+  }
 
   return (
     <View style={styles.screen}>
