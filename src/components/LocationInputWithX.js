@@ -28,6 +28,7 @@ export default function LocationInputWithX({ region, setRegion, label }) {
         editable={false}
         onPress={() => setModalVisible(true)}
         label={label}
+        onChangeText={(text) => !text && setRegion(null)}
       />
 
       <Modal visible={modalVisible} onRequestClose={closeModal} animationType="fade">
