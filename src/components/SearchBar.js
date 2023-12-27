@@ -2,7 +2,7 @@ import { TouchableOpacity, Text, StyleSheet, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import globalStyles from "../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
-import { colorSplash } from "../js/theme";
+import { primaryColor } from "../js/theme";
 
 export default function SearchBar({ filterOn }) {
   const navigation = useNavigation();
@@ -15,7 +15,7 @@ export default function SearchBar({ filterOn }) {
       <Text style={[styles.text, filterOn && styles.text_filterOn]}>
         {filterOn ? "Tap to View Filter" : "Search..."}
       </Text>
-      <Ionicons size={20} color={colorSplash} name="search" />
+      <Ionicons size={20} color={primaryColor} name="search" />
     </TouchableOpacity>
   );
 }

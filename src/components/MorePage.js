@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import LogInOutGoogle from "../login-social/LogInOutGoogle.js";
 import { auth } from "../../firebase.config.js";
 import { Ionicons } from "@expo/vector-icons";
-import { colorSplash } from "../js/theme.js";
+import { primaryColor } from "../js/theme.js";
 import globalStyles from "../js/globalStyles.js";
 import Hr from "./Hr.js";
 import { alerto } from "./Alerto.js";
@@ -14,9 +14,9 @@ import { useNavigation } from "@react-navigation/native";
 function MenuItem({ iconName, text, onPress }) {
   return (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-      <Ionicons name={iconName} size={24} color={colorSplash} />
+      <Ionicons name={iconName} size={24} color={primaryColor} />
       <Text style={styles.menuItemText}>{text}</Text>
-      <Ionicons name="chevron-forward" size={24} color={colorSplash} />
+      <Ionicons name="chevron-forward" size={24} color={primaryColor} />
     </TouchableOpacity>
   );
 }

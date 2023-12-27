@@ -20,7 +20,7 @@ import { timeDeltaAsString } from "../js/utils";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import TypeContext from "../js/typeContext";
-import { colorSplash } from "../js/theme";
+import { primaryColor } from "../js/theme";
 import { prettyDistance } from "../js/utils";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import { alerto } from "./Alerto";
@@ -111,7 +111,7 @@ export default function PostPage({ route }) {
           </Text>
           {!!linkToGoogleMaps && (
             <View style={styles.iconShowLocation}>
-              <Ionicons name="navigate-circle" color={colorSplash} size={19} />
+              <Ionicons name="navigate-circle" color={primaryColor} size={19} />
             </View>
           )}
           <Text style={styles.time}>{timeDeltaAsString(post.date)}</Text>
@@ -173,7 +173,7 @@ function ReportAndShareRow({ linkToPost, type }) {
 
       <TouchableOpacity onPress={doShare} style={styles.shareBtn}>
         <Text style={styles.shareBtnText}>Share </Text>
-        <BoldShareIcon color={colorSplash} />
+        <BoldShareIcon color={primaryColor} />
       </TouchableOpacity>
     </View>
   );
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   shareBtnText: {
-    color: colorSplash,
+    color: primaryColor,
     fontWeight: "bold",
     textDecorationLine: "underline",
   },

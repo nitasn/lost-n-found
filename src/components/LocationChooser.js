@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { addrToLatLong, getLocation } from "../js/location";
-import { colorSplash } from "../js/theme";
+import { primaryColor } from "../js/theme";
 import { StatusBar } from "expo-status-bar";
 
 const usingGoogleMaps = Platform.OS !== "ios";
@@ -173,7 +173,7 @@ export default function LocationChooser({ region, setRegion, doClose }) {
               doClose();
             }}
           >
-            <Ionicons size={28} color={colorSplash} name="checkmark" />
+            <Ionicons size={28} color={primaryColor} name="checkmark" />
           </TouchableOpacity>
         </View>
         <View style={styles.inputWrapper}>

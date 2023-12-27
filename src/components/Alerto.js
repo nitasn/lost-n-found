@@ -2,7 +2,7 @@ import { Animated, StyleSheet, TouchableOpacity, View, Text, Easing } from "reac
 
 import { useRef, useState, useEffect } from "react";
 
-import { colorSplash } from "../js/theme";
+import { primaryColor } from "../js/theme";
 import globalStyles from "../js/globalStyles";
 import { createGlobalState, useGlobalState } from "../js/useGlobalState";
 
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   actionBtnText: {
-    color: colorSplash,
+    color: primaryColor,
     fontWeight: "600",
   },
 });

@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
-import { colorSplash } from "../js/theme";
+import { primaryColor } from "../js/theme";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     ...globalStyles.shadow_2,
-    backgroundColor: colorSplash,
+    backgroundColor: primaryColor,
     borderRadius: 5,
   },
   text: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 5,
     ...globalStyles.shadow_3,
-    backgroundColor: colorSplash,
+    backgroundColor: primaryColor,
     gap: 10,
     flexDirection: "row",
     alignItems: "center",

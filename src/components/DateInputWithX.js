@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { DatePickerModal } from "react-native-paper-dates";
 import { Provider as PaperProvider, DefaultTheme as DefaultPaperTheme } from "react-native-paper";
-import { colorSplash } from "../js/theme";
+import { primaryColor } from "../js/theme";
 import TextInputWithX from "./TextInputWithX";
 
 const themeForPaper = {
   colors: {
     ...DefaultPaperTheme.colors,
-    primary: colorSplash,
+    primary: primaryColor,
   },
 };
 

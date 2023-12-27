@@ -1,10 +1,8 @@
 import { StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState, useCallback, useContext, useRef, useMemo } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import TypeContext from "../js/typeContext";
-import globalStyles from "../js/globalStyles";
 import EnumPicker from "./EnumPicker";
-import { colorSplash } from "../js/theme";
 import LocationInputWithX from "./LocationInputWithX";
 import TextInputWithX from "./TextInputWithX";
 import { BigButtonInSplashColor } from "./ButtonInSplashColor";

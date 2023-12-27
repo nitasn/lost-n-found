@@ -1,1 +1,1 @@
-export const colorSplash = "rgb(35 116 115)";
+export const primaryColor = "rgb(35 116 115)";

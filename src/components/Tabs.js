@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FoundStack, LostStack } from "./FeedStack";
 
 import ChatsStack from "./ChatsStack";
-import { colorSplash } from "../js/theme";
+import { primaryColor } from "../js/theme";
 import MoreStack from "./MoreStack";
 
 function NotFound() {
@@ -21,7 +21,7 @@ export default function Tabs() {
       screenOptions={({ route }) => ({
         // don't show tab-bar icon for the not-found page
         tabBarButton: route.name === "NotFound" ? () => null : undefined,
-        tabBarActiveTintColor: colorSplash,
+        tabBarActiveTintColor: primaryColor,
       })}
     >
       <Tab.Screen
