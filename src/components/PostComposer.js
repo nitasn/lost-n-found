@@ -1,8 +1,8 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import TextInputWithX from "./TextInputWithX";
 import { Ionicons } from "@expo/vector-icons";
-import globalStyles from "../js/globalStyles";
+import globalStyles, { OnePixelWide } from "../js/globalStyles";
 import { alerto } from "./Alerto";
 import LocationInputWithX from "./LocationInputWithX";
 import { BigButtonInSplashColor } from "./ButtonInSplashColor";
@@ -38,7 +38,7 @@ const select = StyleSheet.create({
   box: {
     padding: 12,
     paddingVertical: 6,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: OnePixelWide,
     borderColor: "gray",
     borderRadius: 5,
     flexDirection: "row",

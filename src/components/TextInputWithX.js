@@ -10,7 +10,7 @@ import {
 import { useEffect, useRef, memo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
-import globalStyles from "../js/globalStyles";
+import globalStyles, { OnePixelWide } from "../js/globalStyles";
 
 /**
  * An InputText with a Clear Button (x) at its End.
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     ...globalStyles.noInputOutline,
     ...globalStyles.shadow_1,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: OnePixelWide,
     borderColor: "gray",
   },
   multilineInput: {

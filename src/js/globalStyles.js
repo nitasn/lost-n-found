@@ -1,5 +1,10 @@
 import { Platform, StyleSheet } from "react-native";
 
+export const OnePixelWide = Platform.select({
+  web: 1 / (window.devicePixelRatio || 1),
+  native: StyleSheet.hairlineWidth,
+});
+
 export default StyleSheet.create({
   noInputOutline: Platform.OS === "web" && { outlineStyle: "none" },
   shadow_1: {
