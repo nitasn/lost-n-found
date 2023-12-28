@@ -1,19 +1,11 @@
-import React, { useRef } from "react";
-import {
-  View,
-  Image,
-  StyleSheet,
-  Text,
-  FlatList,
-  Pressable,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Image, StyleSheet, Text, FlatList, Pressable, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import globalStyles from "../js/globalStyles";
 import Label from "./Label";
-import BottomDrawer from "react-native-animated-bottom-drawer";
+import BottomDrawer, { BottomDrawerMethods } from "react-native-animated-bottom-drawer";
 import MenuItem from "./MenuItem";
+import alerto from "./Alerto";
 
 /**
  * @typedef {Object} ImageAsset
@@ -24,16 +16,53 @@ import MenuItem from "./MenuItem";
  */
 
 export default function PickPics({ images, setImages }) {
+  const [cameraPerm, requestCameraPerm] = ImagePicker.useCameraPermissions();
+  const [libraryPerm, requestLibraryPerm] = ImagePicker.useMediaLibraryPermissions();
+
+  /** @type {{ current: BottomDrawerMethods }} */
+  const bottomDrawerRef = useRef();
+
+  /** @type {{current: FlatList }} */
+  const imagesListRef = useRef();
+
+  const scrollToEndOfImagesList = () => {
+    imagesListRef.current.scrollToEnd({ animated: true });
+  };
+
   /**
    * @param {'Camera' | 'ImageLibrary'} source
    */
-  const launcher = (source) => async () => {
-    const launch = {
+  const selectImgFrom = async (source) => {
+    if (source === "Camera" && !cameraPerm.granted) {
+      const { status } = await requestCameraPerm();
+      if (status !== "granted") {
+        return alerto({
+          title: "Missing Camera Permissions",
+          message:
+            "To add photos from your camera, " +
+            "please go to 'settings' and grant the app camera permissions ❤️",
+        });
+      }
+    }
+
+    if (source === "ImageLibrary" && !libraryPerm.granted) {
+      const { status } = await requestLibraryPerm();
+      if (status !== "granted") {
+        return alerto({
+          title: "Missing Image Library Permissions",
+          message:
+            "To add photos from your image library, " +
+            "please go to 'settings' and grant the app image library permissions ❤️",
+        });
+      }
+    }
+
+    const launchImgPicker = {
       Camera: ImagePicker.launchCameraAsync,
       ImageLibrary: ImagePicker.launchImageLibraryAsync,
     }[source];
 
-    const results = await launch({
+    const results = await launchImgPicker({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
@@ -41,12 +70,12 @@ export default function PickPics({ images, setImages }) {
       base64: true,
     });
 
+    bottomDrawerRef.current.close();
+
     if (!results.canceled && results.assets) {
       setImages((currentImages) => [...currentImages, ...results.assets]);
     }
   };
-
-  const bottomDrawerRef = useRef();
 
   const ImgPlaceholder = (
     <TouchableOpacity
@@ -65,6 +94,7 @@ export default function PickPics({ images, setImages }) {
       <Label text="Photos" />
       <FlatList
         style={styles.images}
+        ref={imagesListRef}
         data={images}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -75,20 +105,21 @@ export default function PickPics({ images, setImages }) {
           </Pressable>
         )}
         keyExtractor={(url, idx) => `${idx}|${url}`}
+        onContentSizeChange={scrollToEndOfImagesList}
       />
 
       <BottomDrawer ref={bottomDrawerRef} gestureMode="content" initialHeight={240}>
-        {/* todo auto close drawer when num images becomes 4 */}
         <View style={styles.bottomDrawer}>
           <Text style={styles.bottomDrawerTitle}>Add Photo</Text>
-          <MenuItem 
-            iconName="camera-outline" 
-            text="From Camera" 
-            onPress={launcher("Camera")} />
+          <MenuItem
+            iconName="camera-outline"
+            text="From Camera"
+            onPress={() => selectImgFrom("Camera")}
+          />
           <MenuItem
             iconName="image-outline"
             text="From Gallery"
-            onPress={launcher("ImageLibrary")}
+            onPress={() => selectImgFrom("ImageLibrary")}
           />
         </View>
       </BottomDrawer>
@@ -141,5 +172,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     margin: 12,
     fontSize: 24,
-  }
+  },
 });

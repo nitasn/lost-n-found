@@ -1,6 +1,6 @@
 import { Animated, StyleSheet, TouchableOpacity, View, Text, Easing } from "react-native";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 
 import { primaryColor } from "../js/theme";
 import globalStyles from "../js/globalStyles";
@@ -23,7 +23,7 @@ export default function alerto(props) {
 }
 
 /**
- * @param {{ children: React.ReactNode }}  
+ * @param {{ children: React.ReactNode }}
  */
 export function AlertoProvider({ children }) {
   return (
@@ -95,6 +95,7 @@ function AlertoContainer() {
   // todo
   // 1. WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered"
   //    when i show the alert in PostPage, then dismiss, then hot-reload the app.
+  //    Update: I cannot reproduce this warning.
 
   return (
     <Animated.View style={[styles.fullScreenContainer, { opacity }]}>

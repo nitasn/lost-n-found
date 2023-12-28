@@ -97,7 +97,7 @@ export default function PostComposer({ navigation, route }) {
         <PickPics images={images} setImages={setImages} />
 
         <BigButtonInSplashColor
-          title="Post"
+          title="Upload Post"
           onPress={() => alerto({ message: "ma nish" })}
           iconName="send"
           style={styles.btnGo}
