@@ -32,8 +32,10 @@ export function AlertoProvider({ children }) {
   // WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered".
   //
   // It's printed when navigating into an inner page within the stack-navigation
-  // (that itself is within a bottom-tabs-navigation), then in there showing an alerto,
+  // (that is nested in a bottom-tabs-navigation), then in there showing an alerto,
   // then trigerring expo's hot reload.
+
+  // TOFIX: maybe there's an actual memory leak of event handlers not being unregistered.
 
   return (
     <>
