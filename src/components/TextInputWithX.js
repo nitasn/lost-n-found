@@ -111,12 +111,13 @@ const styles = StyleSheet.create({
   multilineInput: {
     minHeight: 100,
     paddingTop: 12,
+    textAlignVertical: "top",
   },
   btnX: {
     position: "absolute",
     right: 20,
   },
   multilineBtnX: {
-    top: 18,
+    top: 20,
   },
 });
