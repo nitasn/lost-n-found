@@ -26,9 +26,18 @@ export default function alerto(props) {
  * @param {{ children: React.ReactNode }}
  */
 export function AlertoProvider({ children }) {
+  const memoizedChildren = useMemo(() => children, [children]);
+
+  // The children are memoized to avoid this warnning:
+  // WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered".
+  //
+  // It's printed when navigating into an inner page within the stack-navigation
+  // (that itself is within a bottom-tabs-navigation), then in there showing an alerto,
+  // then trigerring expo's hot reload.
+
   return (
     <>
-      {children}
+      {memoizedChildren}
       <AlertoContainer />
     </>
   );
@@ -91,11 +100,6 @@ function AlertoContainer() {
       });
     });
   };
-
-  // todo
-  // 1. WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered"
-  //    when i show the alert in PostPage, then dismiss, then hot-reload the app.
-  //    Update: I cannot reproduce this warning.
 
   return (
     <Animated.View style={[styles.fullScreenContainer, { opacity }]}>
