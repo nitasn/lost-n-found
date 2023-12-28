@@ -1,16 +1,8 @@
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  Pressable,
-  StyleSheet,
-} from "react-native";
+import { View, TextInput, TouchableOpacity, Platform, Pressable, StyleSheet } from "react-native";
 import { useEffect, useRef, memo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
-import globalStyles, { OnePixelWide } from "../js/globalStyles";
+import globalStyles from "../js/globalStyles";
 import Label from "./Label";
 
 /**
