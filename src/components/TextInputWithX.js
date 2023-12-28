@@ -11,6 +11,7 @@ import { useEffect, useRef, memo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
 import globalStyles, { OnePixelWide } from "../js/globalStyles";
+import Label from "./Label";
 
 /**
  * An InputText with a Clear Button (x) at its End.
@@ -48,7 +49,7 @@ function TextInputWithX({
 
   return (
     <View>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Label text={label} />}
       <Pressable style={styles.wrapper} {...(onPress && { onPress })}>
         <TextInput
           ref={inputRef}
@@ -91,12 +92,6 @@ export default memo(TextInputWithX, function areEqual(prevProps, nextProps) {
 });
 
 const styles = StyleSheet.create({
-  label: {
-    margin: 12,
-    fontWeight: "bold",
-    marginBottom: 0,
-    textTransform: "capitalize",
-  },
   wrapper: {
     position: "relative",
     justifyContent: "center",

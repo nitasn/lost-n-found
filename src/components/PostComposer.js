@@ -8,6 +8,7 @@ import LocationInputWithX from "./LocationInputWithX";
 import { BigButtonInSplashColor } from "./ButtonInSplashColor";
 import DismissKeyboardView from "./DismissKeyboardView";
 import { ScrollView } from "react-native-gesture-handler";
+import PickPics from "./PickPics";
 
 function SelectPostType({ type, setType }) {
   return (
@@ -65,9 +66,10 @@ export default function PostComposer({ navigation, route }) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [region, setRegion] = useState(null);
+  const [images, setImages] = useState([]);
 
   if (Platform.OS === "web") {
-    // match url's 'type' query param to postType stated
+    // match the browser url's query param 'type' to the postType state
     useEffect(() => {
       navigation.navigate("PostComposer", { type: postType });
     }, [postType]);
@@ -91,6 +93,8 @@ export default function PostComposer({ navigation, route }) {
           multiline
         />
         <LocationInputWithX region={region} setRegion={setRegion} label={`${postType} around`} />
+
+        <PickPics images={images} setImages={setImages} />
 
         <BigButtonInSplashColor
           title="Post"

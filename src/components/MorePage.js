@@ -8,18 +8,7 @@ import Hr from "./Hr.js";
 import alerto from "./Alerto.js";
 import { useNavigation } from "@react-navigation/native";
 
-/**
- * @param {{ iconName: keyof typeof Ionicons.glyphMap }}
- */
-function MenuItem({ iconName, text, onPress }) {
-  return (
-    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-      <Ionicons name={iconName} size={24} color={primaryColor} />
-      <Text style={styles.menuItemText}>{text}</Text>
-      <Ionicons name="chevron-forward" size={24} color={primaryColor} />
-    </TouchableOpacity>
-  );
-}
+import MenuItem from "./MenuItem.js";
 
 export default function MorePage() {
   const navigation = useNavigation();
@@ -60,16 +49,5 @@ const styles = StyleSheet.create({
   },
   menuItemsContainer: {
     gap: 12,
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    padding: 14,
-    borderRadius: 5,
-    ...globalStyles.shadow_1,
-  },
-  menuItemText: {
-    marginRight: "auto",
   },
 });
