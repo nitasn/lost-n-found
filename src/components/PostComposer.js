@@ -77,7 +77,7 @@ export default function PostComposer({ navigation, route }) {
 
   return (
     <ScrollView>
-      <DismissKeyboardView style={styles.screen}>
+      <DismissKeyboardView>
         <SelectPostType type={postType} setType={setPostType} />
         <TextInputWithX
           initialText={title}
@@ -100,6 +100,7 @@ export default function PostComposer({ navigation, route }) {
           title="Post"
           onPress={() => alerto({ message: "ma nish" })}
           iconName="send"
+          style={styles.btnGo}
         />
       </DismissKeyboardView>
     </ScrollView>
@@ -107,5 +108,8 @@ export default function PostComposer({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  screen: {},
+  btnGo: {
+    marginTop: 24,
+    marginBottom: 20,
+  },
 });

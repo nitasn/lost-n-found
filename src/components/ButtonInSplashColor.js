@@ -11,9 +11,9 @@ export default function ({ title, style, onPress }) {
   );
 }
 
-export function BigButtonInSplashColor({ title, iconName, onPress }) {
+export function BigButtonInSplashColor({ title, iconName, onPress, style }) {
   return (
-    <TouchableOpacity style={styles.buttonGo} onPress={onPress}>
+    <TouchableOpacity style={[styles.buttonGo, style]} onPress={onPress}>
       <Text style={styles.buttonGoText}>{title}</Text>
       {iconName && <Ionicons size={18} color="white" name={iconName} />}
     </TouchableOpacity>
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "center",
+    justifyContent: "center",
   },
   buttonGoText: {
     fontSize: 16,
