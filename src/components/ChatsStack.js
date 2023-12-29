@@ -9,6 +9,16 @@ import { jwtDecode } from "jwt-decode";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import alerto from "./Alerto";
 
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <Text>The count is {count}</Text>
+      <Button onPress={() => setCount((c) => c + 1)} title="Increment" />
+    </>
+  );
+}
+
 export default function () {
   return (
     <View style={styles.container}>
@@ -16,10 +26,20 @@ export default function () {
       <ButtonInSplashColor
         title="Alerto"
         onPress={() => {
-          alerto({ title: "A Notice", message: "Did you notice this notice my friend?" });
-          setTimeout(() => {
-            alerto({ message: "This message has no title." });
-          });
+          // alerto({ title: "A Notice", message: "Did you notice this notice my friend?" });
+          // setTimeout(() => {
+          //   alerto({ message: "This message has no title." });
+          // });
+          // alerto("The upload is done!");
+          alerto((closeAlerto) => (
+            <>
+              <Text>This is a message.</Text>
+              <Text>This is a message.</Text>
+              <Text>This is a message.</Text>
+              <Button title="Close" onPress={closeAlerto} />
+            </>
+          ));
+          // alerto(<Counter />)
         }}
       />
     </View>

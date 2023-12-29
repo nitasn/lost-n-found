@@ -1,32 +1,53 @@
 import { Animated, StyleSheet, TouchableOpacity, View, Text, Easing } from "react-native";
-
-import { useRef, useState, useEffect, useMemo } from "react";
+import React from "react";
 
 import { primaryColor } from "../js/theme";
 import globalStyles from "../js/globalStyles";
 import { createGlobalState, useGlobalState } from "../js/useGlobalState";
 
 /**
- * @typedef {Object} AlertoProps
+ * @typedef {Object} TitleAndMessage
  * @property {string} [title]
  * @property {string} [message]
+ *
+ * @typedef {(closeAlerto: Function) => React.ReactNode} FuncReturningJsx
+ *
+ * @typedef {(TitleAndMessage | FuncReturningJsx | React.ReactNode | string)} AlertoArg
  */
 
 const queueState = createGlobalState([]);
 
 /**
- * @param {AlertoProps} props
+ * **Argument Type**
+ * 
+ * Alerto accepts either a `string`, `{ title, message }`,
+ * `JSX`, or a `function`.
+ * 
+ * `alerto("Hello World")`
+ * 
+ * `alerto({ title: "A Title", message: "This is a message." })`
+ * 
+ * `alerto(<MyComponent />)`
+ *
+ * `alerto((closeAlerto) => <ProgressBar onFinish={closeAlerto} />)`
+ * 
+ * **Note** 
+ * 
+ * If you pass a function (and only in that case), the default "Ok" button won't show;
+ * hence, the user won't be able to close the alerto
+ * unless you explicitly let them (e.g. by `<Button onPress={closeAlerto} />`)
+ *
+ * @param {AlertoArg} arg
  */
-export default function alerto(props) {
-  // todo allow props to be either { title, message } or string or React.JSX.Element!
-  queueState.set([...queueState.get(), props]);
+export default function alerto(arg) {
+  queueState.set([...queueState.get(), arg]);
 }
 
 /**
  * @param {{ children: React.ReactNode }}
  */
 export function AlertoProvider({ children }) {
-  const memoizedChildren = useMemo(() => children, [children]);
+  const memoizedChildren = React.useMemo(() => children, [children]);
 
   // The children are memoized to avoid this warnning:
   // WARNING: "Sending `onAnimatedValueUpdate` with no listeners registered".
@@ -70,15 +91,15 @@ async function animate(opacity, scale, { to }) {
 }
 
 function AlertoContainer() {
-  /** @type {[Array<AlertoProps>]} */
+  /** @type {[Array<AlertoArg>]} */
   const [queue, setQueue] = useGlobalState(queueState);
 
-  const [anyAlertShown, setAnyAlertShown] = useState(false);
+  const [anyAlertShown, setAnyAlertShown] = React.useState(false);
 
-  const { current: opacity } = useRef(new Animated.Value(0));
-  const { current: scale } = useRef(new Animated.Value(0));
+  const { current: opacity } = React.useRef(new Animated.Value(0));
+  const { current: scale } = React.useRef(new Animated.Value(0));
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!anyAlertShown && queue.length > 0) {
       setAnyAlertShown(true);
       animate(opacity, scale, { to: 1 });
@@ -105,29 +126,60 @@ function AlertoContainer() {
 
   return (
     <Animated.View style={[styles.fullScreenContainer, { opacity }]}>
-      <AlertoBox alertoProps={queue[0]} doClose={closeAlerto} animatedValue={scale} />
+      <AlertoBox arg={queue[0]} doClose={closeAlerto} animatedValue={scale} />
     </Animated.View>
   );
 }
 
-/**
- * @param {{ alertoProps: AlertoProps, doClose: () => void }}
- */
-function AlertoBox({ alertoProps, doClose, animatedValue }) {
+const INCLUDE_OK_BTN = true;
+const EXCLUDE_OK_BTN = false;
+
+function toAlertoBody(arg, closeAlerto) {
+  if (typeof arg === "string") {
+    const jsx = <Text style={styles.message}>{arg}</Text>;
+    return [jsx, INCLUDE_OK_BTN];
+  }
+
+  if (React.isValidElement(arg)) {
+    return [arg, INCLUDE_OK_BTN];
+  }
+
+  if (typeof arg === "function") {
+    return [arg(closeAlerto), EXCLUDE_OK_BTN];
+  }
+
+  if (!arg.title || !arg.message) {
+    const jsx = <Text style={styles.message}>{arg.title || arg.message}</Text>;
+    return [jsx, INCLUDE_OK_BTN];
+  }
+
+  const jsx = (
+    <View style={styles.containerTitleMessage}>
+      {<Text style={styles.title}>{arg.title}</Text>}
+      {<Text style={styles.message}>{arg.message}</Text>}
+    </View>
+  );
+  return [jsx, INCLUDE_OK_BTN];
+}
+
+function AlertoBox({ arg, doClose, animatedValue }) {
   const scale = animatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0.4, 1],
   });
 
+  const [body, shouldIncludeOkBtn] = toAlertoBody(arg, doClose);
+
   return (
     <Animated.View style={[styles.alertoBox, { transform: [{ scale }] }]}>
-      {alertoProps.title && <Text style={styles.title}>{alertoProps.title}</Text>}
-      {alertoProps.message && <Text style={styles.message}>{alertoProps.message}</Text>}
-      <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.actionBtn} onPress={doClose}>
-          <Text style={styles.actionBtnText}>Ok</Text>
-        </TouchableOpacity>
-      </View>
+      {body}
+      {shouldIncludeOkBtn && (
+        <View style={styles.actionsRow}>
+          <TouchableOpacity style={styles.actionBtn} onPress={doClose}>
+            <Text style={styles.actionBtnText}>Ok</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </Animated.View>
   );
 }
@@ -148,15 +200,19 @@ const styles = StyleSheet.create({
     width: "80%",
     maxWidth: 450,
   },
+  containerTitleMessage: {
+    gap: 6,
+    marginBottom: 6,
+  },
   title: {
     fontSize: 20,
-    marginBottom: 10,
     letterSpacing: 0.5,
   },
   message: {
-    marginBottom: 12,
+    // fontSize: 15,
   },
   actionsRow: {
+    marginTop: 10,
     flexDirection: "row",
   },
   actionBtn: {
