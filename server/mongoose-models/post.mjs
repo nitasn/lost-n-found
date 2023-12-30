@@ -23,18 +23,21 @@ const postSchema = new Schema({
     required: false,
   },
   location: {
-    latLong: {
-      type: [Number],
-      required: false,
-      validate: {
-        validator: (array) => Array.isArray(array) && array.length === 2,
-        message: 'latLong must be an array of two numbers'
-      }
+    type: {
+      latLong: {
+        type: [Number],
+        required: false,
+        validate: {
+          validator: (array) => !array || (Array.isArray(array) && array.length === 2),
+          message: 'latLong must be an array of two numbers or null'
+        }
+      },
+      name: {
+        type: String,
+        required: false,
+      },
     },
-    name: {
-      type: String,
-      required: false,
-    },
+    required: false, // allow the entire location object to be null
   },
   picsUrls: {
     // links to images stored elsewhere
