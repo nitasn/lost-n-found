@@ -42,7 +42,6 @@ export default function PostComposer({ navigation, route }) {
     //   });
     // }
     const data = { type, title, text, region };
-    const images = [{ uri: "a" }, { uri: "b" }, { uri: "c" }, { uri: "d" }];
     alerto((closeAlerto) => <UploadModal data={data} images={images} closeModal={closeAlerto} />);
   };
 

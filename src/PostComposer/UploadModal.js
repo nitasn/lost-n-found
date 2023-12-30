@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import * as Progress from "react-native-progress";
+import { useEffect, useState } from "react";
+import * as Progress from "react-native-progress"; // todo delete this and svg
 import { primaryColor } from "../js/theme";
 import uploadToCloudinary from "../js/uploadToCloudinary";
-import { Button, ActivityIndicator, StyleSheet, View, Text } from "react-native";
+import { ActivityIndicator, StyleSheet, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { sleep } from "../js/utils";
 import "core-js/stable/array/with";
 import ButtonInSplashColor, { MinimalButtonInSplashColor } from "../components/ButtonInSplashColor";
 import { useNavigation } from "@react-navigation/native";
+import { uploadPostToServer } from "./uploadPostToServer";
 
 function UploadingItem({ text, status }) {
   const icon = {
@@ -41,39 +41,42 @@ export default function UploadModal({ data, images, closeModal }) {
      * 
      * To overcome this, I've used a few techniques here:
      * 
-     * 1. Created an additional local variable `anyImgFailure`.
+     * 1. Created an additional local variable: `picsUrls`.
      * 2. Passed functions to state-setters wherever possible.
-     * 3. Used the stale state when it didn't matter:
-     *    e.g. `if (imgUploads[i].status === 'success')` - in the real state, 'failure'
-     *    values have been mappped to 'pending'. however, 'success' values remained in place.
-     * 
-     * Maybe these kinda problems should have been solved using a class component instead.
-     * Anyway, have fun.
      */
-    let anyImgFailure = false;
+    
+    // local copy to avoid closure issues
+    let picsUrls = imgUploads.map((obj) => obj.url);
 
-    setImgUploads(imgUploads.map((obj) => 
-      obj.status === 'failure' ? { ...obj, status: 'pending' } : obj
-    ));
 
-    if (postBodyStatus === 'failure') {
-      setPostBodyStatus('pending');
-    }
-
-    for (let i = 0; i < images.length; i++) {
-      if (imgUploads[i].status === 'success') {
-        continue;
+    // set every upload with status 'failure' to 'pending'
+    {
+      setImgUploads(imgUploads.map((obj) => 
+        obj.status === 'failure' ? { ...obj, status: 'pending' } : obj
+      ));
+      
+      if (postBodyStatus === 'failure') {
+        setPostBodyStatus('pending');
       }
-      const hostedUrl = await uploadToCloudinary(images[i].uri);
-      if (!hostedUrl) anyImgFailure = true;
-      setImgUploads((imgUploads) =>
-        imgUploads.with(i, { url: hostedUrl, status: hostedUrl ? "success" : "failure" })
-      );
     }
-    if (anyImgFailure) {
+
+    // attempt to upload all images sequentially
+    for (let i = 0; i < images.length; i++) {
+      if (picsUrls[i]) continue; // skip if already uploaded
+
+      const url = await uploadToCloudinary(images[i].uri);
+      setImgUploads((imgUploads) => 
+        imgUploads.with(i, { url, status: url ? "success" : "failure" })
+      );
+      picsUrls[i] = url;
+    }
+
+    // if any image hasn't got a url, we can't upload the post
+    if (picsUrls.findIndex((url) => !url) !== -1) {
       return setPostBodyStatus("failure");
     }
-    const posted = await uploadPostToServer({ ...data, images });
+
+    const posted = await uploadPostToServer({ ...data, picsUrls });
     setPostBodyStatus(posted ? "success" : "failure");
   }
 
@@ -128,11 +131,6 @@ export default function UploadModal({ data, images, closeModal }) {
       }[postBodyStatus]}
     </>
   );
-}
-
-async function uploadPostToServer(postData) {
-  await sleep(1500);
-  return true;
 }
 
 const styles = StyleSheet.create({

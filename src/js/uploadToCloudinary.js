@@ -16,8 +16,7 @@ function randomIntBetween(min, max) {
  * @returns {Promise<string?>} url of the hosted image, or null if err.
  */
 export default async function uploadToCloudinary(filedata) {
-  await sleep(randomIntBetween(500, 2500));
-  if (!filedata) return null;
+  await sleep(500);
   return "test--not-url"; // TODO DELETE THIS!
 
   const formData = new FormData();
