@@ -161,9 +161,6 @@ export function hashCyrb53(str, seed = 0) {
 }
 
 export function prettyDistance(proximityInKm) {
-  if (proximityInKm == undefined) {
-    return "Unspecified Location";
-  }
   if (proximityInKm >= 10) {
     return `${proximityInKm.toFixed(0)} km away`;
   }

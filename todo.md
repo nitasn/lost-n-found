@@ -1,5 +1,7 @@
 1. restrict google maps-api-key to my domain only
 
+3. in the map, on location-icon click, if no locationPermissions, alert.
+   also, does the useEffect handle the case when no perm?
 4. map on web has many issues: pin animation state, map's not moving, doesn't goto current location on load
 
 5. on search, if there are no items, even if a filter is applied, 

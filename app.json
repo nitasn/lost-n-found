@@ -16,14 +16,21 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.nitsanbh.lostit"
+      "bundleIdentifier": "com.nitsanbh.lostit",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Location is used to tell you the distance to where items were lost/found."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.nitsanbh.lostit"
+      "package": "com.nitsanbh.lostit",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
