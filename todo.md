@@ -1,10 +1,5 @@
 1. restrict google maps-api-key to my domain only
 
-2. share button (on post-page) doesn't work on web
-
-3. actually build custom uncontrolled input: styled, with x (clear) button, and with forward ref to read its value. 
-   and with a way to set the value
-
 4. map on web has many issues: pin animation state, map's not moving, doesn't goto current location on load
 
 5. on search, if there are no items, even if a filter is applied, 
@@ -14,3 +9,11 @@
    low for FeedPost, high for PostPage
 
 7. the way auth is being exported is inconsistent. use getAuth everywhere...?
+
+9. when an upload fails, show the error message. it could be helpful (image too big, no internet, etc)
+
+10. unite lost and found feeds? if so, add 'type' option to the filter
+
+11. pull to refresh feed
+
+12. useLocation (and update posts accordingly). maybe use a map from post _id instead of storing proximityKm in the postData

@@ -19,18 +19,17 @@ import { prettyDistance } from "../js/utils";
  * @property {'found'} type - Either 'lost' or 'found'.
  * @property {boolean} isStillAvailable
  * @property {string} title
- * @property {string} text
+ * @property {string?} text
  * @property {string[]} picsUrls - Array of URLs for pictures related to the post.
  * @property {string} date - in ISO 8601 format.
- * @property {Location} location
+ * @property {Location?} location
  * @property {Author} author
- * @property {number} proximityInKm
+ * @property {number?} proximityInKm
  */
 
 /**
  * @typedef {Object} Location
- * @property {number} lat
- * @property {number} long
+ * @property {[number, number]} latLong
  * @property {string} name
  */
 
@@ -54,7 +53,7 @@ function HR() {
  */
 export default function FeedPost({ postData }) {
   const navigation = useNavigation();
-  const placeName = postData.location.name?.trim();
+  const placeName = postData.location?.name?.trim();
   const viewPost = () => navigation.navigate("PostPage", { id: postData._id });
   return (
     <Pressable style={styles.post} onPress={viewPost}>
@@ -118,6 +117,7 @@ const styles = StyleSheet.create({
   },
   text: {},
   imagesList: {
+    // alignSelf: "center"
   },
   imageWrapper: {
     ...globalStyles.shadow_2,

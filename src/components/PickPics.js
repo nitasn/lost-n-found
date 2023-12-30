@@ -66,7 +66,6 @@ export default function PickPics({ images, setImages }) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.5, // todo should i use 0.2? i need to comprare the results.
       base64: true,
     });
 

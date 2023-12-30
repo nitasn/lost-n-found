@@ -61,7 +61,7 @@ export default function PostPage({ route }) {
     return <View {...props} />;
   };
 
-  const placeName = post.location.name?.trim();
+  const placeName = post.location?.name?.trim();
 
   return (
     <ScrollView>

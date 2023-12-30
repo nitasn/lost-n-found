@@ -9,14 +9,13 @@ export async function uploadPostToServer({ type, title, text, region, picsUrls }
 
   const didSuccessfullyUpload = response.ok;
 
-  // todo this doesn't work because the props don't exactly match up.
-  // try {
-  //   const post = await response.json();
-  //   addPostToGlobalState(post);
-  // }
-  // catch {
-  //   // mmm idk
-  // }
+  try {
+    const post = await response.json();
+    addPostToGlobalState(post);
+  }
+  catch {
+    // mmm idk
+  }
 
   return didSuccessfullyUpload;
 }
