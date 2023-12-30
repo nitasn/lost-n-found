@@ -57,11 +57,18 @@ export default function PostPage({ route }) {
 
   const linkToGoogleMaps = linkToGoogleMapsAt(post.location?.latLong);
 
-  const ViewOrTouchable = (props) => {
-    if (linkToGoogleMaps) {
-      return <TouchableOpacity onPress={() => Linking.openURL(linkToGoogleMaps)} {...props} />;
-    }
-    return <View {...props} />;
+  const MaybeLinkToMaps = ({ children }) => {
+    if (!linkToGoogleMaps) return children;
+    return (
+      <TouchableOpacity style={styles.location} onPress={() => Linking.openURL(linkToGoogleMaps)}>
+        {children}
+        {!!linkToGoogleMaps && (
+          <View style={styles.iconShowLocation}>
+            <Ionicons name="navigate-circle" color={primaryColor} size={19} />
+          </View>
+        )}
+      </TouchableOpacity>
+    );
   };
 
   const placeName = post.location?.name?.trim();
@@ -109,24 +116,16 @@ export default function PostPage({ route }) {
           />
         </View>
 
-        <ViewOrTouchable style={styles.locationAndTime}>
-          <Text>
-            {
-              [
-                placeName,
-                post.proximityInKm != undefined && prettyDistance(post.proximityInKm),
-              ]
-              .filter(x => x)
-              .join(' • ') || "Unspecified Location"
-            }
-          </Text>
-          {!!linkToGoogleMaps && (
-            <View style={styles.iconShowLocation}>
-              <Ionicons name="navigate-circle" color={primaryColor} size={19} />
-            </View>
-          )}
+        <View style={styles.locationAndTime}>
+          <MaybeLinkToMaps>
+            <Text>
+              {[placeName, post.proximityInKm != undefined && prettyDistance(post.proximityInKm)]
+                .filter((x) => x)
+                .join(" • ") || "Unspecified Location"}
+            </Text>
+          </MaybeLinkToMaps>
           <Text style={styles.time}>{timeDeltaAsString(post.date)}</Text>
-        </ViewOrTouchable>
+        </View>
       </View>
       <ReportAndShareRow linkToPost={linkToPost} type={type} />
     </ScrollView>
@@ -247,9 +246,12 @@ const styles = StyleSheet.create({
     padding: 12,
     paddingTop: 6,
   },
+  location: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   iconShowLocation: {
     marginLeft: 4,
-    transform: [{ translateY: -0.5 }],
   },
   time: {
     marginLeft: "auto",
