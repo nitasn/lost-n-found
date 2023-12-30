@@ -31,7 +31,7 @@ async function maybeSignUpOnServer(user) {
   if (oldJson === newJson) return;
 
   // we've got a new user!
-  const token = user.stsTokenManager.accessToken;
+  const token = await auth.currentUser.getIdToken();
   const res = await fetch(`${process.env.ServerUrl}/api/sign-up?token=${token}`);
   const json = await res.json();
   if (!res.ok) return console.error("could not sign up!", json);
