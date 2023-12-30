@@ -15,12 +15,12 @@ export default function MorePage() {
 
   const onPressing = (type) => () => {
     // todo enable!
-    // if (!auth.currentUser) {
-    //   return alerto({
-    //     title: "To Upload, Please Sign In",
-    //     message: "To upload posts, and to enable chat with other users, please sign in ❤️",
-    //   });
-    // }
+    if (!auth.currentUser) {
+      return alerto({
+        title: "To Upload, Please Sign In",
+        message: "To upload posts, and to enable chat with other users, please sign in ❤️",
+      });
+    }
     navigation.navigate("PostComposer", { type });
   };
   return (
