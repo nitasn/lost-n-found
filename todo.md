@@ -7,7 +7,10 @@
 
 4. map on web has many issues: pin animation state, map's not moving, doesn't goto current location on load
 
-5. on search, if there are no items, even if a filter is applied, it should say `there are no items </3`
+5. on search, if there are no items, even if a filter is applied, 
+   it should say `there are no items </3`
 
 6. the picUrls of a post should have 2 versions (high & low quality)
    low for FeedPost, high for PostPage
+
+7. the way auth is being exported is inconsistent. use getAuth everywhere...?

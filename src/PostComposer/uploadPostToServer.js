@@ -1,24 +1,21 @@
-import { sleep } from "../js/utils";
-import { getAuth } from "firebase/auth";
+import { sendPostRequestToServer } from "../js/sendServerReq";
+import { addPostToGlobalState } from "../js/useAllPosts";
 
 export async function uploadPostToServer({ type, title, text, region, picsUrls }) {
   const latLong = region && [region.latitude, region.longitude];
 
-  console.log(JSON.stringify({
-    type,
-    title,
-    text,
-    latLong,
-    picsUrls
-  }, null, 2));
+  const data = { type, title, text, latLong, picsUrls };
+  const response = await sendPostRequestToServer("/api/upload-post", data, { withAuth: true });
 
-  const auth = getAuth();
-  console.log(auth.currentUser);
+  const didSuccessfullyUpload = response.ok;
 
-  const token = await getAuth().currentUser.getIdToken();
-  const res = await fetch(`${process.env.ServerUrl}/api/sign-up?token=${token}`);
-  const json = await res.json();
+  try {
+    const post = await response.json();
+    addPostToGlobalState(post);
+  }
+  catch {
+    // mmm idk
+  }
 
-  await sleep(1500);
-  return true;
+  return didSuccessfullyUpload;
 }
