@@ -38,7 +38,7 @@ export default function UploadModal({ data, images, closeModal }) {
       // this variable needs to exist becuase of closure issues with `imgUploads`
 
       for (let i = 0; i < images.length; i++) {
-        // if (i == 2) images[i].uri = null; // simulating failure
+        if (i == 2) images[i].uri = null; // simulating failure
         const hostedUrl = await uploadToCloudinary(images[i].uri);
         if (!hostedUrl) anyImgFailure = true;
         setImgUploads((imgUploads) =>
@@ -62,16 +62,18 @@ export default function UploadModal({ data, images, closeModal }) {
         failure: <Text style={styles.title}>Not Uploaded 💔</Text>,
       }[postBodyStatus]}
 
-      {images.map((_, idx) => (
-        <UploadingItem text={`Image #${idx + 1}`} status={imgUploads[idx].status} key={idx} />
-      ))}
+      <View style={styles.uploadingItemsContainer}>
+        {images.map((_, idx) => (
+          <UploadingItem text={`Image #${idx + 1}`} status={imgUploads[idx].status} key={idx} />
+        ))}
+        <UploadingItem text="Post Body" status={postBodyStatus} />
+      </View>
 
-      <UploadingItem text="Post Body" status={postBodyStatus} />
 
       {{
         pending: null,
         success: (
-          <>
+          <View style={styles.bottomActions}>
             <ButtonInSplashColor
               title="Go Back"
               onPress={() => {
@@ -79,15 +81,15 @@ export default function UploadModal({ data, images, closeModal }) {
                 navigation.goBack();
               }}
             />
-          </>
+          </View>
         ),
         failure: (
           <>
             <Text style={styles.errorMsg}>
-              Oh no!{"\n"}Seems like we got a backend issue.{"\n"}
-              Please tap 'Retry', or try again later.
+              Oh no!{"\n"}Seems like we got a backend issue :/{"\n"}
+              <Text style={{fontWeight: 'bold'}}>Please tap 'Retry', or try again later.</Text>
             </Text>
-            <View style={styles.buttonsRow}>
+            <View style={[styles.failureActions, styles.bottomActions]}>
               <MinimalButtonInSplashColor title="Cancel" onPress={closeModal} />
               <ButtonInSplashColor
                 title="Retry"
@@ -110,10 +112,13 @@ async function uploadPostToServer(postData) {
 }
 
 const styles = StyleSheet.create({
+  uploadingItemsContainer: {
+    gap: 12,
+    marginTop: 16,
+    marginBottom: 20,
+  },
   uploadingItem: {
     flexDirection: "row",
-    padding: 12,
-    // paddingHorizontal: 0,
     gap: 16,
     alignItems: "center",
   },
@@ -121,20 +126,23 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   uploadingItemText: {
-    marginLeft: 20,
+    marginLeft: 32,
   },
   title: {
     textAlign: "center",
     fontSize: 20,
     marginBottom: 12,
   },
+  bottomActions: {
+    marginTop: 18,
+  },
   errorMsg: {
     marginTop: 12,
+    marginBottom: 6,
   },
-  buttonsRow: {
+  failureActions: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 18,
   },
 });
