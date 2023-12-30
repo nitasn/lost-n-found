@@ -14,18 +14,18 @@ export default function App() {
   const AuthContextProvider = useAuthContextProvider();
 
   return (
-    <AlertoProvider>
-      <SafeAreaView style={Platform.OS === "web" ? styles.outerWeb : styles.outerMobile}>
-        <NavigationContainer linking={linking} ref={navRef}>
+    <NavigationContainer linking={linking} ref={navRef}>
+      <AlertoProvider>
+        <SafeAreaView style={Platform.OS === "web" ? styles.outerWeb : styles.outerMobile}>
           <View style={Platform.OS === "web" ? styles.innerWeb : styles.innerMobile}>
             <StatusBar style="auto" />
             <AuthContextProvider>
               <Tabs />
             </AuthContextProvider>
           </View>
-        </NavigationContainer>
-      </SafeAreaView>
-    </AlertoProvider>
+        </SafeAreaView>
+      </AlertoProvider>
+    </NavigationContainer>
   );
 }
 

@@ -1,5 +1,5 @@
 import MorePage from "./MorePage";
-import PostComposer from "./PostComposer";
+import PostComposer from "../PostComposer/PostComposer";
 
 import { createStackNavigator } from "@react-navigation/stack";
 

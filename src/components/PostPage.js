@@ -258,7 +258,6 @@ const styles = StyleSheet.create({
   },
   contactName: {
     textTransform: "capitalize",
-    fontWeight: "700",
     letterSpacing: 0.1,
     flexShrink: 1,
   },

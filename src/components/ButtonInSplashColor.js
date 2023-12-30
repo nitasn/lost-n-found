@@ -3,7 +3,7 @@ import { primaryColor } from "../js/theme";
 import globalStyles from "../js/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function ({ title, style, onPress }) {
+export default function ButtonInSplashColor({ title, style, onPress }) {
   return (
     <TouchableOpacity style={[styles.wrap, style]} onPress={onPress}>
       <Text style={styles.text}>{title}</Text>
@@ -20,6 +20,14 @@ export function BigButtonInSplashColor({ title, iconName, onPress, style }) {
   );
 }
 
+export function MinimalButtonInSplashColor({ title, onPress }) {
+  return (
+    <TouchableOpacity style={styles.actionBtn} onPress={onPress}>
+      <Text style={styles.actionBtnText}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
   wrap: {
     paddingVertical: 12,
@@ -31,6 +39,7 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     textAlign: "center",
+    fontWeight: '600'
   },
   buttonGo: {
     marginTop: 20,
@@ -52,5 +61,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 1.1,
     color: "white",
+  },
+  // minimal button
+  actionBtn: {
+    margin: -25,
+    padding: 25,
+  },
+  actionBtnText: {
+    color: primaryColor,
+    fontWeight: "600",
   },
 });

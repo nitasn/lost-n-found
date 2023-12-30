@@ -1,3 +1,5 @@
+import { sleep } from "./utils";
+
 const cloudName = "lost-and-found-startup";
 const unsignedPreset = "mobile-uploads";
 
@@ -5,12 +7,17 @@ const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
 // todo can i do signed upload (with credentials??)
 
+function randomIntBetween(min, max) {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 /**
- * @returns {Promise<string?>} url of the hosted image, or null if error
+ * @returns {Promise<string?>} url of the hosted image, or null if err.
  */
 export default async function uploadToCloudinary(filedata) {
-  
-  await new Promise((resolve) => setTimeout(2000, resolve));
+  await sleep(randomIntBetween(500, 2500));
+  if (!filedata) return null;
   return "test--not-url"; // TODO DELETE THIS!
 
   const formData = new FormData();
@@ -22,11 +29,18 @@ export default async function uploadToCloudinary(filedata) {
       method: "POST",
       body: formData,
     });
-    const json = await res.json();
-    return json.secure_url;
-    // see response structure at
-    // https://cloudinary.com/documentation/image_upload_api_reference#upload_response
-  } catch (err) {
-    return console.error("uploadToCloudinary error:", err.message), null;
+
+    const { error, secure_url } = await res.json();
+
+    if (error) throw error;
+
+    return secure_url;
+  } 
+  catch (err) {
+    console.error("could not upload to cloudinary:", err.message);
+    return null;
   }
+
+  // see response structure at
+  // https://cloudinary.com/documentation/image_upload_api_reference#upload_response
 }
