@@ -5,7 +5,7 @@ import "./user.mjs";
 
 const postSchema = new Schema({
   author: {
-    type: Schema.Types.ObjectId,
+    type: String, // uid is from firease
     ref: "User",
     required: true,
   },
@@ -23,13 +23,13 @@ const postSchema = new Schema({
     required: false,
   },
   location: {
-    lat: {
-      type: Number,
+    latLong: {
+      type: [Number],
       required: false,
-    },
-    long: {
-      type: Number,
-      required: false,
+      validate: {
+        validator: (array) => Array.isArray(array) && array.length === 2,
+        message: 'latLong must be an array of two numbers'
+      }
     },
     name: {
       type: String,

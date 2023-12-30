@@ -33,6 +33,6 @@ export default async (req, res) => {
   }
   catch (err) {
     res.status(400).send({ error: err.message });
-    console.error(`api/get-all-posts: error 400:`, err);
+    console.error(`api/get-all-posts: error 400:`, err.message);
   }
 };

@@ -6,6 +6,8 @@ const PORT = 3000;
 
 const app = express();
 
+app.use(express.json());
+
 // CORS middleware (allow requests from any origin)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

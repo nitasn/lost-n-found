@@ -3,9 +3,11 @@ import admin from "firebase-admin";
 import User from "../mongoose-models/user.mjs";
 import serviceAccount from "../firebase.secret.mjs";
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+if (admin.apps.length === 0) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
 await initMongoose();
 
@@ -17,7 +19,7 @@ export default async (req, res) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
-    const { user_id: _id, name, picture: profilePicUrl, email } = decodedToken;
+    const { uid: _id, name, picture: profilePicUrl, email } = decodedToken;
     const record = {
       _id,
       name,
@@ -29,6 +31,6 @@ export default async (req, res) => {
   } 
   catch (err) {
     res.status(400).send({ error: err.message });
-    console.error(`api/sign-in: error 400:`, err);
+    console.error(`api/sign-in: error 400:`, err.message);
   }
 };

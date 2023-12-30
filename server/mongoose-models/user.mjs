@@ -4,7 +4,7 @@ const { model, Schema } = mongoose;
 
 const userSchema = new Schema({
   "_id": {
-    // is firebase's user_id
+    // is firebase's uid
     type: String,
     required: true
   },
