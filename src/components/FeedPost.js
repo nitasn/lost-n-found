@@ -86,7 +86,6 @@ export default function FeedPost({ postData }) {
       <HR />
       <View style={styles.footer}>
         <Text>
-          <Text>
           {
             [
               postData.proximityInKm != undefined && prettyDistance(postData.proximityInKm),
@@ -95,7 +94,6 @@ export default function FeedPost({ postData }) {
             .filter(x => x)
             .join(' • ') || "Unspecified Location"
           }
-          </Text>
         </Text>
         <Text>{timeDeltaAsString(postData.date)}</Text>
       </View>

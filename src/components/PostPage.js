@@ -37,9 +37,10 @@ function HR() {
   return <View style={styles.hr} />;
 }
 
-function linkToGoogleMapsAt(location) {
-  if (!location?.lat || !location?.long) return "";
-  return `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.long}`;
+function linkToGoogleMapsAt(latLong) {
+  if (!latLong) return "";
+  const [lat, long] = latLong;
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
 }
 
 export default function PostPage({ route }) {
@@ -50,9 +51,11 @@ export default function PostPage({ route }) {
   /** @type {import("./FeedPost").PostData} */
   const post = useMemo(() => posts.find((obj) => obj._id == id), [posts, id]);
 
+  // todo if no post, redirect to 404 or say post not found...
+
   const linkToPost = `${process.env.ServerUrl}/${type}/item?id=${post._id}`;
 
-  const linkToGoogleMaps = linkToGoogleMapsAt(post.location);
+  const linkToGoogleMaps = linkToGoogleMapsAt(post.location?.latLong);
 
   const ViewOrTouchable = (props) => {
     if (linkToGoogleMaps) {
@@ -89,6 +92,7 @@ export default function PostPage({ route }) {
         <View style={styles.contactRow}>
           <View style={styles.contactImageAndName}>
             <View style={styles.contactImageWRapper}>
+              {/* todo if no profilePicUrl, use generic figure image */}
               <Image style={styles.contactImage} source={{ uri: post.author.profilePicUrl }} />
             </View>
             <Text style={styles.contactName}>{post.author.name}</Text>
@@ -107,7 +111,14 @@ export default function PostPage({ route }) {
 
         <ViewOrTouchable style={styles.locationAndTime}>
           <Text>
-            {prettyDistance(post.proximityInKm)} {placeName && `• ${placeName}`}
+            {
+              [
+                placeName,
+                post.proximityInKm != undefined && prettyDistance(post.proximityInKm),
+              ]
+              .filter(x => x)
+              .join(' • ') || "Unspecified Location"
+            }
           </Text>
           {!!linkToGoogleMaps && (
             <View style={styles.iconShowLocation}>
@@ -257,7 +268,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contactName: {
-    textTransform: "capitalize",
     letterSpacing: 0.1,
     flexShrink: 1,
   },
