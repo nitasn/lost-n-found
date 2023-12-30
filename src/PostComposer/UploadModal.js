@@ -32,25 +32,52 @@ export default function UploadModal({ data, images, closeModal }) {
   // then the postBody will be uploaded to our server with links to the hosted images
   const [postBodyStatus, setPostBodyStatus] = useState("pending");
 
-  useEffect(() => {
-    async function startUploads() {
-      let anyImgFailure = false;
-      // this variable needs to exist becuase of closure issues with `imgUploads`
+  const startUploads = async () => {
+    /**
+     * README: Closure Intricacies.
+     * 
+     * After the `startUploads` promise is kicked, it updates the state a few times;
+     * Hence, when it accesses pieces of the state, it's STALE STATE FROM AN OLD RENDER.
+     * 
+     * To overcome this, I've used a few techniques here:
+     * 
+     * 1. Created an additional local variable `anyImgFailure`.
+     * 2. Passed functions to state-setters wherever possible.
+     * 3. Used the stale state when it didn't matter:
+     *    e.g. `if (imgUploads[i].status === 'success')` - in the real state, 'failure'
+     *    values have been mappped to 'pending'. however, 'success' values remained in place.
+     * 
+     * Maybe these kinda problems should have been solved using a class component instead.
+     * Anyway, have fun.
+     */
+    let anyImgFailure = false;
 
-      for (let i = 0; i < images.length; i++) {
-        if (i == 2) images[i].uri = null; // simulating failure
-        const hostedUrl = await uploadToCloudinary(images[i].uri);
-        if (!hostedUrl) anyImgFailure = true;
-        setImgUploads((imgUploads) =>
-          imgUploads.with(i, { url: hostedUrl, status: hostedUrl ? "success" : "failure" })
-        );
-      }
-      if (anyImgFailure) {
-        return setPostBodyStatus("failure");
-      }
-      const posted = await uploadPostToServer({ ...data, images });
-      setPostBodyStatus(posted ? "success" : "failure");
+    setImgUploads(imgUploads.map((obj) => 
+      obj.status === 'failure' ? { ...obj, status: 'pending' } : obj
+    ));
+
+    if (postBodyStatus === 'failure') {
+      setPostBodyStatus('pending');
     }
+
+    for (let i = 0; i < images.length; i++) {
+      if (imgUploads[i].status === 'success') {
+        continue;
+      }
+      const hostedUrl = await uploadToCloudinary(images[i].uri);
+      if (!hostedUrl) anyImgFailure = true;
+      setImgUploads((imgUploads) =>
+        imgUploads.with(i, { url: hostedUrl, status: hostedUrl ? "success" : "failure" })
+      );
+    }
+    if (anyImgFailure) {
+      return setPostBodyStatus("failure");
+    }
+    const posted = await uploadPostToServer({ ...data, images });
+    setPostBodyStatus(posted ? "success" : "failure");
+  }
+
+  useEffect(() => {
     startUploads();
   }, []);
 
@@ -93,10 +120,7 @@ export default function UploadModal({ data, images, closeModal }) {
               <MinimalButtonInSplashColor title="Cancel" onPress={closeModal} />
               <ButtonInSplashColor
                 title="Retry"
-                onPress={() => {
-                  closeModal();
-                  // todo
-                }}
+                onPress={startUploads}
               />
             </View>
           </>
