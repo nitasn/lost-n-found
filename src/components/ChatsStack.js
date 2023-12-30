@@ -22,8 +22,8 @@ function Counter() {
 export default function () {
   return (
     <View style={styles.container}>
-      <Text>Alerto Test</Text>
-      <ButtonInSplashColor
+      <Text>Chats will come soon.</Text>
+      {/* <ButtonInSplashColor
         title="Alerto"
         onPress={() => {
           // alerto({ title: "A Notice", message: "Did you notice this notice my friend?" });
@@ -41,7 +41,7 @@ export default function () {
           ));
           // alerto(<Counter />)
         }}
-      />
+      /> */}
     </View>
   );
 }

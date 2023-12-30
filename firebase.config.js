@@ -1,5 +1,4 @@
-import { initializeAuth, getReactNativePersistence, getAuth } from "firebase/auth";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeAuth, getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { Platform } from "react-native";
 
@@ -12,12 +11,16 @@ const firebaseConfig = {
   appId: process.env.firebase_appId,
 };
 
-export const app = initializeApp(firebaseConfig);
-
 function getNativeAuth() {
+  // making webpack shutup: the following functions are not available for web.
+  const { getReactNativePersistence } = require("firebase/auth");
+  const ReactNativeAsyncStorage = require("@react-native-async-storage/async-storage").default;
+
   const persistence = getReactNativePersistence(ReactNativeAsyncStorage);
   return initializeAuth(app, { persistence });
 }
+
+export const app = initializeApp(firebaseConfig);
 
 export const auth = Platform.OS === "web" ? getAuth(app) : getNativeAuth();
 
