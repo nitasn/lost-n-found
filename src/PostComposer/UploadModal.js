@@ -64,7 +64,7 @@ export default function UploadModal({ data, images, closeModal }) {
     for (let i = 0; i < images.length; i++) {
       if (picsUrls[i]) continue; // skip if already uploaded
 
-      const url = await uploadToCloudinary(images[i].uri);
+      const url = await uploadToCloudinary(`data:image/jpeg;base64,${images[i].base64}`);
       setImgUploads((imgUploads) => 
         imgUploads.with(i, { url, status: url ? "success" : "failure" })
       );
