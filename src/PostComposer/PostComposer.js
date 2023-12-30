@@ -34,13 +34,13 @@ export default function PostComposer({ navigation, route }) {
   const pageRef = useRef();
 
   const onPostClick = () => {
-    // if (!title.trim()) {
-    //   pageRef.current.scrollTo({ y: 0, animate: true });
-    //   return alerto({
-    //     title: "Your Post's Missing a Title",
-    //     message: `What have you ${type}?\n` + `E.g. "Brown Boots" or "Keychain" etc.`,
-    //   });
-    // }
+    if (!title.trim()) {
+      pageRef.current.scrollTo({ y: 0, animate: true });
+      return alerto({
+        title: "Your Post's Missing a Title",
+        message: `What have you ${type}?\n` + `E.g. "Brown Boots" or "Keychain" etc.`,
+      });
+    }
     const data = { type, title, text, region };
     alerto((closeAlerto) => <UploadModal data={data} images={images} closeModal={closeAlerto} />);
   };
