@@ -3,7 +3,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithCredential,
-  signInWithPopup
+  signInWithPopup,
 } from "firebase/auth";
 
 import { createContext, useEffect, useState, Context, useContext, useCallback } from "react";
@@ -17,8 +17,10 @@ import { Platform } from "react-native";
 WebBrowser.maybeCompleteAuthSession();
 
 async function maybeSignUpOnServer(user) {
-  return; // todo enable!
-
+  if (Platform.OS !== "web") {
+    return; // todo enable!
+  }
+  
   // extract fields
   const _id = user.uid;
   const name = user.displayName;
