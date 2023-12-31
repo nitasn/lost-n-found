@@ -20,3 +20,5 @@
 12. unite PostPage and FeedPost somehow
 
 13. "oopsie couldn't get user location" there seems to be a problem with the new implementation of location.js
+     oopsie couldn't get user location [TypeError: Cannot read property 'animateToRegion' of null]
+     also it took way to long for the location to to appear (btn ↗️ had no effect)
