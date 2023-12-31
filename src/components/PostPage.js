@@ -47,7 +47,7 @@ export default function PostPage({ route }) {
   const { id } = route.params;
   const type = useContext(TypeContext);
 
-  const allPosts = useAllPosts();
+  const { allPosts } = useAllPosts();
   /** @type {import("./FeedPost").PostData} */
   const post = useMemo(() => allPosts.find((obj) => obj._id == id), [allPosts, id]);
 

@@ -15,7 +15,8 @@
 9. when an upload fails, show the error message. it could be helpful (image too big, no internet, etc)
 
 10. unite lost and found feeds? if so, add 'type' option to the filter
+11. add checkbox "show posts with unspecified location"
 
-11. pull to refresh feed
+12. unite PostPage and FeedPost somehow
 
-13. unite PostPage and FeedPost somehow
+13. "oopsie couldn't get user location" there seems to be a problem with the new implementation of location.js

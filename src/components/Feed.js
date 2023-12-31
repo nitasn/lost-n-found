@@ -1,11 +1,12 @@
-import { useContext, useState, useMemo } from "react";
+import { useContext, useState, useMemo, useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import FeedPost from "./FeedPost";
 import SearchBar from "./SearchBar";
 
-import { useAllPosts } from "../js/useAllPosts";
+import { updatePosts, useAllPosts } from "../js/useAllPosts";
 import TypeContext from "../js/typeContext";
+import { geoDistance } from "../js/utils";
 
 function MessageNoResults() {
   return <Text>No results... 💔</Text>;
@@ -16,38 +17,45 @@ function MessageNoItems() {
 }
 
 export default function Feed({ filter }) {
-  const posts = useFilteredPosts(filter);
+  const { allPosts, isFetching } = useAllPosts();
+
+  const posts = useFilteredPosts(filter, allPosts);
 
   const filterOn = Object.keys(filter).length > 0;
 
-  const renderSearchBar = () => <SearchBar filterOn={filterOn} />;
+  const SearchBar_withProps = () => <SearchBar filterOn={filterOn} />; // todo pass filter in context
 
   const EmptyListMessage = () => (
-    <View style={styles.emptyListMessage}>{filterOn ? <MessageNoResults /> : <MessageNoItems />}</View>
+    <View style={styles.emptyListMessage}>
+      {filterOn ? <MessageNoResults /> : <MessageNoItems />}
+    </View>
   );
 
   return (
     <FlatList
-      ListHeaderComponent={renderSearchBar}
+      ListHeaderComponent={SearchBar_withProps}
       ListEmptyComponent={EmptyListMessage}
       data={posts}
       renderItem={({ item }) => <FeedPost postData={item} />}
+      onRefresh={updatePosts}
+      refreshing={isFetching}
     />
   );
 }
 
 /**
  * @param {import("./FeedStack").Filter} filter
+ * @param {Array<import("./FeedPost").PostData>} allPosts
  */
-function useFilteredPosts(filter) {
+function useFilteredPosts(filter, allPosts) {
   const type = useContext(TypeContext);
-
-  /** @type {[[import("./FeedPost").PostData]]} */
-  const allPosts = useAllPosts();
 
   const query = filter.query?.trim();
   const queryRegex = query && new RegExp(query, "i");
 
+  const filterRadius = parseInt(filter.radiusKm?.toString().match(/\d+/g)?.[0]);
+
+  /** @type {(post: import("./FeedPost").PostData) => boolean} */
   const doesPostMatch = (post) => {
     if (post.type !== type) return false;
 
@@ -61,8 +69,12 @@ function useFilteredPosts(filter) {
       return false;
     }
 
-    const filterRadius = parseInt(filter.radiusKm?.toString().match(/\d+/g)?.[0]);
-    if (!isNaN(filterRadius) && filterRadius < post.proximityInKm) return false;
+    if (filter.region && post.location?.latLong) {
+      // we're passing the filter if post location is unspecified...
+      const { latitude, longitude } = filter.region;
+      const distance = geoDistance(...post.location.latLong, latitude, longitude);
+      if (distance > filterRadius) return false;
+    }
 
     return true;
   };

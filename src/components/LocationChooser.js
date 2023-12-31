@@ -114,7 +114,7 @@ export default function LocationChooser({ region, setRegion, doClose }) {
     getLocation()
       .then(moveTo)
       .catch((err) => {
-        console.error("oopsie coudn't get user location", err);
+        console.error("oopsie couldn't get user location", err);
       });
   };
 
@@ -130,16 +130,23 @@ export default function LocationChooser({ region, setRegion, doClose }) {
   };
 
   useEffect(() => {
-    !pinRegion && moveToCurrentLocation();
+    async function moveToCurrentLocationOnStart() {
+      const location = await getLocation();
+      location && !hasSearchedAddress.current && moveTo(location);
+    }
+    !pinRegion && moveToCurrentLocationOnStart();
   }, []);
+
+  const hasSearchedAddress = useRef(false);
 
   const onAddressSearch = async ({ nativeEvent: { text } }) => {
     if (!text) return;
     try {
+      hasSearchedAddress.current = true;
       const latLong = await addrToLatLong(text);
-      moveTo(latLong);
+      latLong && moveTo(latLong);
     } catch (err) {
-      console.error(err);
+      console.error("addrToLatLong error:", err.message);
     }
   };
 

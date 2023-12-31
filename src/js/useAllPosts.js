@@ -3,27 +3,53 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { sendGetRequestToServer } from "./sendServerReq";
 import alerto from "../components/Alerto";
 import { getLocation } from "./location";
-import { geoDistance } from "./utils";
+import { geoDistance, sleep } from "./utils";
 
-const StateAllPosts = createGlobalState([]);
+const AllPosts = createGlobalState([]);
+const IsFetching = createGlobalState(false);
 
 export function useAllPosts() {
-  const [allPosts] = useGlobalState(StateAllPosts);
-  // not exposing the setter
-  return allPosts;
+  const [allPosts] = useGlobalState(AllPosts);
+  const [isFetching] = useGlobalState(IsFetching);
+  // not exposing the setters (e.g. no "setIsFetching")
+  return { allPosts, isFetching };
 }
 
 export function addPostToGlobalState(postData) {
-  StateAllPosts.set([...StateAllPosts.get(), postData]);
+  AllPosts.set([...AllPosts.get(), postData]);
 }
 
 AsyncStorage.getItem("allPosts")
-  .then((posts) => posts && StateAllPosts.set(JSON.parse(posts)))
-  .finally(updatePosts); // todo enable
+  .then((posts) => posts && AllPosts.set(JSON.parse(posts)))
+  .finally(updatePosts);
 
-// todo make sure this function is not invoked until the previous run is finished
-// to avoid race conditions regarding allPosts.set
 export async function updatePosts() {
+  if (!_promiseFetching) {
+    _promiseFetching = (async () => {
+      _hasFetched && IsFetching.set(true);
+      await _doUpdatePosts();
+      _hasFetched && IsFetching.set(false);
+      _promiseFetching = null;
+      _hasFetched = true;
+    })();
+  } else {
+    if (_anotherFetchRequested) return;
+    _anotherFetchRequested = true;
+    await _promiseFetching;
+    _anotherFetchRequested = false;
+    updatePosts();
+  }
+}
+
+// this is to prevent the feed from looking "refreshing" on first load
+let _hasFetched = false;
+// this is to prevent race conditions.
+// we manage overlapping calls to a _doUpdatePosts (which updates state).
+let _promiseFetching = null;
+// this is to reduce future fetches into one fetch
+let _anotherFetchRequested = false;
+
+async function _doUpdatePosts() {
   let fetchedPosts;
 
   try {
@@ -38,7 +64,7 @@ export async function updatePosts() {
     });
   }
 
-  StateAllPosts.set(
+  AllPosts.set(
     fetchedPosts.map((post) => {
       const proximityInKm = proximityInKmByPostId.get(post._id);
       if (!proximityInKm) return post;
@@ -46,23 +72,31 @@ export async function updatePosts() {
     })
   );
 
-  await AsyncStorage.setItem("allPosts", JSON.stringify(fetchedPosts)).catch(
-    () => undefined /* ignore */
-  );
+  const writeToDisk = async () => {
+    try {
+      await AsyncStorage.setItem("allPosts", JSON.stringify(fetchedPosts));
+    } catch {
+      /* ignore */
+    }
+  };
 
-  const location = await getLocation();
-  if (!location) return;
+  const updateProximities = async () => {
+    const location = await getLocation();
+    if (!location) return;
 
-  const { latitude, longitude } = location;
+    const { latitude, longitude } = location;
 
-  StateAllPosts.set((posts) =>
-    posts.map((post) => {
-      if (!post.location?.latLong) return post;
-      const proximityInKm = geoDistance(latitude, longitude, ...post.location.latLong);
-      proximityInKmByPostId.set(post._id, proximityInKm);
-      return { ...post, proximityInKm };
-    })
-  );
+    AllPosts.set((posts) =>
+      posts.map((post) => {
+        if (!post.location?.latLong) return post;
+        const proximityInKm = geoDistance(latitude, longitude, ...post.location.latLong);
+        proximityInKmByPostId.set(post._id, proximityInKm);
+        return { ...post, proximityInKm };
+      })
+    );
+  };
+
+  await Promise.all([updateProximities(), writeToDisk()]);
 }
 
 const proximityInKmByPostId = new Map(); // cache | todo invalidate cache on pull to refresh
