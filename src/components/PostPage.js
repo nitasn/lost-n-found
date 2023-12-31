@@ -1,21 +1,15 @@
 import {
   View,
   Text,
-  StyleSheet,
-  FlatList,
-  Pressable,
-  Image,
+  StyleSheet, Image,
   ScrollView,
-  TouchableOpacity,
-  Alert,
-  Share,
-  Platform,
+  TouchableOpacity, Share,
+  Platform
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { useAllPosts } from "../js/useAllPosts";
 import { useContext, useMemo } from "react";
 import globalStyles from "../js/globalStyles";
-import { useNavigation } from "@react-navigation/native";
 import { timeDeltaAsString } from "../js/utils";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
@@ -25,11 +19,12 @@ import { prettyDistance } from "../js/utils";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import alerto from "./Alerto";
 
-async function getBaseUrl() {
-  const url = await Linking.getInitialURL();
-  // regex: go past the protocol (two forward slashes),
-  // then advance til the first slash or question mark.
-  return url?.match(/.*?\/\/[^\?\/]*/)?.[0] || "";
+function openUrlExternally(url) {
+  if (Platform.OS == "web") {
+    window.open(url, "_blank");
+  } else {
+    Linking.openURL(url);
+  }
 }
 
 /** <hr /> */
@@ -60,7 +55,7 @@ export default function PostPage({ route }) {
   const MaybeLinkToMaps = ({ children }) => {
     if (!linkToGoogleMaps) return children;
     return (
-      <TouchableOpacity style={styles.location} onPress={() => Linking.openURL(linkToGoogleMaps)}>
+      <TouchableOpacity style={styles.location} onPress={() => openUrlExternally(linkToGoogleMaps)}>
         {children}
         {!!linkToGoogleMaps && (
           <View style={styles.iconShowLocation}>
