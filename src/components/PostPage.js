@@ -47,11 +47,11 @@ export default function PostPage({ route }) {
   const { id } = route.params;
   const type = useContext(TypeContext);
 
-  const [posts] = useAllPosts();
+  const allPosts = useAllPosts();
   /** @type {import("./FeedPost").PostData} */
-  const post = useMemo(() => posts.find((obj) => obj._id == id), [posts, id]);
+  const post = useMemo(() => allPosts.find((obj) => obj._id == id), [allPosts, id]);
 
-  // todo if no post, redirect to 404 or say post not found...
+  // todo if no post, redirect to 404 or say post not found... and fetchPosts...
 
   const linkToPost = `${process.env.ServerUrl}/${type}/item?id=${post._id}`;
 

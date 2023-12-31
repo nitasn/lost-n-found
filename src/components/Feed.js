@@ -43,7 +43,7 @@ function useFilteredPosts(filter) {
   const type = useContext(TypeContext);
 
   /** @type {[[import("./FeedPost").PostData]]} */
-  const [allPosts] = useAllPosts();
+  const allPosts = useAllPosts();
 
   const query = filter.query?.trim();
   const queryRegex = query && new RegExp(query, "i");
@@ -61,7 +61,6 @@ function useFilteredPosts(filter) {
       return false;
     }
 
-    // todo set post.proximityKm based on Haversine's getDistance from user's current location
     const filterRadius = parseInt(filter.radiusKm?.toString().match(/\d+/g)?.[0]);
     if (!isNaN(filterRadius) && filterRadius < post.proximityInKm) return false;
 

@@ -18,6 +18,4 @@
 
 11. pull to refresh feed
 
-12. useLocation (and update posts accordingly). maybe use a map from post _id instead of storing proximityKm in the postData
-
 13. unite PostPage and FeedPost somehow
