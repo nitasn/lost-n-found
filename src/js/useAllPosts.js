@@ -1,4 +1,4 @@
-import { createGlobalState, useGlobalState } from "./useGlobalState";
+import { createGlobalState, useGlobalState } from "../ts/useGlobalState";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { sendGetRequestToServer } from "./sendServerReq";
 import alerto from "../components/Alerto";
@@ -16,7 +16,7 @@ export function useAllPosts() {
 }
 
 export function addPostToGlobalState(postData) {
-  AllPosts.set([...AllPosts.get(), postData]);
+  AllPosts.set([postData, ...AllPosts.get()]);
 }
 
 AsyncStorage.getItem("allPosts")

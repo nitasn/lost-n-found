@@ -18,6 +18,8 @@ import { sendGetRequestToServer } from "../js/sendServerReq.js";
 WebBrowser.maybeCompleteAuthSession();
 
 async function maybeSignUpOnServer(user) {
+  if (Platform.OS !== "web") return; // todo delete this
+
   // extract fields
   const _id = user.uid;
   const name = user.displayName;
@@ -30,7 +32,7 @@ async function maybeSignUpOnServer(user) {
   if (oldJson === newJson) return;
 
   // we've got a new user!
-  const res = await sendGetRequestToServer('/api/sign-up', { withAuth: true });
+  const res = await sendGetRequestToServer("/api/sign-up", { withAuth: true });
   const json = await res.json();
   if (!res.ok) return console.error("could not sign up!", json);
   console.log("signed up :)", json);
