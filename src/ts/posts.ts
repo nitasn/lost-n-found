@@ -84,7 +84,7 @@ const disptachDistCalc = (() => {
 
     AllPosts.set((allPosts) => {
       return allPosts.map((post) => {
-        if (!post.location?.latLong) post;
+        if (!post.location?.latLong) return post;
         const proximityInKm = geoDistance(latitude, longitude, ...post.location.latLong);
         cache.set(post._id, proximityInKm);
         return { ...post, proximityInKm };
@@ -99,6 +99,9 @@ const disptachDistCalc = (() => {
   const posts = await AsyncStorage.getItem("allPosts")
     .then(JSON.parse)
     .catch(() => null);
+
+  console.log(posts.length);
+  
 
   posts && AllPosts.set(posts);
 
