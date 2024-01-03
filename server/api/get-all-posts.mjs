@@ -26,7 +26,7 @@ export default async (req, res) => {
 
   try {
     const allPosts = await Post.find(filter, omit__v_field)
-      .sort({ date_created: -1 })
+      .sort({ date: -1 })
       .populate("author", ["_id", "name", "profilePicUrl"]);
 
     res.status(200).send(allPosts);

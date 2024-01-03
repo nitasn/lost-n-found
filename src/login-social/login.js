@@ -14,7 +14,7 @@ import { auth } from "../../firebase.config.js";
 
 import * as WebBrowser from "expo-web-browser";
 import { Platform } from "react-native";
-import { sendGetRequestToServer } from "../js/sendServerReq.js";
+import { serverGET } from "../js/sendServerReq.js";
 WebBrowser.maybeCompleteAuthSession();
 
 async function maybeSignUpOnServer(user) {
@@ -32,7 +32,7 @@ async function maybeSignUpOnServer(user) {
   if (oldJson === newJson) return;
 
   // we've got a new user!
-  const res = await sendGetRequestToServer("/api/sign-up", { withAuth: true });
+  const res = await serverGET("/api/sign-up", { withAuth: true });
   const json = await res.json();
   if (!res.ok) return console.error("could not sign up!", json);
   console.log("signed up :)", json);

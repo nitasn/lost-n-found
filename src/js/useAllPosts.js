@@ -1,6 +1,6 @@
 import { createGlobalState, useGlobalState } from "../ts/useGlobalState";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { sendGetRequestToServer } from "./sendServerReq";
+import { serverGET } from "./sendServerReq";
 import alerto from "../components/Alerto";
 import { getLocation } from "./location";
 import { geoDistance, sleep } from "./utils";
@@ -53,7 +53,7 @@ async function _doUpdatePosts() {
   let fetchedPosts;
 
   try {
-    const response = await sendGetRequestToServer("/api/get-all-posts", { withAuth: false });
+    const response = await serverGET("/api/get-all-posts", { withAuth: false });
     fetchedPosts = await response.json();
   } catch (err) {
     return alerto({

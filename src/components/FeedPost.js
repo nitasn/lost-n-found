@@ -16,7 +16,7 @@ import { prettyDistance } from "../js/utils";
 /**
  * @typedef {Object} PostData
  * @property {string} _id
- * @property {'found'} type - Either 'lost' or 'found'.
+ * @property {'lost'|'found'} type - Either 'lost' or 'found'.
  * @property {boolean} isStillAvailable
  * @property {string} title
  * @property {string?} text

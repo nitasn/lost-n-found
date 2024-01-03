@@ -1,5 +1,4 @@
 import Constants from "expo-constants";
-import { useEffect, useState } from "react";
 export const deviceName = Constants.deviceName;
 
 export function prettyDate(date) {
@@ -85,30 +84,6 @@ export const newID = (() => {
   };
 })();
 
-export const capitalize = (phrase) => {
-  return phrase.toLowerCase().split(" ").map(capitalizeWord).join(" ");
-};
-
-export const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
-
-/**
- *
- * @param {string} url
- * @param {Object} body
- * @param {string?} jwt
- */
-export function sendPostReq(url, body, jwt = undefined) {
-  const headers = { "Content-Type": "application/json" };
-  if (jwt) headers.Authorization = `Bearer ${jwt}`;
-
-  return fetch(url, {
-    headers,
-    method: "POST",
-    mode: "cors",
-    body: JSON.stringify(body),
-  });
-}
-
 export function extractFields(obj, keys) {
   return keys.reduce((res, key) => {
     if (key in obj) res[key] = obj[key];
@@ -117,48 +92,6 @@ export function extractFields(obj, keys) {
 }
 
 export const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-
-/**
- * a simple cacher for functions, which may be sync or async.
- * important: the cached function's argument(s) must be json-able.
- */
-export const cache = (() => {
-  const dict = Object.create(null);
-
-  return function (func) {
-    return function (...args) {
-      const strArgs = JSON.stringify(args);
-      if (!(strArgs in dict)) {
-        dict[strArgs] = func(...args);
-      }
-      return dict[strArgs];
-    };
-  };
-})();
-
-export function lastOf(arr) {
-  return arr[arr.length - 1];
-}
-
-export function zip(arr1, arr2) {
-  if (arr1.length > arr2.length) {
-    return [...arr2].map((y, idx) => [arr1[idx], y]);
-  }
-  return [...arr1].map((x, idx) => [x, arr2[idx]]);
-}
-
-export function hashCyrb53(str, seed = 0) {
-  let h1 = 0xdeadbeef ^ seed;
-  let h2 = 0x41c6ce57 ^ seed;
-  for (let i = 0, ch; i < str.length; i++) {
-    ch = str.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 2654435761);
-    h2 = Math.imul(h2 ^ ch, 1597334677);
-  }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-}
 
 export function prettyDistance(proximityInKm) {
   if (proximityInKm >= 10) {
@@ -172,14 +105,3 @@ export function prettyDistance(proximityInKm) {
   }
   return `${proximityInKm.toFixed(2)} km away`;
 }
-
-export const TimePeriod = Object.freeze({
-  seconds: (s) => ({
-    to_milliseconds: () => s * 1000,
-    to_seconds: () => s,
-    to_minutes: () => s / 60,
-    to_hours: () => s / 3600,
-  }),
-  minutes: (m) => TimePeriod.seconds(m * 60),
-  hours: (h) => TimePeriod.seconds(h * 3600),
-});

@@ -8,9 +8,12 @@ export function createGlobalState<T>(initialValue?: T) {
     return value;
   }
 
-  function set(param: T | ((prevValue: T) => T)): void {
-    value = typeof param === "function" ? (param as (prevValue: T) => T)(value) : param;
-    subs.forEach((callback) => callback(value));
+  function set(param: T | ((currentValue: T) => T)): void {
+    const next = typeof param !== "function" ? param : (param as (currentValue: T) => T)(value);
+    if (value !== next) {
+      value = next;
+      subs.forEach((callback) => callback(value));
+    }
   }
 
   type UnsubscribeFn = () => void;

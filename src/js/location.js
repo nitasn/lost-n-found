@@ -32,6 +32,10 @@ Location.setGoogleApiKey(process.env.GOOGLE_MAPS_API_KEY);
 
 const ONE_MINUTE = 1000 * 60 * 1;
 
+/**
+ * resolves to latLong object, or null on error.
+ * @returns {Promise<{ latitude: number, longitude: number } | null>}
+ */
 export async function getLocation() {
   try {
     const perm = await Location.getForegroundPermissionsAsync();

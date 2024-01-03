@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
  * @param {string} path
  * @param {object} jsonBody
  */
-export async function sendPostRequestToServer(path, jsonBody, { withAuth = true } = {}) {
+export async function serverPOST(path, jsonBody, { withAuth = true } = {}) {
   const url = await _buildUrl(path, { withAuth });
 
   return await fetch(url, {
@@ -17,7 +17,7 @@ export async function sendPostRequestToServer(path, jsonBody, { withAuth = true 
 /**
  * @param {string} path
  */
-export async function sendGetRequestToServer(path, { withAuth = false } = {}) {
+export async function serverGET(path, { withAuth = false } = {}) {
   const url = await _buildUrl(path, { withAuth });
 
   return await fetch(url);
