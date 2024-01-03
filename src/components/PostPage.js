@@ -7,7 +7,7 @@ import {
   Platform
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { useAllPosts } from "../js/useAllPosts";
+import { useAllPosts } from "../ts/posts";
 import { useContext, useMemo } from "react";
 import globalStyles from "../js/globalStyles";
 import { timeDeltaAsString } from "../js/utils";

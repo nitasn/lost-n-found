@@ -1,5 +1,5 @@
 import { serverPOST } from "../js/sendServerReq";
-import { addPostToGlobalState, updatePosts } from "../js/useAllPosts";
+import { addPostToGlobalState } from "../ts/posts";
 
 export async function uploadPostToServer({ type, title, text, region, picsUrls }) {
   const latLong = region && [region.latitude, region.longitude];

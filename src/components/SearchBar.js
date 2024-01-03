@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import globalStyles from "../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { primaryColor } from "../js/theme";
+import { dispatchPostsFetch } from "../ts/posts";
 
 export default function SearchBar({ filterOn }) {
   const navigation = useNavigation();

@@ -100,9 +100,6 @@ const disptachDistCalc = (() => {
     .then(JSON.parse)
     .catch(() => null);
 
-  console.log(posts.length);
-  
-
   posts && AllPosts.set(posts);
 
   AllPosts.subscribe((posts) => {

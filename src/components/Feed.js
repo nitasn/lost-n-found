@@ -4,7 +4,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import FeedPost from "./FeedPost";
 import SearchBar from "./SearchBar";
 
-import { updatePosts, useAllPosts } from "../js/useAllPosts";
+import { dispatchPostsFetch, useAllPosts, usePostsFetchState } from "../ts/posts";
 import TypeContext from "../js/typeContext";
 import { geoDistance } from "../js/utils";
 
@@ -17,28 +17,43 @@ function MessageNoItems() {
 }
 
 export default function Feed({ filter }) {
-  const { allPosts, isFetching } = useAllPosts();
+  // todo pass filter in context
 
-  const posts = useFilteredPosts(filter, allPosts);
+  const fetchingState = usePostsFetchState();
+
+  const posts = useFilteredPosts(filter);
 
   const filterOn = Object.keys(filter).length > 0;
 
-  const SearchBar_withProps = () => <SearchBar filterOn={filterOn} />; // todo pass filter in context
-
-  const EmptyListMessage = () => (
-    <View style={styles.emptyListMessage}>
-      {filterOn ? <MessageNoResults /> : <MessageNoItems />}
-    </View>
+  const ListHeaderComponent = () => (
+    <>
+      <SearchBar filterOn={filterOn} />
+      {fetchingState.initiator === "app" && (
+        <Text style={{ textAlign: "center", fontStyle: "italic", padding: 12 }}>
+          Updaing Posts...
+        </Text>
+      )}
+    </>
   );
+
+  const EmptyListMessage = () => {
+    if (fetchingState.isFetching) return null;
+
+    return (
+      <View style={styles.emptyListMessage}>
+        {filterOn ? <MessageNoResults /> : <MessageNoItems />}
+      </View>
+    );
+  };
 
   return (
     <FlatList
-      ListHeaderComponent={SearchBar_withProps}
+      ListHeaderComponent={ListHeaderComponent}
       ListEmptyComponent={EmptyListMessage}
       data={posts}
       renderItem={({ item }) => <FeedPost postData={item} />}
-      onRefresh={updatePosts}
-      refreshing={isFetching}
+      onRefresh={() => dispatchPostsFetch({ initiator: "user" })}
+      refreshing={fetchingState.initiator === "user"}
     />
   );
 }
@@ -47,8 +62,9 @@ export default function Feed({ filter }) {
  * @param {import("./FeedStack").Filter} filter
  * @param {Array<import("./FeedPost").PostData>} allPosts
  */
-function useFilteredPosts(filter, allPosts) {
+function useFilteredPosts(filter) {
   const type = useContext(TypeContext);
+  const allPosts = useAllPosts();
 
   const query = filter.query?.trim();
   const queryRegex = query && new RegExp(query, "i");
