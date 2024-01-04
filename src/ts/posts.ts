@@ -30,7 +30,8 @@ const AllPosts = createGlobalState<PostData[]>([]);
 type FetchInitiator = "user" | "app";
 
 const FetchState = createGlobalState<{ isFetching: boolean; initiator?: FetchInitiator }>({
-  isFetching: false,
+  isFetching: true,
+  initiator: "app",
 });
 
 export function useAllPosts() {
