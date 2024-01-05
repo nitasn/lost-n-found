@@ -7,3 +7,11 @@ export function LoadingText({ text }) {
     </Text>
   );
 }
+
+export function ErrorText({ text }) {
+  return (
+    <Text style={{ textAlign: "center", fontWeight: "bold", padding: 12 }}>
+      {text}
+    </Text>
+  );
+}

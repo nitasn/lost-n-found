@@ -2,19 +2,12 @@ import Constants from "expo-constants";
 export const deviceName = Constants.deviceName;
 
 export function prettyDate(date) {
-  return new Date(date).toLocaleDateString("en-US", {
-    weekday: "long",
+  return new Date(date).toLocaleString("en-US", {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
-  });
-}
-
-export function prettyDateNoWeekday(date) {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    minute: '2-digit',
+    hour: '2-digit'
   });
 }
 

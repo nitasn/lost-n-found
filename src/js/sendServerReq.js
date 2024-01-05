@@ -6,7 +6,7 @@ import { getAuth } from "firebase/auth";
  */
 export async function serverPOST(path, jsonBody, { withAuth = true } = {}) {
   const [url, headers] = await _buildReq(path, { withAuth });
-
+  
   return await fetch(url, {
     method: "POST",
     headers: {

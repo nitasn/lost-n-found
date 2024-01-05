@@ -20,7 +20,7 @@ import { primaryColor } from "../js/theme";
 import { prettyDistance } from "../js/utils";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import alerto from "./Alerto";
-import { LoadingText } from "./misc";
+import { LoadingText, ErrorText } from "./misc";
 
 function openUrlExternally(url) {
   if (Platform.OS === "web") {
@@ -41,12 +41,6 @@ function linkToGoogleMapsAt(latLong) {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
 }
 
-function Error404() {
-  return (
-    <Text style={{ textAlign: "center", fontWeight: "bold", padding: 12 }}>Post Not Found :/</Text>
-  );
-}
-
 export default function PostPage({ route }) {
   const { id } = route.params;
   const type = useContext(TypeContext);
@@ -61,7 +55,13 @@ export default function PostPage({ route }) {
 
   const { isFetching } = usePostsFetchState();
 
-  if (!post) return isFetching ? <LoadingText text="Loading Post..." /> : <Error404 />;
+  if (!post) {
+    return isFetching ? (
+      <LoadingText text="Loading Post..." />
+    ) : (
+      <ErrorText text="Post Not Found :/" />
+    );
+  }
 
   const linkToPost = `${process.env.ServerUrl}/${type}/item?id=${post._id}`;
 
