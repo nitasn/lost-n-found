@@ -1,14 +1,16 @@
 import {
   View,
   Text,
-  StyleSheet, Image,
+  StyleSheet,
+  Image,
   ScrollView,
-  TouchableOpacity, Share,
-  Platform
+  TouchableOpacity,
+  Share,
+  Platform,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { useAllPosts } from "../ts/posts";
-import { useContext, useMemo } from "react";
+import { dispatchPostsFetch, useAllPosts, usePostsFetchState } from "../ts/posts";
+import { useContext, useEffect, useMemo, useState } from "react";
 import globalStyles from "../js/globalStyles";
 import { timeDeltaAsString } from "../js/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,9 +20,10 @@ import { primaryColor } from "../js/theme";
 import { prettyDistance } from "../js/utils";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import alerto from "./Alerto";
+import { LoadingText } from "./misc";
 
 function openUrlExternally(url) {
-  if (Platform.OS == "web") {
+  if (Platform.OS === "web") {
     window.open(url, "_blank");
   } else {
     Linking.openURL(url);
@@ -38,6 +41,12 @@ function linkToGoogleMapsAt(latLong) {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
 }
 
+function Error404() {
+  return (
+    <Text style={{ textAlign: "center", fontWeight: "bold", padding: 12 }}>Post Not Found :/</Text>
+  );
+}
+
 export default function PostPage({ route }) {
   const { id } = route.params;
   const type = useContext(TypeContext);
@@ -46,7 +55,13 @@ export default function PostPage({ route }) {
   /** @type {import("./FeedPost").PostData} */
   const post = useMemo(() => allPosts.find((obj) => obj._id == id), [allPosts, id]);
 
-  // todo if no post, redirect to 404 or say post not found... and fetchPosts...
+  useEffect(() => {
+    !post && dispatchPostsFetch();
+  }, []);
+
+  const { isFetching } = usePostsFetchState();
+
+  if (!post) return isFetching ? <LoadingText text="Loading Post..." /> : <Error404 />;
 
   const linkToPost = `${process.env.ServerUrl}/${type}/item?id=${post._id}`;
 

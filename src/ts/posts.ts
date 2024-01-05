@@ -51,14 +51,14 @@ export function addPostToGlobalState(post: PostData) {
 export const dispatchPostsFetch = (() => {
   const queue = createReducedAsyncQueue();
 
-  return ({ initiator }: { initiator: FetchInitiator }) => {
+  return ({ initiator = "app" }: { initiator?: FetchInitiator } = {}) => {
     if (FetchState.get().initiator === "app" && initiator === "user") {
       FetchState.set({ isFetching: true, initiator: "user" });
       return dispatchPostsFetch({ initiator: "app" });
     }
     queue(async () => {
       FetchState.set({ isFetching: true, initiator });
-      const res = await serverGET("/api/get-all-posts", { withAuth: false });
+      const res = await serverGET("/api/get-all-posts");
       const posts = await res.json();
       AllPosts.set(posts);
       FetchState.set({ isFetching: false });
