@@ -1,11 +1,7 @@
 import admin from "firebase-admin";
-import serviceAccount from "../firebase.secret.mjs";
+import initFirebase from "./init-firebase.mjs";
 
-if (admin.apps.length === 0) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
+initFirebase();
 
 export default async function verifyToken(req) {
   const authHeader = req.headers.authorization;

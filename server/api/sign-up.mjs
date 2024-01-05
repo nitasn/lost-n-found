@@ -8,7 +8,7 @@ export default async function (req, res) {
   const decodedToken = await verifyToken(req);
 
   if (!decodedToken) {
-    return res.status(401).json({ error: "Invalid Bearer Token." });
+    return res.status(401).json({ error: "Invalid Bearer Token" });
   }
 
   const { uid: _id, name, picture: profilePicUrl, email } = decodedToken;
