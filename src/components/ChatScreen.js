@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  KeyboardAvoidingView,
 } from "react-native";
 import { getFirestore, collection, query, orderBy } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
@@ -19,6 +20,7 @@ import { prettyDate } from "../js/utils";
 import { useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import alerto from "./Alerto";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function ChatScreen({ theirUid }) {
   const [user] = useAuth();
@@ -38,16 +40,23 @@ export default function ChatScreen({ theirUid }) {
     snapshotListenOptions: { includeMetadataChanges: true },
   });
 
+  const bottomTabBarHeight = useBottomTabBarHeight();
+
   if (loading) return <LoadingText text="Loading Chat..." />;
   if (error) return <ErrorMsg text="Could not load chat :/" />;
 
   const messages = value.docs || [];
 
   return (
-    <View style={styles.screen} onStartShouldSetResponder={() => Keyboard.dismiss()}>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={bottomTabBarHeight + 16}
+      onStartShouldSetResponder={() => Keyboard.dismiss()}
+    >
       <MessagesContainer messages={messages} myUid={myUid} />
       <BottomInputs theirUid={theirUid} />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
