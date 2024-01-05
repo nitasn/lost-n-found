@@ -78,17 +78,34 @@ function MessagesContainer({ messages, myUid }) {
       data={messages}
       renderItem={({ item: doc, index }) => {
         const { text, timestamp, sender } = doc.data();
-        return <MessageBubble text={text} timestamp={timestamp} byMe={sender === myUid} />;
+        const glueNext =
+          index < messages.length - 1 &&
+          messages[index + 1].data().sender === sender &&
+          messages[index + 1].data().timestamp - timestamp < 1000 * 60 * 2; // two minutes
+        return (
+          <MessageBubble
+            text={text}
+            timestamp={timestamp}
+            byMe={sender === myUid}
+            glueNext={glueNext}
+          />
+        );
       }}
       keyExtractor={(doc) => doc.id}
     />
   );
 }
 
-function MessageBubble({ text, timestamp, byMe }) {
+function MessageBubble({ text, timestamp, byMe, glueNext }) {
   return (
     <>
-      <View style={[styles.messageBubble, byMe && styles.messageBubbleByMe]}>
+      <View
+        style={[
+          styles.messageBubble,
+          byMe && styles.messageBubbleByMe,
+          glueNext && styles.messageBubbleGlueNext,
+        ]}
+      >
         <Text style={[styles.messageText, byMe && styles.messageTextByMe]}>{text}</Text>
         <Text style={[styles.messageTimestamp, byMe && styles.messageTimestampByMe]}>
           {prettyDate(timestamp)}
@@ -172,8 +189,8 @@ const styles = StyleSheet.create({
   messageBubble: {
     padding: 12,
     borderRadius: 5,
+    marginBottom: 10,
     maxWidth: "80%",
-    marginBottom: 8,
     ...globalStyles.shadow_1,
 
     backgroundColor: "#333333",
@@ -182,6 +199,9 @@ const styles = StyleSheet.create({
   messageBubbleByMe: {
     backgroundColor: primaryColor,
     alignSelf: "flex-end",
+  },
+  messageBubbleGlueNext: {
+    marginBottom: 2,
   },
   messageText: {
     color: "white",
