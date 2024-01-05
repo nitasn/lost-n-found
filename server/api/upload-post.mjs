@@ -1,41 +1,32 @@
 import initMongoose from "../js/init-mongoose.mjs";
-import admin from "firebase-admin";
 import Post from "../mongoose-models/post.mjs";
-import serviceAccount from "../firebase.secret.mjs";
-
-if (admin.apps.length === 0) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
+import verifyToken from "../js/verify-token.mjs";
 
 await initMongoose();
 
-export default async (req, res) => {
-  const { token } = req.query;
-  if (!token) {
-    return res.status(400).send({ error: "missing token param" });
+export default async function (req, res) {
+  const decodedToken = await verifyToken(req);
+
+  if (!decodedToken) {
+    return res.status(401).json({ error: "Invalid Bearer Token." });
   }
 
   const { type, title, text, latLong, picsUrls } = req.body;
 
+  const location = latLong && {
+    latLong,
+    name: await reverseGecode(latLong).catch(() => null),
+  };
+
+  const record = { author: decodedToken.uid, title, text, location, picsUrls, type };
+
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const author = decodedToken.uid;
-
-    const location = latLong && {
-      latLong,
-      name: await reverseGecode(latLong),
-    };
-
-    const fields = { author, title, text, location, picsUrls, type };
-    const post = await new Post(fields).save();
-
-    res.status(200).send(post);
+    const post = await new Post(record).save();
+    return res.status(200).send(post);
   } 
   catch (err) {
-    res.status(400).send({ error: err.message });
     console.error(`api/upload-post: error 400:`, err.message);
+    return res.status(400).send({ error: err.message });
   }
 };
 

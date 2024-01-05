@@ -5,11 +5,14 @@ import { getAuth } from "firebase/auth";
  * @param {object} jsonBody
  */
 export async function serverPOST(path, jsonBody, { withAuth = true } = {}) {
-  const url = await _buildUrl(path, { withAuth });
+  const [url, headers] = await _buildReq(path, { withAuth });
 
   return await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(jsonBody),
   });
 }
@@ -18,25 +21,32 @@ export async function serverPOST(path, jsonBody, { withAuth = true } = {}) {
  * @param {string} path
  */
 export async function serverGET(path, { withAuth = false } = {}) {
-  const url = await _buildUrl(path, { withAuth });
+  const [url, headers] = await _buildReq(path, { withAuth });
 
-  return await fetch(url);
+  return await fetch(url, {
+    method: "GET",
+    headers,
+  });
 }
 
-async function _buildUrl(path, { withAuth = false } = {}) {
+async function _buildReq(path, { withAuth } = {}) {
   if (!path.startsWith("/")) {
     path = `/${path}`;
   }
 
   const url = process.env.ServerUrl + path;
+  const headers = {};
 
-  if (!withAuth) return url;
+  if (withAuth) {
+    const user = getAuth().currentUser;
 
-  if (getAuth().currentUser == null) {
-    throw new Error("Cannot send request with auth: user is not signed in.");
+    if (!user) {
+      throw new Error("Cannot send request with auth: user is not signed in.");
+    }
+
+    const token = await user.getIdToken();
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const token = await getAuth().currentUser.getIdToken();
-
-  return `${url}?token=${token}`;
+  return [url, headers];
 }
