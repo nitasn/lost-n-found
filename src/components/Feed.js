@@ -51,6 +51,7 @@ export default function Feed({ filter }) {
       renderItem={({ item }) => <FeedPost postData={item} />}
       onRefresh={() => dispatchPostsFetch({ initiator: "user" })}
       refreshing={fetchingState.initiator === "user"}
+      keyExtractor={(post) => post._id}
     />
   );
 }
