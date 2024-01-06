@@ -41,7 +41,7 @@ function linkToGoogleMapsAt(latLong) {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
 }
 
-export default function PostPage({ route }) {
+export default function PostPage({ route, navigation }) {
   const { id } = route.params;
   const type = useContext(TypeContext);
 
@@ -118,9 +118,9 @@ export default function PostPage({ route }) {
             title="Tap to Chat"
             style={styles.btnToChat}
             onPress={() =>
-              alerto({
-                title: "I'm building that",
-                message: "Chats feature coming soon... ❤️",
+              navigation.navigate("ChatsStack", {
+                screen: "ConversationScreen",
+                params: { uid: post.author._id },
               })
             }
           />
