@@ -19,6 +19,13 @@ export const linking = {
         },
       },
       ChatsStack: "chats",
+      ChatsStack: {
+        initialRouteName: "ChatsScreen",
+        screens: {
+          ChatsScreen: "chats",
+          ConversationScreen: "conversation",
+        },
+      },
       MoreStack: {
         initialRouteName: "MorePage",
         screens: {

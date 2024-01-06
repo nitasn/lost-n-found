@@ -25,7 +25,7 @@ type PostData = {
   proximityInKm?: number;
 };
 
-const AllPosts = createGlobalState<PostData[]>([]);
+export const AllPosts = createGlobalState<PostData[]>([]);
 
 type FetchInitiator = "user" | "app";
 

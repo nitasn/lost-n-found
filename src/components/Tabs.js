@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FoundStack, LostStack } from "./FeedStack";
 
-import ChatsStack from "./ChatsStack";
+import ChatsStack from "./Chats/ChatsStack";
 import { primaryColor } from "../js/theme";
 import MoreStack from "./MoreStack";
 
@@ -61,7 +61,7 @@ export default function Tabs() {
         component={ChatsStack}
         options={{
           title: "Chats",
-          headerTitleAlign: "center",
+          headerShown: false,
           tabBarIcon: ({ size, color, focused }) => (
             <Ionicons
               size={size}

@@ -23,11 +23,11 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import queryConversation from "./queryConversation";
 import sendMessage from "./sendMessage";
 
-export default function ChatScreen({ theirUid }) {
+export default function ConversationScreen({ uid }) {
   const [user] = useAuth();
   const myUid = user?.uid;
 
-  const [value, loading, error] = useCollection(queryConversation(myUid, theirUid));
+  const [value, loading, error] = useCollection(queryConversation(myUid, uid));
 
   const bottomTabBarHeight = useBottomTabBarHeight();
 
@@ -48,7 +48,7 @@ export default function ChatScreen({ theirUid }) {
       onStartShouldSetResponder={() => Keyboard.dismiss()}
     >
       <MessagesContainer messages={messages} myUid={myUid} />
-      <BottomInputs myUid={myUid} theirUid={theirUid} />
+      <BottomInputs myUid={myUid} theirUid={uid} />
     </KeyboardAvoidingView>
   );
 }
@@ -76,7 +76,7 @@ function MessagesContainer({ messages, myUid }) {
       style={styles.messagesContainer}
       onContentSizeChange={scrollToEnd} // for when there's a new message
       onLayout={scrollToEnd} // for when keyboard is revealed
-      ListEmptyComponent={<SimpleText text="You havn't sent each other messages yet." />}
+      ListEmptyComponent={<SimpleText text="You haven't sent each other messages yet." />}
       data={messages}
       renderItem={({ item: doc, index }) => {
         const { text, timestamp, senderId } = doc.data();

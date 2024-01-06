@@ -29,10 +29,10 @@ export default async (req, res) => {
       .sort({ date: -1 })
       .populate("author", ["_id", "name", "profilePicUrl"]);
 
-    res.status(200).send(allPosts);
+    return res.status(200).send(allPosts);
   }
   catch (err) {
-    res.status(400).send({ error: err.message });
     console.error(`api/get-all-posts: error 400:`, err.message);
+    return res.status(400).send({ error: err.message });
   }
 };

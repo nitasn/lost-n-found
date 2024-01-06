@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   },
   displayName: {
     letterSpacing: 0.1,
-    marginRight: "auto",
   },
   btnSignOut: {
     marginTop: 5,
