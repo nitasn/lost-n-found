@@ -23,9 +23,11 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import queryConversation from "./queryConversation";
 import sendMessage from "./sendMessage";
 
-export default function ConversationScreen({ uid }) {
+export default function ConversationScreen({ route }) {
   const [user] = useAuth();
   const myUid = user?.uid;
+
+  const { uid } = route.params;
 
   const [value, loading, error] = useCollection(queryConversation(myUid, uid));
 
