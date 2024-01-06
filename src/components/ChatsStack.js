@@ -21,7 +21,7 @@ export default function ChatsStack() {
   const chats = value.docs;
 
   if (!chats) {
-    return <SimpleText text="You can 'Tap to Chat' on posts." />
+    return <SimpleText text="You can 'Tap to Chat' on posts." />;
   }
 
   return (
@@ -41,10 +41,6 @@ function SimpleText({ text }) {
 
 const ErrorMsg = ({ text }) => (
   <View style={{ padding: 12 }}>
-    <ErrorText text={text} />
-    <View style={{ gap: 8 }}>
-      <Text>If the error persists, please contact us at lost.n.found.nitsan@gmail.com</Text>
-      <Text>We will help you out to reach this person!</Text>
-    </View>
+    <Text>{text}</Text>
   </View>
 );
