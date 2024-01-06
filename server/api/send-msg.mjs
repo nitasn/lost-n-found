@@ -28,7 +28,7 @@ export default async function (req, res) {
 
   // ensure consistent document ID generation
   const chatId = [from_uid, to_uid].sort().join("_");
-  const chatRef = db.collection("userChats").doc(chatId).collection("messages");
+  const chatRef = db.collection("chats").doc(chatId).collection("messages");
 
   try {
     // add the message to Firestore

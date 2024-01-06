@@ -8,44 +8,37 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from "react-native";
-import { getFirestore, collection, query, orderBy } from "firebase/firestore";
+
 import { useCollection } from "react-firebase-hooks/firestore";
-import { app } from "../../firebase.config";
-import { serverPOST } from "../js/sendServerReq";
-import { ErrorText, LoadingText } from "./misc";
-import { useAuth } from "../login-social/login";
-import globalStyles from "../js/globalStyles";
-import { primaryColor } from "../js/theme";
-import { prettyDate } from "../js/utils";
+import { ErrorText, LoadingText } from "../misc";
+import { useAuth } from "../../login-social/login";
+import globalStyles from "../../js/globalStyles";
+import { primaryColor } from "../../js/theme";
+import { prettyDate } from "../../js/utils";
 import { useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import alerto from "./Alerto";
+import alerto from "../Alerto";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+
+import queryConversation from "./queryConversation";
+import sendMessage from "./sendMessage";
 
 export default function ChatScreen({ theirUid }) {
   const [user] = useAuth();
+  const myUid = user?.uid;
+
+  const [value, loading, error] = useCollection(queryConversation(myUid, theirUid));
+
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
   if (!user) {
     return <SimpleText text="Please Sign In in order to Chat" />;
   }
 
-  const myUid = user.uid;
-
-  const chatId = [myUid, theirUid].sort().join("_");
-  const chatPath = `userChats/${chatId}/messages`;
-
-  const messagesQuery = query(collection(getFirestore(app), chatPath), orderBy("timestamp", "asc"));
-
-  const [value, loading, error] = useCollection(messagesQuery, {
-    snapshotListenOptions: { includeMetadataChanges: true },
-  });
-
-  const bottomTabBarHeight = useBottomTabBarHeight();
-
   if (loading) return <LoadingText text="Loading Chat..." />;
-  if (error) return <ErrorMsg text="Could not load chat :/" />;
+  if (error) return <ErrorMsg text={`Error: ${error.message}`} />;
 
-  const messages = value.docs || [];
+  const messages = value.docs;
 
   return (
     <KeyboardAvoidingView
@@ -55,7 +48,7 @@ export default function ChatScreen({ theirUid }) {
       onStartShouldSetResponder={() => Keyboard.dismiss()}
     >
       <MessagesContainer messages={messages} myUid={myUid} />
-      <BottomInputs theirUid={theirUid} />
+      <BottomInputs myUid={myUid} theirUid={theirUid} />
     </KeyboardAvoidingView>
   );
 }
@@ -75,27 +68,27 @@ function SimpleText({ text }) {
 }
 
 function MessagesContainer({ messages, myUid }) {
-  const ref = useRef();
-  const scrollToEnd = () => ref.current.scrollToEnd({ animated: true });
+  const listRef = useRef();
+  const scrollToEnd = () => listRef.current.scrollToEnd({ animated: true });
   return (
     <FlatList
-      ref={ref}
+      ref={listRef}
       style={styles.messagesContainer}
       onContentSizeChange={scrollToEnd} // for when there's a new message
-      onLayout={scrollToEnd} // for when keyboard is fired/dismissed
+      onLayout={scrollToEnd} // for when keyboard is revealed
       ListEmptyComponent={<SimpleText text="You havn't sent each other messages yet." />}
       data={messages}
       renderItem={({ item: doc, index }) => {
-        const { text, timestamp, sender } = doc.data();
+        const { text, timestamp, senderId } = doc.data();
         const glueNext =
           index < messages.length - 1 &&
-          messages[index + 1].data().sender === sender &&
+          messages[index + 1].data().senderId === senderId &&
           messages[index + 1].data().timestamp - timestamp < 1000 * 60 * 2; // two minutes
         return (
           <MessageBubble
             text={text}
             timestamp={timestamp}
-            byMe={sender === myUid}
+            byMe={senderId === myUid}
             glueNext={glueNext}
           />
         );
@@ -117,14 +110,14 @@ function MessageBubble({ text, timestamp, byMe, glueNext }) {
       >
         <Text style={[styles.messageText, byMe && styles.messageTextByMe]}>{text}</Text>
         <Text style={[styles.messageTimestamp, byMe && styles.messageTimestampByMe]}>
-          {prettyDate(timestamp)}
+          {prettyDate(timestamp.seconds * 1000)}
         </Text>
       </View>
     </>
   );
 }
 
-function BottomInputs({ theirUid }) {
+function BottomInputs({ myUid, theirUid }) {
   const [text, setText] = useState("");
   const inputRef = useRef();
   const [sending, setSending] = useState(false);
@@ -137,23 +130,25 @@ function BottomInputs({ theirUid }) {
     }
   };
 
-  const onSend = async () => {
+  const onBtn = async () => {
     const msg = text.trim();
     if (!msg || sending) return;
     setSending(true);
     setInputText("");
-    const res = await serverPOST("/api/send-msg", { text: msg, to_uid: theirUid });
+    const error = await sendMessage(myUid, theirUid, msg);
     setSending(false);
-    if (!res.ok) {
-      setInputText(text);
-      return alerto(<ErrorMsg text="Couldn't Send Message" />);
+    if (error) {
+      setInputText(text); // tricky use of closures: that's the old `text`
+      Keyboard.dismiss();
+      console.log(error.message);
+      return alerto(<ErrorMsg text={`Error: ${error.message}`} />);
     }
   };
 
   return (
     <View style={bottom.bottomRow}>
       <TextInput multiline style={bottom.input} ref={inputRef} onChangeText={setText} />
-      <TouchableOpacity style={bottom.btnSend} onPress={onSend} disabled={sending}>
+      <TouchableOpacity style={bottom.btnSend} onPress={onBtn} disabled={sending}>
         <Ionicons color={primaryColor} size={24} name="send" />
       </TouchableOpacity>
     </View>
