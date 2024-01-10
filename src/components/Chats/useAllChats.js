@@ -43,7 +43,7 @@ export default function useAllChats() {
       fillUsersByIds(users);
       setFetchError(null);
     })().catch(setFetchError);
-  }, [missingUids.join(",")]); // todo have reload button on error
+  }, missingUids);
 
   return ["loading", null];
 }
