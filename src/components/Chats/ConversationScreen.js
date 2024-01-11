@@ -16,13 +16,23 @@ import { useAuth } from "../../login-social/login";
 import globalStyles from "../../js/globalStyles";
 import { primaryColor } from "../../js/theme";
 import { prettyDate } from "../../js/utils";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import alerto from "../Alerto";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-
 import queryConversation from "./queryConversation";
 import sendMessage from "./sendMessage";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+
+function useHideTabBar() {
+  const navigation = useNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
+      return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
+    }, [])
+  );
+}
 
 export default function ConversationScreen({ route, navigation }) {
   const [user] = useAuth();
@@ -41,9 +51,9 @@ export default function ConversationScreen({ route, navigation }) {
 }
 
 function ConversationScreenAuthed({ myUid, theirUid }) {
-  const [value, loading, error] = useCollection(queryConversation(myUid, theirUid));
+  useHideTabBar();
 
-  const bottomTabBarHeight = useBottomTabBarHeight();
+  const [value, loading, error] = useCollection(queryConversation(myUid, theirUid));
 
   if (loading) return <LoadingText text="Loading Chat..." />;
   if (error) return <ErrorWithHelpText text={`Error: ${error.message}`} />;
@@ -54,7 +64,7 @@ function ConversationScreenAuthed({ myUid, theirUid }) {
     <KeyboardAvoidingView
       style={styles.screen}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={bottomTabBarHeight + 16}
+      keyboardVerticalOffset={64}
       onStartShouldSetResponder={() => Keyboard.dismiss()}
     >
       <MessagesContainer messages={messages} myUid={myUid} />
@@ -186,7 +196,7 @@ const bottom = StyleSheet.create({
         paddingTop: 15,
         paddingBottom: 15,
         height: 48,
-      }
+      },
     }),
     paddingLeft: 14,
     paddingRight: 48,
