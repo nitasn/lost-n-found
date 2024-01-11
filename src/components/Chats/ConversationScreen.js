@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 
 import { useCollection } from "react-firebase-hooks/firestore";
@@ -44,7 +44,6 @@ function ConversationScreenAuthed({ myUid, theirUid }) {
   const [value, loading, error] = useCollection(queryConversation(myUid, theirUid));
 
   const bottomTabBarHeight = useBottomTabBarHeight();
-
 
   if (loading) return <LoadingText text="Loading Chat..." />;
   if (error) return <ErrorWithHelpText text={`Error: ${error.message}`} />;
@@ -170,17 +169,29 @@ const bottom = StyleSheet.create({
   bottomRow: {
     flexDirection: "row",
     marginTop: "auto",
+    padding: 12,
+    paddingTop: 0,
   },
   input: {
-    minHeight: 40,
-    paddingTop: 12,
-    paddingBottom: 12,
+    ...Platform.select({
+      ios: {
+        paddingTop: 12,
+        paddingBottom: 12,
+      },
+      android: {
+        minHeight: 40,
+      },
+      web: {
+        height: 32,
+        paddingTop: 15,
+        paddingBottom: 15,
+        height: 48,
+      }
+    }),
     paddingLeft: 14,
     paddingRight: 48,
     borderRadius: 5,
     color: "black",
-    margin: 12,
-    marginTop: 0,
     ...globalStyles.noInputOutline,
     ...globalStyles.veryThinBorder,
     ...globalStyles.shadow_1,
@@ -190,7 +201,14 @@ const bottom = StyleSheet.create({
   btnSend: {
     position: "absolute",
     right: 24,
-    bottom: 19,
+    ...Platform.select({
+      ios: {
+        bottom: 19,
+      },
+      web: {
+        alignSelf: "center",
+      },
+    }),
   },
 });
 
