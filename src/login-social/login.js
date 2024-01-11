@@ -18,7 +18,7 @@ import { serverGET } from "../js/sendServerReq.js";
 WebBrowser.maybeCompleteAuthSession();
 
 async function maybeSignUpOnServer(user) {
-  if (Platform.OS !== "web") return; // todo delete this
+  if (__DEV__) return; // todo does this work?
 
   // extract fields
   const _id = user.uid;

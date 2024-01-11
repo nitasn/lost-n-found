@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
+  Platform
 } from "react-native";
 
 import { useCollection } from "react-firebase-hooks/firestore";
-import { ErrorText, LoadingText } from "../misc";
+import { ErrorMsg, LoadingText } from "../misc";
 import { useAuth } from "../../login-social/login";
 import globalStyles from "../../js/globalStyles";
 import { primaryColor } from "../../js/theme";
@@ -23,22 +24,30 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import queryConversation from "./queryConversation";
 import sendMessage from "./sendMessage";
 
-export default function ConversationScreen({ route }) {
+export default function ConversationScreen({ route, navigation }) {
   const [user] = useAuth();
-  const myUid = user?.uid;
-
-  const { uid } = route.params;
-
-  const [value, loading, error] = useCollection(queryConversation(myUid, uid));
-
-  const bottomTabBarHeight = useBottomTabBarHeight();
 
   if (!user) {
     return <SimpleText text="Please Sign In in order to Chat" />;
   }
 
+  const theirUid = route.params?.uid;
+  if (!theirUid) {
+    navigation.goBack();
+    return null;
+  }
+
+  return <ConversationScreenAuthed myUid={user.uid} theirUid={theirUid} />;
+}
+
+function ConversationScreenAuthed({ myUid, theirUid }) {
+  const [value, loading, error] = useCollection(queryConversation(myUid, theirUid));
+
+  const bottomTabBarHeight = useBottomTabBarHeight();
+
+
   if (loading) return <LoadingText text="Loading Chat..." />;
-  if (error) return <ErrorMsg text={`Error: ${error.message}`} />;
+  if (error) return <ErrorWithHelpText text={`Error: ${error.message}`} />;
 
   const messages = value.docs;
 
@@ -50,14 +59,14 @@ export default function ConversationScreen({ route }) {
       onStartShouldSetResponder={() => Keyboard.dismiss()}
     >
       <MessagesContainer messages={messages} myUid={myUid} />
-      <BottomInputs myUid={myUid} theirUid={uid} />
+      <BottomInputs myUid={myUid} theirUid={theirUid} />
     </KeyboardAvoidingView>
   );
 }
 
-const ErrorMsg = ({ text }) => (
+const ErrorWithHelpText = ({ text }) => (
   <View style={{ padding: 12 }}>
-    <ErrorText text={text} />
+    <ErrorMsg text={text} />
     <View style={{ gap: 8 }}>
       <Text>If the error persists, please contact us at lost.n.found.nitsan@gmail.com</Text>
       <Text>We will help you out to reach this person!</Text>
@@ -143,7 +152,7 @@ function BottomInputs({ myUid, theirUid }) {
       setInputText(text); // tricky use of closures: that's the old `text`
       Keyboard.dismiss();
       console.log(error.message);
-      return alerto(<ErrorMsg text={`Error: ${error.message}`} />);
+      return alerto(<ErrorWithHelpText text={`Error: ${error.message}`} />);
     }
   };
 

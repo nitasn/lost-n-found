@@ -8,13 +8,19 @@ const app = express();
 
 app.use(express.json());
 
-// CORS middleware (allow requests from any origin)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+
+  if (req.method === "OPTIONS") {
+    // Send OK status for preflight requests
+    return res.sendStatus(200);
+  }
+  
   next();
 });
+
 
 // Dynamically load and register API routes
 fs.readdir("./api", (err, fnames) => {

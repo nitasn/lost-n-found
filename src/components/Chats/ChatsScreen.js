@@ -1,4 +1,4 @@
-import { LoadingText } from "../misc";
+import { LoadingText, ErrorMsg } from "../misc";
 import { Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useAllChats from "./useAllChats";
 import globalStyles from "../../js/globalStyles";
@@ -34,12 +34,6 @@ function SimpleText({ text }) {
   return <Text style={{ textAlign: "center", padding: 12 }}>{text}</Text>;
 }
 
-const ErrorMsg = ({ text }) => (
-  <View style={{ padding: 12 }}>
-    <Text>Error: {text}</Text>
-  </View>
-);
-
 function ChatListItem({ _id, name, profilePicUrl }) {
   const navigation = useNavigation();
 
@@ -54,12 +48,11 @@ function ChatListItem({ _id, name, profilePicUrl }) {
     </TouchableOpacity>
   );
 }
-const profilePicSize = 40;
+const profilePicSize = 36;
 
 const styles = StyleSheet.create({
   chatsList: {
     padding: 12,
-    gap: 12,
   },
   chatListItem: {
     flexDirection: "row",
@@ -69,6 +62,7 @@ const styles = StyleSheet.create({
     ...globalStyles.shadow_1,
     borderRadius: 5,
     ...globalStyles.veryThinBorder,
+    marginBottom: 12,
   },
   profilePic: {
     width: profilePicSize,
