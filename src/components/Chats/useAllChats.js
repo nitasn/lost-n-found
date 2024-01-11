@@ -8,9 +8,9 @@ import { query, collection, where, getFirestore } from "firebase/firestore";
 export default function useAllChats(myUid) {
   const [fireResult, fireLoading, fireError] = useCollection(queryChatsOf(myUid));
 
-  const uids = fireResult?.docs.map((chat) =>
-    chat.data().participants.find((uid) => uid !== myUid)
-  );
+  const uids = fireResult?.docs
+    .map((chat) => chat.data().participants.find((uid) => uid !== myUid))
+    .filter((uid) => typeof uid === "string");
 
   const key = uids?.length ? ["/api/get-users", ...uids] : null;
   const { data, isLoading: swrLoading, error: swrError } = useSWRImmutable(key, fetchUsersData);
