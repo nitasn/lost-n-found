@@ -21,6 +21,7 @@ import { prettyDistance } from "../js/utils";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import alerto from "./Alerto";
 import { LoadingText, ErrorText } from "./misc";
+import { getAuth } from "firebase/auth";
 
 function openUrlExternally(url) {
   if (Platform.OS === "web") {
@@ -117,12 +118,18 @@ export default function PostPage({ route, navigation }) {
           <ButtonInSplashColor
             title="Tap to Chat"
             style={styles.btnToChat}
-            onPress={() =>
+            onPress={() => {
+              if (getAuth().currentUser?.uid === post.author._id) {
+                return alerto({
+                  title: "This was Posted by You",
+                  message: "If you want to chat with yourself, we believe communication is best out loud."
+                })
+              }
               navigation.navigate("ChatsStack", {
                 screen: "ConversationScreen",
                 params: { uid: post.author._id },
               })
-            }
+            }}
           />
         </View>
 
