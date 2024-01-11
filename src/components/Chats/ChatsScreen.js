@@ -3,22 +3,30 @@ import { Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } fro
 import useAllChats from "./useAllChats";
 import globalStyles from "../../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../login-social/login";
 
 export default function ChatsScreen() {
-  const [issue, conversations] = useAllChats();
+  const [user] = useAuth();
 
-  if (issue instanceof Error) return <ErrorMsg text={issue.message} />;
-  if (issue === "loading") return <LoadingText text="Loading Chats..." />;
-  if (issue === "no-user") return <SimpleText text="Please Sign In to Send Messages!" />;
-  if (issue === "no-chats") return <SimpleText text="To chat, tap 'Tap to Chat' on any post!" />;
+  if (!user) return <SimpleText text="Please Sign In to Send Messages!" />;
+
+  return <ChatsScreenAuthed myUid={user.uid} />;
+}
+
+function ChatsScreenAuthed({ myUid }) {
+  const { users, error, loading } = useAllChats(myUid);
 
   return (
-    <FlatList
-      style={styles.chatsList}
-      data={conversations}
-      renderItem={({ item: chat }) => <ChatListItem {...chat} />}
-      keyExtractor={(chat) => chat._id}
-    />
+    <>
+      {loading && <LoadingText text="Loading Chats..." />}
+      {error && <ErrorMsg text={error.message} />}
+      <FlatList
+        style={styles.chatsList}
+        data={users}
+        renderItem={({ item: user }) => <ChatListItem {...user} />}
+        keyExtractor={(user) => user._id}
+      />
+    </>
   );
 }
 
@@ -69,5 +77,5 @@ const styles = StyleSheet.create({
   },
   contactName: {
     letterSpacing: 0.1,
-  }
+  },
 });
