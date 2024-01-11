@@ -3,7 +3,6 @@ import { Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } fro
 import useAllChats from "./useAllChats";
 import globalStyles from "../../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ChatsScreen() {
   const [issue, conversations] = useAllChats();

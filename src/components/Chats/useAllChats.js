@@ -79,7 +79,7 @@ function fillUsersByIds(users) {
       _userById[user._id] = { _id, name, profilePicUrl };
     }
   });
-  if (!_hasNewOne) {
+  if (_hasNewOne) {
     UserById.set(_userById);
     AsyncStorage.setItem("userById", JSON.stringify(_userById));
   }
