@@ -1,4 +1,4 @@
-import ChatsScreen from "./ChatsScreen";
+import ChatsScreen from "./ChatScreen/ChatsScreen";
 import ConversationScreen from "./ConversationScreen";
 
 import { createStackNavigator } from "@react-navigation/stack";

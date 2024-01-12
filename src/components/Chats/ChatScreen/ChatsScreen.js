@@ -1,15 +1,15 @@
-import { LoadingText, ErrorMsg } from "../misc";
-import { Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import useAllChats from "./useAllChats";
-import globalStyles from "../../js/globalStyles";
+import { LoadingText, ErrorMsg } from "../../misc";
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import useAllChats from "../useAllChats";
+import globalStyles from "../../../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "../../login-social/login";
-import { primaryColor } from "../../js/theme";
+import { useAuth } from "../../../login-social/login";
+import MsgPleaseSignIn from "./MsgSignInForChats";
 
 export default function ChatsScreen() {
   const [user] = useAuth();
 
-  if (!user) return <MsgSignInForChats />;
+  if (!user) return <MsgPleaseSignIn />;
 
   return <ChatsScreenAuthed myUid={user.uid} />;
 }
@@ -28,40 +28,6 @@ function ChatsScreenAuthed({ myUid }) {
         keyExtractor={(user) => user._id}
       />
     </>
-  );
-}
-
-function LinkToSignIn() {
-  const navigation = useNavigation();
-
-  const onPress = () => navigation.navigate("MoreStack", {
-    screen: "MorePage",
-    // params: {}, // todo pass obj to tell it to draw an arrow to the login buttons?
-  })
-
-  const style = { color: primaryColor, fontWeight: "bold", textDecorationLine: "underline" };
-
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <Text style={style}>Sign In</Text>
-    </TouchableOpacity>
-  );
-}
-
-function MsgSignInForChats() {
-  const style = {
-    flex: 1,
-    padding: 12,
-    alignSelf: "center",
-    flexDirection: "row",
-    alignItems: "center",
-  };
-  return (
-    <View style={style}>
-      <Text>To Chat, please </Text>
-      <LinkToSignIn />
-      <Text>!</Text>
-    </View>
   );
 }
 
