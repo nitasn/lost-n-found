@@ -28,8 +28,8 @@ function useHideTabBar() {
 
   useFocusEffect(
     useCallback(() => {
-      navigation.getParent()?.setOptions({ tabBarStyle: { maxHeight: 0, overflow: "hidden", pointerEvents: "none", tabIndex: -1 } });
-      return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
+      navigation.getParent()?.setOptions({ tabBarStyle: { maxHeight: 0, overflow: "hidden", pointerEvents: "none", tabIndex: -1 }, tabBarVisible: false });
+      return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined, tabBarVisible: undefined }); // todo does 'tabBarVisible' fix web tabtabtabtab issue?
     }, [])
   );
 }

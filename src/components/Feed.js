@@ -7,7 +7,7 @@ import SearchBar from "./SearchBar";
 import { dispatchPostsFetch, useAllPosts, usePostsFetchState } from "../ts/posts";
 import TypeContext from "../js/typeContext";
 import { geoDistance } from "../js/utils";
-import { LoadingText } from "./misc";
+import { ErrorMsg, LoadingText } from "./misc";
 
 function MessageNoResults() {
   return <Text>No results... 💔</Text>;
@@ -30,6 +30,7 @@ export default function Feed({ filter }) {
     <>
       <SearchBar filterOn={filterOn} />
       {fetchingState.initiator === "app" && <LoadingText text="Loading Posts..." />}
+      {fetchingState.error && <ErrorMsg text={fetchingState.error.message}/>}
     </>
   );
 

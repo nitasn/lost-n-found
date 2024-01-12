@@ -18,7 +18,7 @@ export function ErrorText({ text }) {
 
 export function ErrorMsg({ text }) {
   return (
-    <Text style={{ textAlign: "center", padding: 12, color: "hsl(0, 59%, 54%)", padding: 12 }}>
+    <Text style={{ textAlign: "center", padding: 12, color: "hsl(0, 59%, 54%)", padding: 12, fontStyle: "italic" }}>
       Error: {text}
     </Text>
   );

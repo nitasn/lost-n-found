@@ -29,7 +29,13 @@ export const AllPosts = createGlobalState<PostData[]>([]);
 
 type FetchInitiator = "user" | "app";
 
-const FetchState = createGlobalState<{ isFetching: boolean; initiator?: FetchInitiator }>({
+interface FetchStateType { 
+  isFetching: boolean; 
+  initiator?: FetchInitiator;
+  error?: Error;
+}
+
+const FetchState = createGlobalState<FetchStateType>({
   isFetching: true,
   initiator: "app",
 });
@@ -53,6 +59,7 @@ export const dispatchPostsFetch = (() => {
 
   return ({ initiator = "app" }: { initiator?: FetchInitiator } = {}) => {
     if (FetchState.get().initiator === "app" && initiator === "user") {
+      // promote ongoing fetch's initiator to "user", and schedule another "app" fetch.
       FetchState.set({ isFetching: true, initiator: "user" });
       return dispatchPostsFetch({ initiator: "app" });
     }
@@ -62,9 +69,9 @@ export const dispatchPostsFetch = (() => {
         const res = await serverGET("/api/get-all-posts");
         const posts = await res.json();
         AllPosts.set(posts);
-      } finally {
-        // todo add error state
         FetchState.set({ isFetching: false });
+      } catch (error) {
+        FetchState.set({ isFetching: false, error });
       }
     });
   };
