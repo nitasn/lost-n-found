@@ -58,10 +58,14 @@ export const dispatchPostsFetch = (() => {
     }
     queue(async () => {
       FetchState.set({ isFetching: true, initiator });
-      const res = await serverGET("/api/get-all-posts");
-      const posts = await res.json();
-      AllPosts.set(posts);
-      FetchState.set({ isFetching: false });
+      try {
+        const res = await serverGET("/api/get-all-posts");
+        const posts = await res.json();
+        AllPosts.set(posts);
+      } finally {
+        // todo add error state
+        FetchState.set({ isFetching: false });
+      }
     });
   };
 })();

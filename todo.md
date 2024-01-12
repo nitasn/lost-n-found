@@ -25,4 +25,23 @@
 
 14. in post composer, maybe set the location-input's placeholder to reverse-geocode of user location
 
-15. **while first posts fetching, don't say "no posts...", say "loading posts..."**
+15. have posts error state if could not load { isFetching, initiator, error }
+
+---
+
+16. "Sign In" in chats should be a link
+17. don't prompt location until LocationChoser launched
+18. LocationChoser is broken on web. has NaNs.
+
+19. make the upload menu items disabled (gray) with msg "To Upload, please Sign In".
+
+19. use localStorage for chats to show stale chats while loading
+---
+
+20. create watchRenders function!
+
+21. IMPORTANT
+add beutiful transitions between screens:
+swfits for tabs and shared object for stack
+
+22. submit my app for google review so that users can log in

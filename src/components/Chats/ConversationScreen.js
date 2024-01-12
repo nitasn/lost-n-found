@@ -28,7 +28,7 @@ function useHideTabBar() {
 
   useFocusEffect(
     useCallback(() => {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
+      navigation.getParent()?.setOptions({ tabBarStyle: { maxHeight: 0, overflow: "hidden", pointerEvents: "none", tabIndex: -1 } });
       return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
     }, [])
   );

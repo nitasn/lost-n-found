@@ -4,11 +4,12 @@ import useAllChats from "./useAllChats";
 import globalStyles from "../../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../login-social/login";
+import { primaryColor } from "../../js/theme";
 
 export default function ChatsScreen() {
   const [user] = useAuth();
 
-  if (!user) return <SimpleText text="Please Sign In to Send Messages!" />;
+  if (!user) return <MsgSignInForChats />;
 
   return <ChatsScreenAuthed myUid={user.uid} />;
 }
@@ -30,8 +31,38 @@ function ChatsScreenAuthed({ myUid }) {
   );
 }
 
-function SimpleText({ text }) {
-  return <Text style={{ textAlign: "center", padding: 12 }}>{text}</Text>;
+function LinkToSignIn() {
+  const navigation = useNavigation();
+
+  const onPress = () => navigation.navigate("MoreStack", {
+    screen: "MorePage",
+    // params: {}, // todo pass obj to tell it to draw an arrow to the login buttons?
+  })
+
+  const style = { color: primaryColor, fontWeight: "bold", textDecorationLine: "underline" };
+
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Text style={style}>Sign In</Text>
+    </TouchableOpacity>
+  );
+}
+
+function MsgSignInForChats() {
+  const style = {
+    flex: 1,
+    padding: 12,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+  };
+  return (
+    <View style={style}>
+      <Text>To Chat, please </Text>
+      <LinkToSignIn />
+      <Text>!</Text>
+    </View>
+  );
 }
 
 function ChatListItem({ _id, name, profilePicUrl }) {

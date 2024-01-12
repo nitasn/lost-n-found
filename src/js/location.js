@@ -50,10 +50,11 @@ export async function getLocation() {
       }
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        alerto({
-          title: "Please Consider Permitting Location",
-          message: "Location is used to tell you the distance from where items were lost/found",
-        });
+        // todo this alerts on every load on web... disabled for now.
+        // alerto({
+        //   title: "Please Consider Permitting Location",
+        //   message: "Location is used to tell you the distance from where items were lost/found",
+        // });
         return null;
       }
     }  
