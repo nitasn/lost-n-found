@@ -23,7 +23,7 @@ export const linking = {
         initialRouteName: "ChatsScreen",
         screens: {
           ChatsScreen: "chats",
-          ConversationScreen: "conversation",
+          ConvoScreen: "conversation",
         },
       },
       MoreStack: {

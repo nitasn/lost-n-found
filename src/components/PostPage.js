@@ -126,7 +126,7 @@ export default function PostPage({ route, navigation }) {
                 })
               }
               navigation.navigate("ChatsStack", {
-                screen: "ConversationScreen",
+                screen: "ConvoScreen",
                 params: { uid: post.author._id },
               })
             }}

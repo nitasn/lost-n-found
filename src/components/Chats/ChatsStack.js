@@ -1,5 +1,5 @@
 import ChatsScreen from "./ChatScreen/ChatsScreen";
-import ConversationScreen from "./ConversationScreen";
+import ConvoScreen from "./ConvoScreen/ConvoScreen";
 
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -21,8 +21,8 @@ export default function ChatsStack() {
         options={{ headerTitle: "Chats" }}
       />
       <Stack.Screen
-        name="ConversationScreen"
-        component={ConversationScreen}
+        name="ConvoScreen"
+        component={ConvoScreen}
         options={{ headerTitle: "Conversation" }}
       />
     </Stack.Navigator>
