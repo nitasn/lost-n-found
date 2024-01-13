@@ -25,17 +25,16 @@
 
 14. in post composer, maybe set the location-input's placeholder to reverse-geocode of user location
 
-15. have posts error state if could not load { isFetching, initiator, error }
-
 ---
 
-16. "Sign In" in chats should be a link
 17. don't prompt location until LocationChoser is wanted
 18. LocationChoser is broken on web. has NaNs. keyboard doesn't launch
 
 19. make the upload menu items disabled (gray) with msg "To Upload, please Sign In".
 
 19. use localStorage for chats to show stale chats while loading
+
+19. firebase permissions!
 ---
 
 20. create watchRenders function!
