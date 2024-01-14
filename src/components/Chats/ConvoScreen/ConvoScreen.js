@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { useCollection } from "react-firebase-hooks/firestore";
-import { ErrorMsg, LoadingText } from "../../misc";
+import { LoadingText } from "../../misc";
 import { useAuth } from "../../../login-social/login";
 import globalStyles from "../../../js/globalStyles";
 import { primaryColor } from "../../../js/theme";
@@ -18,6 +18,7 @@ import { useCallback, useRef } from "react";
 import queryConvo from "../queryConvo";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import BottomInputs from "./BottomInputs";
+import ErrorWithHelpText from "./ErrorWithHelpText";
 
 function useHideTabBar() {
   const navigation = useNavigation();
@@ -68,16 +69,6 @@ function ConvoScreenAuthed({ myUid, theirUid }) {
     </KeyboardAvoidingView>
   );
 }
-
-export const ErrorWithHelpText = ({ text }) => (
-  <View style={{ padding: 12 }}>
-    <ErrorMsg text={text} />
-    <View style={{ gap: 8 }}>
-      <Text>If the error persists, please contact us at lost.n.found.nitsan@gmail.com</Text>
-      <Text>We will help you out to reach this person!</Text>
-    </View>
-  </View>
-);
 
 function SimpleText({ text }) {
   return <Text style={{ textAlign: "center", padding: 12 }}>{text}</Text>;

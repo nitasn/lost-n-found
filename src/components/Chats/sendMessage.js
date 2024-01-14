@@ -4,9 +4,9 @@ import { app } from '../../../firebase.config'
 /**
  * @returns {Promise<null | Error>}
  */
-export default async function sendMessage(senderId, receiverId, text) {
+export default async function sendMessage(myUid, theirUid, text) {
   const firestore = getFirestore(app);
-  const chatId = [senderId, receiverId].sort().join("_");
+  const chatId = [myUid, theirUid].sort().join("_");
   const chatPath = `chats/${chatId}`;
   const messagesPath = `${chatPath}/messages`;
 
@@ -16,14 +16,14 @@ export default async function sendMessage(senderId, receiverId, text) {
       const chat = await transaction.get(chatRef);
 
       if (!chat.exists()) {
-        transaction.set(chatRef, { participants: [senderId, receiverId] });
+        transaction.set(chatRef, { participants: [myUid, theirUid] });
       }
 
       const messagesRef = collection(firestore, messagesPath);
 
       transaction.set(doc(messagesRef), {
-        senderId,
-        receiverId,
+        senderId: myUid,
+        receiverId: theirUid,
         text,
         timestamp: serverTimestamp(),
       });

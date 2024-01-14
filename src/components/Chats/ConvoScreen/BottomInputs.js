@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import alerto from "../../Alerto";
 import sendMessage from "../sendMessage";
-import { ErrorWithHelpText } from "./ConvoScreen";
+import ErrorWithHelpText from "./ErrorWithHelpText";
 
 export default function BottomInputs({ myUid, theirUid }) {
   const [text, setText] = useState("");
