@@ -4,8 +4,9 @@ import useSWRImmutable from "swr/immutable";
 
 import { app } from "../../../firebase.config";
 import { query, collection, where, getFirestore } from "firebase/firestore";
+import { withLocalStorageFallback } from "../../js/localStorageHooks";
 
-export default function useAllChats(myUid) {
+function useAllChats(myUid) {
   const [fireResult, fireLoading, fireError] = useCollection(queryChatsOf(myUid));
 
   const uids = fireResult?.docs
@@ -16,11 +17,13 @@ export default function useAllChats(myUid) {
   const { data, isLoading: swrLoading, error: swrError } = useSWRImmutable(key, fetchUsersData);
 
   return {
-    users: data,
-    loading: fireLoading || swrLoading,
+    data,
+    isLoading: fireLoading || swrLoading,
     error: fireError || swrError,
   };
 }
+
+export default withLocalStorageFallback(useAllChats, "allChats");
 
 async function fetchUsersData([path, ...uids]) {
   const res = await serverPOST(path, { uids }, { withAuth: false });
@@ -30,4 +33,3 @@ async function fetchUsersData([path, ...uids]) {
 const chatsRef = collection(getFirestore(app), "chats");
 const queryChatsOf = (uid) => query(chatsRef, where("participants", "array-contains", uid));
 
-// todo: replace useSWRImmutable with a hook that uses localStorage while loading

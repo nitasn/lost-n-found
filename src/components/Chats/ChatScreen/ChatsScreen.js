@@ -15,11 +15,11 @@ export default function ChatsScreen() {
 }
 
 function ChatsScreenAuthed({ myUid }) {
-  const { users, error, loading } = useAllChats(myUid);
+  const { data: users, error, isLoading } = useAllChats(myUid);
 
   return (
     <>
-      {loading && <LoadingText text="Loading Chats..." />}
+      {isLoading && <LoadingText text="Loading Chats..." />}
       {error && <ErrorMsg text={error.message} />}
       <FlatList
         style={styles.chatsList}
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   profilePic: {
     width: profilePicSize,
     height: profilePicSize,
-    borderRadius: profilePicSize / 2,
+    borderRadius: profilePicSize,
   },
   contactName: {
     letterSpacing: 0.1,
