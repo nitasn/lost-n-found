@@ -32,4 +32,3 @@ async function fetchUsersData([path, ...uids]) {
 
 const chatsRef = collection(getFirestore(app), "chats");
 const queryChatsOf = (uid) => query(chatsRef, where("participants", "array-contains", uid));
-
