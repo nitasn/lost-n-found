@@ -1,8 +1,6 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import LogInOutGoogle from "../login-social/LogInOutGoogle.js";
-import { auth } from "../../firebase.config.js";
 import Hr from "./Hr.js";
-import alerto from "./Alerto.js";
 import { useNavigation } from "@react-navigation/native";
 
 import MenuItem from "./MenuItem.js";
@@ -16,25 +14,29 @@ export default function MorePage() {
     navigation.navigate("PostComposer", { type });
   };
 
+  const menu = (
+    <View style={styles.menuItemsContainer}>
+      <MenuItem
+        iconName="earth-outline"
+        text="Upload Found Item"
+        onPress={onPressing("found")}
+        disabled={!user}
+      />
+      <MenuItem
+        iconName="planet-outline"
+        text="Upload Lost Item"
+        onPress={onPressing("lost")}
+        disabled={!user}
+      />
+    </View>
+  );
+
   return (
     <View style={styles.screen}>
+      {menu}
+      <Hr style={styles.hr} />
       {!user && <MsgLogInFirst />}
       <LogInOutGoogle />
-      <Hr style={styles.hr} />
-      <View style={styles.menuItemsContainer}>
-        <MenuItem
-          iconName="earth-outline"
-          text="Upload Found Item"
-          onPress={onPressing("found")}
-          disabled={!user}
-        />
-        <MenuItem
-          iconName="planet-outline"
-          text="Upload Lost Item"
-          onPress={onPressing("lost")}
-          disabled={!user}
-        />
-      </View>
     </View>
   );
 }

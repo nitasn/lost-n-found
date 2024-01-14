@@ -27,10 +27,12 @@
 
 ---
 
-17. don't prompt location until LocationChoser is wanted
-18. LocationChoser is broken on web. has NaNs. keyboard doesn't launch
+15. make the post use my awesome withLocalStorageFallback(useSWR, 'allPosts')
 
-19. make the upload menu items disabled (gray) with msg "To Upload, please Sign In".
+16. don't prompt location until LocationChoser is wanted
+17. LocationChoser is broken on web. has NaNs. keyboard doesn't launch
+
+18. make the upload menu items disabled (gray) with msg "To Upload, please Sign In".
 
 19. firebase permissions!
 ---
