@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export function useAsyncStorage(key) {
   const [data, setData] = useState(null);
-  const [loading, isLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -13,7 +13,7 @@ export function useAsyncStorage(key) {
       } catch (error) {
         console.error("useAsyncStorage getItem error:", error.message);
       } finally {
-        isLoading(false);
+        setLoading(false);
       }
     })();
   }, [key]);
