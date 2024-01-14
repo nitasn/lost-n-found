@@ -23,6 +23,7 @@ function useAllChats(myUid) {
   };
 }
 
+// "allChats" is cleared when doSignOut is called
 export default withLocalStorageFallback(useAllChats, "allChats");
 
 async function fetchUsersData([path, ...uids]) {

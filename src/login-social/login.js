@@ -82,8 +82,10 @@ export default function useAuthContextProvider() {
     native: useNativePromptSignInWithGoogle,
   })();
 
-  const doSignOut = useCallback(() => {
-    firebaseSignOut(auth).then(setUser);
+  const doSignOut = useCallback(async () => {
+    await firebaseSignOut(auth);
+    setUser(null);
+    await AsyncStorage.removeItem('allChats');
   }, [setUser]);
 
   const value = [user, promptSignInWithGoogle, doSignOut];
