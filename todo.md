@@ -32,8 +32,6 @@
 
 19. make the upload menu items disabled (gray) with msg "To Upload, please Sign In".
 
-19. use localStorage for chats to show stale chats while loading
-
 19. firebase permissions!
 ---
 
