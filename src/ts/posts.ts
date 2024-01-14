@@ -42,7 +42,7 @@ function useAllPosts() {
   return { allPosts, isLoading, error, refetchPosts: mutate };
 }
 
-export default withLocalStorageFallback(useAllPosts, 'allPosts');
+export default withLocalStorageFallback(useAllPosts, "allPosts");
 
 const DistancesMap = createGlobalState(new Map<string, number>());
 
