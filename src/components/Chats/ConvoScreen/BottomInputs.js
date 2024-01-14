@@ -4,7 +4,7 @@ import { primaryColor } from "../../../js/theme";
 import { useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import alerto from "../../Alerto";
-import sendMessage from "../sendMessage";
+import sendMessage from "./sendMessage";
 import ErrorWithHelpText from "./ErrorWithHelpText";
 
 export default function BottomInputs({ myUid, theirUid }) {

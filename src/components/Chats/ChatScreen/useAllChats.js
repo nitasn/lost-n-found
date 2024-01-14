@@ -1,10 +1,10 @@
 import { useCollection } from "react-firebase-hooks/firestore";
-import { serverPOST } from "../../js/sendServerReq";
+import { serverPOST } from "../../../js/sendServerReq";
 import useSWRImmutable from "swr/immutable";
 
-import { app } from "../../../firebase.config";
+import { app } from "../../../../firebase.config";
 import { query, collection, where, getFirestore } from "firebase/firestore";
-import { withLocalStorageFallback } from "../../js/localStorageHooks";
+import { withLocalStorageFallback } from "../../../js/localStorageHooks";
 
 function useAllChats(myUid) {
   const [fireResult, fireLoading, fireError] = useCollection(queryChatsOf(myUid));

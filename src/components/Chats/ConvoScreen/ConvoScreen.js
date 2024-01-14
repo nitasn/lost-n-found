@@ -15,7 +15,7 @@ import globalStyles from "../../../js/globalStyles";
 import { primaryColor } from "../../../js/theme";
 import { prettyDate } from "../../../js/utils";
 import { useCallback, useRef } from "react";
-import queryConvo from "../queryConvo";
+import queryConvo from "./queryConvo";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import BottomInputs from "./BottomInputs";
 import ErrorWithHelpText from "./ErrorWithHelpText";

@@ -1,5 +1,5 @@
 import { collection, query, orderBy, getFirestore } from "firebase/firestore";
-import { app } from '../../../firebase.config'
+import { app } from '../../../../firebase.config'
 
 export default function queryConvo(myUid, theirUid) {
   const firestore = getFirestore(app);

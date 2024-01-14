@@ -1,6 +1,6 @@
 import { LoadingText, ErrorMsg } from "../../misc";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
-import useAllChats from "../useAllChats";
+import useAllChats from "./useAllChats";
 import globalStyles from "../../../js/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../../login-social/login";

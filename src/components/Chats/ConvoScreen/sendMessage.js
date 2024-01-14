@@ -1,5 +1,5 @@
 import { doc, serverTimestamp, getFirestore, collection, runTransaction } from "firebase/firestore";
-import { app } from '../../../firebase.config'
+import { app } from '../../../../firebase.config'
 
 /**
  * @returns {Promise<null | Error>}
