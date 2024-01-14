@@ -25,14 +25,14 @@ export function createAsyncQueue() {
  * Creates a queue that limits to one ongoing async task, and one queued async task.
  * Subsequent tasks requested while there's a queued task are ignored.
  */
-export function createReducedAsyncQueue() {
+export function createReducedAsyncQueue<Args extends any[]>() {
   let onGoingPromise = null;
   let anotherOneQueued = false;
 
-  return async function schedule(func: () => Promise<void>) {
+  return async function schedule(func: (...args: Args) => Promise<void>, ...args: Args) {
     if (!onGoingPromise) {
       onGoingPromise = (async () => {
-        await func();
+        await func(...args);
         onGoingPromise = null;
       })();
     } else {
@@ -40,7 +40,7 @@ export function createReducedAsyncQueue() {
       anotherOneQueued = true;
       await onGoingPromise;
       anotherOneQueued = false;
-      schedule(func);
+      schedule(func, ...args);
     }
   };
 }
