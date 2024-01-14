@@ -4,7 +4,7 @@ import useSWRImmutable from "swr/immutable";
 
 import { app } from "../../../../firebase.config";
 import { query, collection, where, getFirestore } from "firebase/firestore";
-import { withLocalStorageFallback } from "../../../js/localStorageHooks";
+import { withLocalStorageFallback } from "../../../ts/localStorage";
 
 function useAllChats(myUid) {
   const [fireResult, fireLoading, fireError] = useCollection(queryChatsOf(myUid));
