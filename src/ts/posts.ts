@@ -1,11 +1,13 @@
+import useSWR from "swr";
 import { serverGET } from "../js/sendServerReq";
-import { createGlobalState, useGlobalState } from "./useGlobalState";
+import { useEffect, useState } from "react";
 import { createReducedAsyncQueue } from "./async-queue";
 import { getLocation } from "../js/location";
+import { createGlobalState, useGlobalState } from "./useGlobalState";
 import { geoDistance } from "../js/utils";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { withLocalStorageFallback } from "./localStorage";
 
-type PostData = {
+export type PostData = {
   _id: string;
   type: "lost" | "found";
   isStillAvailable: boolean;
@@ -25,99 +27,76 @@ type PostData = {
   proximityInKm?: number;
 };
 
-export const AllPosts = createGlobalState<PostData[]>([]);
-
-type FetchInitiator = "user" | "app";
-
-interface FetchStateType { 
-  isFetching: boolean; 
-  initiator?: FetchInitiator;
-  error?: Error;
+async function fetchPosts(path: string): Promise<PostData[]> {
+  const res = await serverGET(path, { withAuth: false });
+  return await res.json();
 }
 
-const FetchState = createGlobalState<FetchStateType>({
-  isFetching: true,
-  initiator: "app",
-});
+function useAllPosts() {
+  const { data: allPosts, isLoading, error, mutate } = useSWR("/api/get-all-posts", fetchPosts);
 
-export function useAllPosts() {
-  const [allPosts] = useGlobalState(AllPosts);
-  return allPosts;
+  useEffect(() => {
+    allPosts && disptachDistCalc(allPosts);
+  }, [allPosts]);
+
+  return { allPosts, isLoading, error, refetchPosts: mutate };
 }
 
-export function usePostsFetchState() {
-  const [fetchState] = useGlobalState(FetchState);
-  return fetchState;
-}
+export default withLocalStorageFallback(useAllPosts, 'allPosts');
 
-export function addPostToGlobalState(post: PostData) {
-  AllPosts.set([post, ...AllPosts.get()]);
-}
-
-export const dispatchPostsFetch = (() => {
-  const queue = createReducedAsyncQueue();
-
-  return ({ initiator = "app" }: { initiator?: FetchInitiator } = {}) => {
-    if (FetchState.get().initiator === "app" && initiator === "user") {
-      // promote ongoing fetch's initiator to "user", and schedule another "app" fetch.
-      FetchState.set({ isFetching: true, initiator: "user" });
-      return dispatchPostsFetch({ initiator: "app" });
-    }
-    queue(async () => {
-      FetchState.set({ isFetching: true, initiator });
-      try {
-        const res = await serverGET("/api/get-all-posts");
-        const posts = await res.json();
-        AllPosts.set(posts);
-        FetchState.set({ isFetching: false });
-      } catch (error) {
-        FetchState.set({ isFetching: false, error });
-      }
-    });
-  };
-})();
+const DistancesMap = createGlobalState(new Map<string, number>());
 
 const disptachDistCalc = (() => {
-  let cacheKey = null;
-  const cache = new Map();
+  let prevLocation = null;
   const queue = createReducedAsyncQueue();
 
-  const _doCalculateDists = async () => {
-    const location = await getLocation();
+  const _doCalculateDists = async (allPosts: PostData[]) => {
+    const location = await getLocation(); // TODO no prompt!
     if (!location) return;
 
     const { latitude, longitude } = location;
 
-    const newCacheKey = latitude.toFixed(4) + longitude.toFixed(4); // ~11 meters
-    if (newCacheKey === cacheKey) return;
+    const nextLocation = `${latitude.toFixed(4)},${longitude.toFixed(4)}`; // ~11 meters
+    const atSameLocation = nextLocation === prevLocation;
+    prevLocation = nextLocation;
 
-    cacheKey = newCacheKey;
-    cache.clear();
+    const prevMap = DistancesMap.get();
+    if (atSameLocation && allPostsWithLocationAreCached(prevMap, allPosts)) {
+      return;
+    }
 
-    AllPosts.set((allPosts) => {
-      return allPosts.map((post) => {
-        if (!post.location?.latLong) return post;
-        const proximityInKm = geoDistance(latitude, longitude, ...post.location.latLong);
-        cache.set(post._id, proximityInKm);
-        return { ...post, proximityInKm };
+    const updatedLocations: Array<[string, number]> = allPosts
+      .filter((post) => post.location?.latLong)
+      .map((post) => {
+        const proximityInKm = atSameLocation
+          ? prevMap.get(post._id) ?? geoDistance(latitude, longitude, ...post.location.latLong)
+          : geoDistance(latitude, longitude, ...post.location.latLong);
+        return [post._id, proximityInKm];
       });
-    });
+
+    DistancesMap.set(new Map(updatedLocations));
   };
 
-  return () => queue(_doCalculateDists);
+  return (allPosts: PostData[]) => queue(_doCalculateDists, allPosts);
 })();
 
-(async function startup() {
-  const posts = await AsyncStorage.getItem("allPosts")
-    .then(JSON.parse)
-    .catch(() => null);
+function allPostsWithLocationAreCached(prevMap: Map<string, number>, allPosts: PostData[]) {
+  for (const post of allPosts) {
+    if (post.location?.latLong && !prevMap.has(post._id)) {
+      return false;
+    }
+  }
+  return true;
+}
 
-  posts && AllPosts.set(posts);
+export function usePostDistance(postId: string): number | null {
+  const [distance, setDistance] = useState<number | null>(null);
+  const [map] = useGlobalState(DistancesMap);
 
-  AllPosts.subscribe((posts) => {
-    AsyncStorage.setItem("allPosts", JSON.stringify(posts));
-    disptachDistCalc();
-  });
+  useEffect(() => {
+    const distance = map.get(postId) ?? null;
+    setDistance(distance);
+  }, [map]);
 
-  dispatchPostsFetch({ initiator: "app" });
-})();
+  return distance;
+}
