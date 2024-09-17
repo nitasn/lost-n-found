@@ -30,7 +30,7 @@ export default function Feed({ filter }) {
     <>
       <SearchBar filterOn={filterOn} />
       {fetchingState.initiator === "app" && <LoadingText text="Loading Posts..." />}
-      {fetchingState.error && <ErrorMsg text={fetchingState.error.message}/>}
+      {fetchingState.error && <ErrorMsg text={fetchingState.error.message} />}
     </>
   );
 
@@ -80,7 +80,7 @@ function useFilteredPosts(filter) {
       if (filter.untilDate && filter.untilDate < postDate) return false;
     }
 
-    if (query && !queryRegex.test(post.title) && !queryRegex.test(post.text)) {
+    if (query && !doesPostMatchText(post, queryRegex)) {
       return false;
     }
 
@@ -97,6 +97,14 @@ function useFilteredPosts(filter) {
   const posts = useMemo(() => allPosts.filter(doesPostMatch), [type, filter, allPosts]);
 
   return posts;
+}
+
+function doesPostMatchText(post, queryRegex) {
+  return (
+    queryRegex.test(post.title) ||
+    queryRegex.test(post.text) ||
+    post.tags?.find((tag) => queryRegex.test(tag))
+  );
 }
 
 const styles = StyleSheet.create({
