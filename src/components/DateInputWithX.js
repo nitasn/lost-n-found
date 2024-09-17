@@ -35,6 +35,7 @@ export default function DateInputWithX({ date, setDate, label }) {
             setDate(date);
           }}
           closeIcon="close"
+          presentationStyle="pageSheet"
         />
       </PaperProvider>
     </>
