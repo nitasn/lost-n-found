@@ -54,6 +54,10 @@ const postSchema = new Schema({
     required: true,
     default: true,
   },
+  tags: {
+    type: [String],
+    required: false,
+  }
 });
 
 export default model("Post", postSchema);

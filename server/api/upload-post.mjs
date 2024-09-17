@@ -1,6 +1,7 @@
 import initMongoose from "../js/init-mongoose.mjs";
 import Post from "../mongoose-models/post.mjs";
 import verifyToken from "../js/verify-token.mjs";
+import getImagesTagsFromAI from "../js/describe-image.mjs";
 
 await initMongoose();
 
@@ -13,10 +14,9 @@ export default async function (req, res) {
 
   const { type, title, text, latLong, picsUrls } = req.body;
 
-  const location = latLong && {
-    latLong,
-    name: await reverseGecode(latLong).catch(() => null),
-  };
+  const locationPromise = reverseGecode(latLong);
+
+  const tagsPromise = getImagesTagsFromAI()
 
   const record = { author: decodedToken.uid, title, text, location, picsUrls, type };
 
@@ -30,16 +30,20 @@ export default async function (req, res) {
   }
 };
 
-async function reverseGecode([lat, long]) {
+async function reverseGecode(latLong) {
+  if (!latLong) return null;
+  const [lat, long] = latLong;
   try {
     const url =
       `https://api.bigdatacloud.net/data/reverse-geocode-client?` +
       `latitude=${lat}&longitude=${long}&localityLanguage=en`;
     const json = await fetch(url).then((res) => res.json());
-    return json.locality || json.city || json.countryName;
+    const name = json.locality || json.city || json.countryName;
+    return { latLong, name }
   } 
   catch (err) {
     console.error(`Couldn't Reverse-Gecode [${lat}, ${long}]:`, err.message);
     return null;
   }
 }
+
