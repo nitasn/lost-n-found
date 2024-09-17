@@ -1,3 +1,5 @@
+0. bug fix: going to chats from feeds makes no way to exit (missing stack <- back)
+
 1. restrict google maps-api-key to my domain only
 
 3. in the map, on location-icon click, if no locationPermissions, alert.

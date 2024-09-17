@@ -1,27 +1,26 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Share,
-  Platform,
-} from "react-native";
-import * as Clipboard from "expo-clipboard";
-import { dispatchPostsFetch, useAllPosts, usePostsFetchState } from "../ts/posts";
-import { useContext, useEffect, useMemo, useState } from "react";
-import globalStyles from "../js/globalStyles";
-import { timeDeltaAsString } from "../js/utils";
 import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
-import TypeContext from "../js/typeContext";
-import { primaryColor } from "../js/theme";
-import { prettyDistance } from "../js/utils";
-import ButtonInSplashColor from "./ButtonInSplashColor";
-import alerto from "./Alerto";
-import { LoadingText, ErrorText } from "./misc";
 import { getAuth } from "firebase/auth";
+import { useContext, useEffect, useMemo } from "react";
+import {
+  Image,
+  Platform,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import globalStyles from "../js/globalStyles";
+import { primaryColor } from "../js/theme";
+import TypeContext from "../js/typeContext";
+import { prettyDistance, timeDeltaAsString } from "../js/utils";
+import { dispatchPostsFetch, useAllPosts, usePostsFetchState } from "../ts/posts";
+import alerto from "./Alerto";
+import ButtonInSplashColor from "./ButtonInSplashColor";
+import { ErrorText, LoadingText } from "./misc";
 
 function openUrlExternally(url) {
   if (Platform.OS === "web") {
@@ -91,6 +90,13 @@ export default function PostPage({ route, navigation }) {
           <Text style={styles.title}>{post.title}</Text>
           <Text style={styles.text}>{post.text}</Text>
         </View>
+
+        {post.tags && (
+          <View style={styles.tags}>
+            <Text style={styles.tagsText}>{post.tags.join(" • ")}</Text>
+          </View>
+        )}
+
         <View style={styles.imagesList}>
           {post.picsUrls.map((item, index) => {
             const isLast = index + 1 === post.picsUrls.length;
@@ -122,13 +128,14 @@ export default function PostPage({ route, navigation }) {
               if (getAuth().currentUser?.uid === post.author._id) {
                 return alerto({
                   title: "This was Posted by You",
-                  message: "If you want to chat with yourself, we believe communication is best out loud."
-                })
+                  message:
+                    "If you want to chat with yourself, we believe communication is best out loud.",
+                });
               }
               navigation.navigate("ChatsStack", {
                 screen: "ConvoScreen",
                 params: { uid: post.author._id },
-              })
+              });
             }}
           />
         </View>
@@ -235,6 +242,13 @@ const styles = StyleSheet.create({
     letterSpacing: 1.1,
   },
   text: {},
+  tags: {
+    padding: 12,
+  },
+  tagsText: {
+    textTransform: "capitalize",
+    color: "#888",
+  },
   imagesList: {
     padding: 12,
   },

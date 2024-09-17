@@ -21,6 +21,7 @@ import { prettyDistance } from "../js/utils";
  * @property {string} title
  * @property {string?} text
  * @property {string[]} picsUrls - Array of URLs for pictures related to the post.
+ * @property {string[]?} tags
  * @property {string} date - in ISO 8601 format.
  * @property {Location?} location
  * @property {Author} author

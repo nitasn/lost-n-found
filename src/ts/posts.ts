@@ -14,6 +14,7 @@ type PostData = {
   title: string;
   text?: string;
   picsUrls: string[];
+  tags?: string[];
   date: string;
   location?: {
     latLong: [number, number];
