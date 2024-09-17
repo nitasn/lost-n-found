@@ -31,7 +31,7 @@ export default function LocationInputWithX({ region, setRegion, label }) {
         onChangeText={(text) => !text && setRegion(null)}
       />
 
-      <Modal visible={modalVisible} onRequestClose={closeModal} animationType="fade">
+      <Modal visible={modalVisible} onRequestClose={closeModal} animationType="slide">
         <LocationChooser doClose={closeModal} region={region} setRegion={setRegion} />
       </Modal>
     </>

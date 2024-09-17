@@ -162,7 +162,7 @@ export default function LocationChooser({ region, setRegion, doClose }) {
 
   return (
     <View style={styles.locationChooser}>
-      <View style={styles.headerContainer}>
+      <SafeAreaView style={styles.headerContainer}>
         <View style={styles.headerTopRow}>
           <TouchableOpacity style={styles.backBtn} onPress={doClose}>
             <Ionicons size={28} color="gray" name="chevron-back" />
@@ -200,7 +200,7 @@ export default function LocationChooser({ region, setRegion, doClose }) {
             <Ionicons size={24} color="gray" name="close-outline" />
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
 
       <View style={styles.mapWrapper}>
         <MapView
@@ -251,8 +251,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
   },
   headerContainer: {
-    paddingTop:
-      Platform.OS === "ios" ? 15 : Platform.OS === "android" ? StatusBar.currentHeight : 5,
+    paddingTop: StatusBar.currentHeight ?? 50,
     ...globalStyles.shadow_1,
     zIndex: 1,
   },

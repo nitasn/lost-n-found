@@ -130,7 +130,7 @@ export default function PostPage({ route, navigation }) {
                 return alerto({
                   title: "This was Posted by You",
                   message:
-                    "We are strong believer in self communication, and recommend other platforms.",
+                    "We strongly believe in self communication, but recommend other platforms for that.",
                 });
               }
               // NOT doing this because then there's no back button
