@@ -27,11 +27,14 @@ fs.readdir("./api", (err, fnames) => {
   if (err) return console.error(err);
   fnames.forEach((fname) => {
     if (fname.endsWith(".js") || fname.endsWith(".mjs")) {
+      const route = `/api/${path.parse(fname).name}`;
       import(`./api/${fname}`).then(({ default: handler }) => {
-        const route = `/api/${path.parse(fname).name}`;
         app.use(route, handler);
         console.log("registered", route);
-      });
+      })
+      .catch((err) => {
+        console.log("could not register", route, "at", fname, "because", err);
+      })
     }
   });
 });
