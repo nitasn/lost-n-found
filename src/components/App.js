@@ -7,10 +7,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNavigationContainerRef } from "@react-navigation/native";
 import useAuthContextProvider from "../login-social/login";
 import { AlertoProvider } from "./Alerto";
+import { useTopLevelPostsPolling } from "../ts/posts";
 
 const navRef = createNavigationContainerRef();
 
 export default function App() {
+  useTopLevelPostsPolling();
   const AuthContextProvider = useAuthContextProvider();
 
   return (

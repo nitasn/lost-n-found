@@ -4,6 +4,8 @@ import { createReducedAsyncQueue } from "./async-queue";
 import { getLocation } from "../js/location";
 import { geoDistance } from "../js/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ms from "ms";
+import { useEffect } from "react";
 
 type PostData = {
   _id: string;
@@ -29,8 +31,8 @@ export const AllPosts = createGlobalState<PostData[]>([]);
 
 type FetchInitiator = "user" | "app";
 
-interface FetchStateType { 
-  isFetching: boolean; 
+interface FetchStateType {
+  isFetching: boolean;
   initiator?: FetchInitiator;
   error?: Error;
 }
@@ -121,3 +123,14 @@ const disptachDistCalc = (() => {
 
   dispatchPostsFetch({ initiator: "app" });
 })();
+
+export function useTopLevelPostsPolling() {
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!FetchState.get().isFetching) {
+        dispatchPostsFetch({ initiator: "app" });
+      }
+    }, ms("5 minutes"));
+    return () => clearInterval(id);
+  }, []);
+}
