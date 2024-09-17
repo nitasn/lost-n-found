@@ -2,6 +2,7 @@ import ChatsScreen from "./ChatScreen/ChatsScreen";
 import ConvoScreen from "./ConvoScreen/ConvoScreen";
 
 import { createStackNavigator } from "@react-navigation/stack";
+import { HeaderBackButton } from '@react-navigation/elements';
 
 const Stack = createStackNavigator();
 
@@ -23,7 +24,12 @@ export default function ChatsStack() {
       <Stack.Screen
         name="ConvoScreen"
         component={ConvoScreen}
-        options={{ headerTitle: "Conversation" }}
+        options={({ navigation }) => ({
+          headerTitle: "Conversation",
+          headerLeft: () => (
+            <HeaderBackButton onPress={() => navigation.goBack()} />
+          ),
+        })}
       />
     </Stack.Navigator>
   );

@@ -21,6 +21,7 @@ import { dispatchPostsFetch, useAllPosts, usePostsFetchState } from "../ts/posts
 import alerto from "./Alerto";
 import ButtonInSplashColor from "./ButtonInSplashColor";
 import { ErrorText, LoadingText } from "./misc";
+import { CommonActions } from "@react-navigation/native";
 
 function openUrlExternally(url) {
   if (Platform.OS === "web") {
@@ -129,13 +130,19 @@ export default function PostPage({ route, navigation }) {
                 return alerto({
                   title: "This was Posted by You",
                   message:
-                    "If you want to chat with yourself, we believe communication is best out loud.",
+                    "We are strong believer in self communication, and recommend other platforms.",
                 });
               }
-              navigation.navigate("ChatsStack", {
-                screen: "ConvoScreen",
-                params: { uid: post.author._id },
-              });
+              // NOT doing this because then there's no back button
+              // navigation.navigate("ChatsStack", {
+              //   screen: "ConvoScreen",
+              //   params: { uid: post.author._id },
+              // });
+              navigation.navigate('ChatsStack');
+              setTimeout(() => {
+                navigation.navigate('ConvoScreen', { uid: post.author._id });
+              }, 150);
+              
             }}
           />
         </View>
