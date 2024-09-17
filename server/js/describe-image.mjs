@@ -10,6 +10,8 @@ instead, reply with comma separated short descriptions and nothing more.
 also, the description must be very very succinct.
 do not write "some images of a card that seems to be used for paying for transportation like buses or alike";
 instead, prefer very short phrases of up to 4 words; for instance, you could write "transportation card".
+one last but important thing: ignore the background.
+for example, prefer "keychain" over "keychain held in hand", and prefer "dress" over "dress laid on table".
 `;
 
 const imagePrompt = `
@@ -47,5 +49,9 @@ async function testAI() {
     "https://smartwrh.com/storage/images/products/gallery/2d3338325821409190ebe19f9ad092e5.jpg",
   ];
 
-  console.log(await getImagesTagsFromAI(imgURLs));
+  const dressOnWoodedDeck = [
+    "https://files.oaiusercontent.com/file-utvB1jzS8wec5eNmxzjhtakZ?se=2024-09-17T20%3A13%3A47Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3Db4b2f1fe-678e-4f9b-86d3-9067f9e3512b.webp&sig=bzk85edchRFb2BysHTyZOjtd7xP4YR4dtexJfcphxXc%3D"
+  ]
+  
+  console.log(await getImagesTagsFromAI(dogOnGrass));
 }
