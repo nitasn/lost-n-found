@@ -35,7 +35,7 @@ function ChatListItem({ _id, name, profilePicUrl }) {
   const navigation = useNavigation();
 
   const onPress = () => {
-    navigation.navigate("ConvoScreen", { uid: _id });
+    navigation.navigate("ConvoScreen", { uid: _id, name });
   };
 
   return (

@@ -14,7 +14,7 @@ import { useAuth } from "../../../login-social/login";
 import globalStyles from "../../../js/globalStyles";
 import { primaryColor } from "../../../js/theme";
 import { prettyDate } from "../../../js/utils";
-import { useCallback, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import queryConvo from "./queryConvo";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import BottomInputs from "./BottomInputs";
@@ -44,11 +44,18 @@ export default function ConvoScreen({ route, navigation }) {
     return null;
   }
 
-  return <ConvoScreenAuthed myUid={user.uid} theirUid={theirUid} />;
+  return <ConvoScreenAuthed myUid={user.uid} theirUid={theirUid} theirName={route.params?.name} />;
 }
 
-function ConvoScreenAuthed({ myUid, theirUid }) {
+function ConvoScreenAuthed({ myUid, theirUid, theirName }) {
   useHideTabBar();
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: `Chat with ${theirName}`,
+    });
+  }, [navigation, theirName]);
 
   const [value, loading, error] = useCollection(queryConvo(myUid, theirUid));
 

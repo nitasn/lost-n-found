@@ -134,15 +134,14 @@ export default function PostPage({ route, navigation }) {
                 });
               }
               // NOT doing this because then there's no back button
-              // navigation.navigate("ChatsStack", {
-              //   screen: "ConvoScreen",
-              //   params: { uid: post.author._id },
-              // });
-              navigation.navigate('ChatsStack');
+              // navigation.navigate("ChatsStack", { screen: "ConvoScreen", params: { uid, name } });
+              navigation.navigate("ChatsStack");
               setTimeout(() => {
-                navigation.navigate('ConvoScreen', { uid: post.author._id });
+                navigation.navigate("ConvoScreen", {
+                  uid: post.author._id,
+                  name: post.author.name,
+                });
               }, 150);
-              
             }}
           />
         </View>
