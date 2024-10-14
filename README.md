@@ -6,6 +6,10 @@ Works on iOS, Android and Web.
 
 Backend hosted on Vercel, and uses MongoDB (for posts), Cloudinary (for hosting images), Firebase (for real-time chat, and authenticating user), and OpenAI API (for tagging images).
 
+Demo (Hebrew) below:
+[![Demo on YouTube](https://img.youtube.com/vi/I6I7yO2K0zc/0.jpg)](https://www.youtube.com/watch?v=I6I7yO2K0zc)
+
+
 ## Features
 
 * **Post Lost/Found Items**: Users can easily post items they have found or are missing.
