@@ -2,6 +2,7 @@ import { Modal } from "react-native";
 import { useState } from "react";
 import LocationChooser from "./LocationChooser";
 import TextInputWithX from "./TextInputWithX";
+// import LocationChooserWebView from "./LocationChooserWebView";
 
 function latLongToText({ latitude, longitude }) {
   const N_S = latitude >= 0 ? "N" : "S";
@@ -32,6 +33,7 @@ export default function LocationInputWithX({ region, setRegion, label }) {
       />
 
       <Modal visible={modalVisible} onRequestClose={closeModal} animationType="slide">
+        {/* <LocationChooserWebView doClose={closeModal} region={region} setRegion={setRegion} /> */}
         <LocationChooser doClose={closeModal} region={region} setRegion={setRegion} />
       </Modal>
     </>

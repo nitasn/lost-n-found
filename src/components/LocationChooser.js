@@ -18,6 +18,7 @@ import { primaryColor } from "../js/theme";
 import { StatusBar } from "expo-status-bar";
 
 const usingGoogleMaps = Platform.OS !== "ios";
+// const usingGoogleMaps = true;
 
 export default function LocationChooser({ region, setRegion, doClose }) {
   // used by this component while it's open;

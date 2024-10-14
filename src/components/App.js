@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { Platform, SafeAreaView, StyleSheet, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import Tabs from "./Tabs";
 import { linking } from "../js/linking";
 import { NavigationContainer } from "@react-navigation/native";
@@ -14,6 +14,17 @@ const navRef = createNavigationContainerRef();
 export default function App() {
   useTopLevelPostsPolling();
   const AuthContextProvider = useAuthContextProvider();
+
+  // (async () => {
+  //   try {
+  //     console.log(Platform.OS, 'fetching /api/get-all-posts...');
+  //     const html = await fetch('http://192.168.1.109:3000/api/get-all-posts').then((res => res.text()));
+  //     console.log(Platform.OS, html);
+  //   }
+  //   catch (err) {
+  //     console.error(err);
+  //   }
+  // })();
 
   return (
     <NavigationContainer linking={linking} ref={navRef}>
