@@ -15,17 +15,6 @@ export default function App() {
   useTopLevelPostsPolling();
   const AuthContextProvider = useAuthContextProvider();
 
-  // (async () => {
-  //   try {
-  //     console.log(Platform.OS, 'fetching /api/get-all-posts...');
-  //     const html = await fetch('http://192.168.1.109:3000/api/get-all-posts').then((res => res.text()));
-  //     console.log(Platform.OS, html);
-  //   }
-  //   catch (err) {
-  //     console.error(err);
-  //   }
-  // })();
-
   return (
     <NavigationContainer linking={linking} ref={navRef}>
       <AlertoProvider>
