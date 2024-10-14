@@ -52,6 +52,11 @@ async function testAI() {
   const dressOnWoodedDeck = [
     "https://files.oaiusercontent.com/file-utvB1jzS8wec5eNmxzjhtakZ?se=2024-09-17T20%3A13%3A47Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3Db4b2f1fe-678e-4f9b-86d3-9067f9e3512b.webp&sig=bzk85edchRFb2BysHTyZOjtd7xP4YR4dtexJfcphxXc%3D"
   ]
+
+  const thumb = [
+    'https://res.cloudinary.com/lost-and-found-startup/image/upload/v1728942300/mobile-uploads/h4wyapb7fmsvybbelybu.jpg',
+    'https://res.cloudinary.com/lost-and-found-startup/image/upload/v1728942302/mobile-uploads/zaypi89drxbv2fgwsg0z.jpg'
+  ]
   
-  console.log(await getImagesTagsFromAI(dogOnGrass));
+  console.log(await getImagesTagsFromAI(thumb));
 }
