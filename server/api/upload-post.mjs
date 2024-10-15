@@ -18,7 +18,7 @@ export default async function (req, res) {
 
   const tagsPromise = getImagesTagsFromAI(picsUrls)
     .then((str) => str.split(",").map((desc) => desc.trim()))
-    .catch(() => nulljj);
+    .catch(console.error);
 
   const [location, tags] = await Promise.all([locationPromise, tagsPromise]);
 
